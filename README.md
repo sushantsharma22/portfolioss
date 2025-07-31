@@ -1,30 +1,8 @@
-# Portfolio Website - Fixed
+# Portfolio Website
 
-This is Sushant Sharma's professional portfolio website showcasing AI research engineering and full-stack development skills.
+This is Sushant Sharma's professional portfolio website showcasing AI research engineering and full stack development skills.
 
-## ✅ Issues Fixed
-
-### 1. **File Path Corrections**
-- Fixed CSS reference from `css/style.css` to `style.css`
-- Fixed JavaScript reference from `js/script.js` to `main.js`
-- Updated paths to match actual file structure
-
-### 2. **Missing CSS Content**
-- The CSS file was corrupted/empty (0 bytes)
-- Recreated complete CSS file with modern styling (~55KB)
-- Implemented sky blue gradient theme with dark background
-- Added responsive design and animations
-
-### 3. **Asset Management**
-- Created `assets/` directory for resume and other files
-- Fixed favicon reference with emoji-based data URI
-- Removed broken service worker registration
-
-### 4. **JavaScript Optimization**
-- Removed service worker registration (no sw.js file)
-- All JavaScript functionality preserved and working
-
-## 🚀 Features
+## Features
 
 - **Modern Design**: Sky blue gradient theme with dark background
 - **Responsive**: Mobile-first responsive design
@@ -56,7 +34,7 @@ Then open http://localhost:8000
 ### Option 2: Direct File Access
 Open `index.html` directly in a web browser, though some features may not work due to CORS restrictions.
 
-## 🎨 Customization
+## Customization
 
 ### Colors
 The website uses CSS custom properties (variables) for easy theming:
@@ -71,15 +49,15 @@ All content is in the HTML file and can be easily updated:
 - Project details in the projects section
 - Experience and education information
 
-## 📱 Browser Support
+## Browser Support
 
-- ✅ Chrome/Chromium (recommended)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Edge
-- ⚠️ Internet Explorer (limited support)
+-  Chrome/Chromium (recommended)
+-  Firefox
+-  Safari
+-  Edge
+-  Internet Explorer (limited support)
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **HTML5**: Semantic markup and accessibility
 - **CSS3**: Modern styling with variables, grid, flexbox
@@ -87,23 +65,23 @@ All content is in the HTML file and can be easily updated:
 - **Font Awesome**: Icons
 - **Google Fonts**: Inter and JetBrains Mono fonts
 
-## 📄 Resume
+## Resume
 
-The website includes download links for the resume. Currently points to `assets/resume.txt` (placeholder). Replace this with an actual PDF resume:
+The website includes download links for the resume. Currently points to `assets/myresume.pdf` . Replace this with an actual PDF resume:
 
 ```bash
 # Replace the placeholder with actual resume
 cp your-resume.pdf assets/resume.pdf
 ```
 
-## 🔍 SEO & Meta Tags
+## SEO & Meta Tags
 
 The website includes comprehensive meta tags for:
 - Social media sharing (Open Graph, Twitter)
 - Search engine optimization
 - Structured data (JSON-LD)
 
-## 🚀 Deployment
+## Deployment
 
 The website is ready for deployment to any static hosting service:
 - GitHub Pages
@@ -112,7 +90,7 @@ The website is ready for deployment to any static hosting service:
 - AWS S3
 - Any web server
 
-## 💡 Tips
+## Tips
 
 1. **Performance**: The website loads quickly with optimized assets
 2. **Mobile**: Fully responsive design works on all screen sizes
@@ -129,6 +107,4 @@ The website is ready for deployment to any static hosting service:
 
 ---
 
-**Status**: ✅ Website is now fully functional and ready to use!
-
-Last updated: July 31, 2025
+**Status**: Website is now fully functional and ready to use!
