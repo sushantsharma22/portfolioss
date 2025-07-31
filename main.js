@@ -90,14 +90,19 @@ const utils = {
     smoothScroll(target) {
         const element = typeof target === 'string' ? document.querySelector(target) : target;
         if (element) {
-            const navHeight = document.querySelector('.navbar').offsetHeight;
+            const navbar = document.querySelector('.navbar');
+            const navHeight = navbar ? navbar.offsetHeight : 80;
             const elementPosition = element.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - navHeight - 20;
+
+            console.log('Smooth scroll to:', target, 'Element:', element, 'Offset:', offsetPosition); // Debug
 
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
             });
+        } else {
+            console.warn('Smooth scroll target not found:', target);
         }
     },
 
@@ -201,6 +206,21 @@ class Navigation {
             link.addEventListener('click', (e) => this.handleNavClick(e));
         });
 
+        // Also handle direct clicks on nav link text/icons
+        const navLinkElements = utils.getElements('.nav-link span, .nav-link i');
+        navLinkElements.forEach(element => {
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
+                const parentLink = element.closest('.nav-link');
+                if (parentLink) {
+                    this.handleNavClick({ 
+                        preventDefault: () => {}, 
+                        currentTarget: parentLink 
+                    });
+                }
+            });
+        });
+
         // Theme toggle
         if (this.themeToggle) {
             this.themeToggle.addEventListener('click', () => this.toggleTheme());
@@ -234,36 +254,72 @@ class Navigation {
 
     handleNavClick(e) {
         e.preventDefault();
-        const targetId = e.target.getAttribute('href');
+        const targetId = e.currentTarget.getAttribute('href');
+        
+        console.log('Navigation clicked:', targetId); // Debug log
         
         if (targetId && targetId.startsWith('#')) {
-            utils.smoothScroll(targetId);
-            this.closeMobileMenu();
+            const targetElement = document.querySelector(targetId);
+            console.log('Target element found:', targetElement); // Debug log
+            
+            if (targetElement) {
+                utils.smoothScroll(targetId);
+                this.closeMobileMenu();
+            } else {
+                console.warn(`Target element not found: ${targetId}`);
+            }
         }
     }
 
     updateNavbarOnScroll() {
         const scrolled = window.pageYOffset > 50;
-        this.navbar.classList.toggle('scrolled', scrolled);
+        if (this.navbar) {
+            this.navbar.classList.toggle('scrolled', scrolled);
+        }
     }
 
     setActiveLink() {
         const sections = utils.getElements('section[id]');
-        const navHeight = this.navbar.offsetHeight;
+        const navHeight = this.navbar ? this.navbar.offsetHeight : 80;
         
         let currentSectionId = '';
         
         sections.forEach(section => {
             const rect = section.getBoundingClientRect();
-            if (rect.top <= navHeight + 100 && rect.bottom >= navHeight + 100) {
+            const sectionTop = rect.top;
+            const sectionBottom = rect.bottom;
+            
+            // Check if section is in view (accounting for navbar height)
+            if (sectionTop <= navHeight + 100 && sectionBottom >= navHeight + 100) {
                 currentSectionId = section.id;
             }
         });
 
+        // If no section is clearly in view, find the closest one
+        if (!currentSectionId && sections.length > 0) {
+            let closestSection = null;
+            let closestDistance = Infinity;
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const distance = Math.abs(rect.top - navHeight);
+                
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestSection = section;
+                }
+            });
+            
+            if (closestSection) {
+                currentSectionId = closestSection.id;
+            }
+        }
+
         // Update active nav link
         this.navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
+            const linkHref = link.getAttribute('href');
+            if (linkHref === `#${currentSectionId}`) {
                 link.classList.add('active');
             }
         });
