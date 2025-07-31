@@ -253,16 +253,14 @@ body {
 .navbar {
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     background: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
-    z-index: 9999;
+    z-index: var(--z-fixed);
     padding: var(--spacing-md) 0;
     transition: var(--transition-smooth);
-    box-shadow: 0 4px 32px rgba(0,0,0,0.2);
 }
 
 .navbar.scrolled {
@@ -484,8 +482,17 @@ body {
     align-items: center;
 }
 
+@media (max-width: 1200px) {
+    .hero-container {
+        grid-template-columns: 1fr 350px;
+        gap: var(--spacing-xl);
+    }
+}
+
 .hero-content {
     animation: fadeInUp 1s ease;
+    max-width: 100%;
+    width: 100%;
 }
 
 .hero-intro {
@@ -542,14 +549,25 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     margin-bottom: var(--spacing-md);
     color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: left;
+    white-space: normal;
+    word-wrap: break-word;
+    display: block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    text-rendering: optimizeLegibility;
 }
 
 .hero-subtitle .highlight {
     color: var(--accent-primary);
     font-weight: 600;
+    display: inline;
+    white-space: normal;
 }
 
 .hero-details {
@@ -1694,14 +1712,11 @@ section {
 }
 
 .education-card {
-    background: rgba(30, 30, 30, 0.6);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(135, 206, 235, 0.2);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);
     transition: var(--transition-smooth);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
 .education-card:hover {
@@ -2543,6 +2558,17 @@ section {
     
     .hero-title {
         font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        line-height: 1.5;
+        text-align: center;
+    }
+    
+    .hero-subtitle .highlight {
+        display: inline;
+        white-space: normal;
     }
     
     .hero-buttons {
