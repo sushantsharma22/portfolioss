@@ -621,8 +621,13 @@ body {
     background: rgba(135, 206, 235, 0.1);
     border: 1px solid rgba(135, 206, 235, 0.3);
     border-radius: var(--radius-md);
-    margin-left: var(--spacing-md);
     font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+    .availability-badge {
+        margin-left: 0;
+    }
 }
 
 .status-dot {
