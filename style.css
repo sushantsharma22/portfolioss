@@ -1,3 +1,71 @@
+  .hero-name {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+  }
+@media (min-width: 1025px) {
+  .hero-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start !important;
+    align-items: baseline;
+    gap: 0.6em;
+    width: 100%;
+    margin: 0;
+    text-align: left !important;
+  }
+  .hero-name .name-part {
+    display: inline-block;
+    margin: 0 0.1em;
+    vertical-align: baseline;
+  }
+}
+  /* Center all footer content only for mobile */
+  .footer-content,
+  .footer-main,
+  .footer-links,
+  .footer-bottom,
+  .footer-text,
+  .footer-social,
+  .footer-column {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+  /* Hide SS logo in footer for mobile */
+  .footer-logo {
+    display: none !important;
+  }
+
+  /* Change footer links orientation to horizontal for mobile */
+  .footer-links {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    gap: 2em !important;
+    width: 100%;
+    text-align: left !important;
+  }
+  .footer-column {
+    min-width: 0;
+    flex: 1 1 0;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Center Send Message button in contact form on mobile */
+  .contact-form .form-submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
   /* Center symbol inside contact section icon on mobile */
   /* Restore contact icon alignment to left for mobile */
   .contact .contact-icon {
@@ -76,11 +144,15 @@
   }
   /* Center hero name on small devices */
   .hero-name {
+    width: 100%;
+    margin: 0;
+  /* Center hero name for mobile only */
+  .hero-name {
     text-align: center !important;
     justify-content: center !important;
     align-items: center !important;
-    width: 100%;
     margin: 0 auto;
+  }
   }
   .hero-name .name-part {
     display: inline-block;
