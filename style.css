@@ -1,3 +1,21 @@
+@media (max-width: 1024px) {
+  .contact-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+    border-radius: 12px;
+    background: var(--gradient-primary);
+    color: #fff;
+    border: none;
+    box-shadow: 0 1px 6px 0 rgba(30,34,40,0.08);
+    transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+  }
+  .contact-item:hover .contact-icon {
+    background: var(--gradient-secondary);
+    color: #fff;
+    box-shadow: 0 4px 16px 0 rgba(74,144,226,0.12);
+  }
+}
 /* Light theme: Black gradient for hero name visibility */
 /* Light theme: solid black for hero name, dark blue for hero text */
 [data-theme="light"] .hero-name .name-part {
@@ -19,19 +37,8 @@
 /* Advanced mobile optimizations */
 @media (max-width: 768px) {
     [data-theme="light"] .hero-name .name-part {
-        background: linear-gradient(90deg, #23272f 0%, #44484f 100%) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        background-clip: text !important;
-        color: unset !important;
-        text-shadow: none !important;
-        font-weight: 700 !important;
-        margin-right: 0.6em !important;
-    }
-    .hero-name {
-        justify-content: center;
-        text-align: center;
-        width: 100%;
+        text-shadow: 0 3px 15px #fff, 0 2px 2px #222, 0 0 5px #fff !important;
+        font-weight: 900 !important;
     }
 }
 [data-theme="light"] .hero-title {
@@ -1080,10 +1087,9 @@ body {
 }
 
 .social-link {
-    width: 90px;
-    height: 90px;
+    width: 45px;
+    height: 45px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--card-bg);
@@ -1092,9 +1098,6 @@ body {
     color: var(--text-primary);
     text-decoration: none;
     transition: var(--transition-smooth);
-    overflow: hidden;
-    padding: 0.5em;
-    box-sizing: border-box;
 }
 
 .social-link:hover {
@@ -2586,16 +2589,31 @@ section {
     border-color: var(--accent-primary);
 }
 
-.contact-icon {
-    width: 45px;
-    height: 45px;
-    background: var(--gradient-primary);
-    border-radius: var(--radius-sm);
+
+@media (min-width: 1025px) {
+  .contact-icon {
+    width: 110px;
+    height: 110px;
+    background: rgba(30, 34, 40, 0.92);
+    border: 1.5px solid #23272f;
+    border-radius: 22px;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    flex-shrink: 0;
+    font-size: 2.2rem;
+    box-shadow: 0 2px 12px 0 rgba(30,34,40,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .contact-item:hover .contact-icon {
+    background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%);
+    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(74,144,226,0.18);
+    transform: translateY(-6px) scale(1.07);
+    border-color: #4A90E2;
+  }
 }
 
 .contact-text h4 {
@@ -2623,32 +2641,54 @@ section {
 }
 
 .social-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    margin: 2rem 0 2.5rem 0;
 }
 
 .social-grid .social-link {
-    /* Inherit from .social-link above */
-    font-size: 0.95rem;
-    gap: 0.3em;
-    word-break: break-word;
-    white-space: normal;
-    text-align: center;
-    height: 90px;
-    width: 90px;
-    min-width: 80px;
-    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(30, 34, 40, 0.92);
+    border: 1.5px solid #23272f;
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 12px 0 rgba(30,34,40,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Make contact section social icons even smaller */
+.contact .social-grid .social-link {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+}
+.contact .social-grid .social-link i {
+    font-size: 2.2rem;
+}
 }
 
 .social-grid .social-link:hover {
-    background: var(--gradient-primary);
-    color: white;
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%);
+    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(74,144,226,0.18);
+    transform: translateY(-6px) scale(1.07);
+    border-color: #4A90E2;
 }
 
 .social-grid .social-link i {
-    font-size: 1.2rem;
+    font-size: 2.2rem;
+    margin: 0;
 }
 
 /* Contact Form */
@@ -3316,7 +3356,8 @@ section {
     }
     
     .social-grid {
-        grid-template-columns: 1fr;
+        flex-direction: row;
+        gap: 1.5rem;
     }
     
     .footer-links {
