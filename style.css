@@ -1,3 +1,143 @@
+@media (max-width: 480px) {
+  html, body { overflow-x: hidden !important; }
+}
+@media (max-width: 400px) {
+  .projects-filter { flex-direction: column !important; gap: 0.4em !important; }
+  .filter-btn { width: 100% !important; }
+}
+@media (max-width: 768px) {
+  .form-group input, .form-group textarea, .form-group select {
+    font-size: 16px !important;
+    min-height: 44px !important;
+  }
+}
+@media (max-width: 768px) {
+  .theme-toggle, .nav-resume-btn, .hamburger {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}
+@media (max-width: 768px) {
+  .main-card, .floating-card-1, .floating-card-2 { display: none !important; }
+  .hero-visual { display: none !important; }
+}
+@media (max-width: 480px) {
+  .main-card { display: none !important; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr !important; gap: 0.75rem !important; }
+  .stat-item, .stat-card { padding: 0.75rem 0.5rem !important; }
+  .stat-number { font-size: 1.2rem !important; }
+  .stat-label { font-size: 0.8rem !important; }
+}
+@media (max-width: 768px) {
+  .conference-section { padding: 1rem 0 !important; }
+  .conference-card { padding: 1rem !important; }
+  .conference-header { flex-direction: column !important; gap: 0.5em !important; }
+  .conference-highlights,
+  .conference-tech { flex-direction: column !important; gap: 0.5em !important; }
+}
+@media (max-width: 480px) {
+  .conference-title { font-size: 1.1rem !important; }
+  .conference-card { padding: 1rem 0.5rem !important; }
+}
+@media (max-width: 768px) {
+  /* About Section */
+  .about-image { height: 200px !important; margin-bottom: 1rem !important; }
+  .about-badges { justify-content: center !important; }
+  .highlight-item { text-align: center !important; flex-direction: column !important; }
+  .about-highlights { gap: 0.8rem !important; flex-direction: column !important; }
+
+  /* Skills/Key Proficiencies */
+  .skill-category, .proficiency-item { padding: 1rem !important; }
+  .skills-grid, .proficiencies-grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+  .skill-bar { height: 8px !important; }
+  .skills-list { gap: 0.5rem !important; }
+  .skill-item { padding: 0.5rem 0 !important; font-size: 0.9rem !important; }
+
+  /* Projects Section */
+  .project-card { padding: 1rem !important; }
+  .project-title { font-size: 1rem !important; }
+  .project-description { font-size: 0.9rem !important; }
+  .project-image { height: 120px !important; }
+  .project-highlights { gap: 0.3rem !important; flex-wrap: wrap !important; }
+
+  /* Education Timeline */
+  .education-card { padding: 1rem !important; }
+  .degree-title, .institution { font-size: 1rem !important; }
+  .education-item { gap: 1rem !important; flex-direction: column !important; }
+
+  /* Contact Section */
+  .contact-form { padding: 1rem !important; }
+  .contact-item, .contact-intro, .contact-details { gap: 0.5rem !important; flex-direction: column !important; }
+  .social-grid { gap: 1rem !important; justify-content: center !important; }
+  .form-submit { width: 100% !important; }
+
+  /* Certificates Section */
+  .certificate-card { padding: 1rem 0.5rem !important; }
+  .certificate-icon { width: 40px !important; height: 40px !important; }
+  .certificate-title { font-size: 1rem !important; }
+  .certificate-skills { flex-wrap: wrap !important; gap: 0.25em !important; }
+
+  /* Footer */
+  .footer-content, .footer-main, .footer-links, .footer-bottom { text-align: center !important; }
+  .footer-links { grid-template-columns: 1fr !important; gap: 1rem !important; }
+  .footer-social { gap: 0.5rem !important; justify-content: center !important; }
+}
+@media (max-width: 480px) {
+  /* Certificates Section - extra small screens */
+  .certificate-card { padding: 1rem 0.5rem !important; }
+  .certificate-icon { width: 36px !important; height: 36px !important; }
+  .certificate-title { font-size: 0.95rem !important; }
+  .certificate-skills { gap: 0.18em !important; }
+
+  /* Footer - extra small screens */
+  .footer-content, .footer-main, .footer-links, .footer-bottom { text-align: center !important; }
+  .footer-links { grid-template-columns: 1fr !important; gap: 1rem !important; }
+  .footer-social { gap: 0.5rem !important; }
+}
+@media (max-width: 768px) {
+    /* Stack timeline items on mobile */
+    .experience-timeline {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+    .timeline-item {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+        margin-bottom: 1.2rem !important;
+        padding-left: 0 !important;
+        background: none !important;
+        box-shadow: none !important;
+    }
+    /* Hide the vertical timeline markers on mobile */
+    .timeline-marker,
+    .experience-timeline::before,
+    .marker-dot,
+    .marker-line {
+        display: none !important;
+    }
+    .timeline-content {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    .timeline-card {
+        padding: 1rem 0.5rem !important;
+        width: 100% !important;
+        border-radius: 12px !important;
+        min-width: 0 !important;
+    }
+    .timeline-date {
+        position: static !important;
+        text-align: left !important;
+        margin-bottom: 0.6rem !important;
+        padding: 0.4rem 1rem !important;
+        background: rgba(135, 206, 235, 0.1) !important;
+        border-radius: 6px !important;
+        width: fit-content !important;
+        font-size: 0.92rem !important;
+    }
+}
 /* Remove all backgrounds and glass effects from navbar/nav-menu in light theme */
 [data-theme="light"] .navbar,
 [data-theme="light"] .nav-menu,
