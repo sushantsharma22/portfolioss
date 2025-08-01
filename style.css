@@ -28,6 +28,9 @@
     width: 100% !important;
   }
 @media (min-width: 1025px) {
+  [data-theme="light"] .hero-name {
+    gap: 0.6em !important;
+  }
   .hero-name {
     display: flex;
     flex-direction: row;
@@ -40,7 +43,7 @@
   }
   .hero-name .name-part {
     display: inline-block;
-    margin: 0 0.1em;
+    margin: 0 !important;
     vertical-align: baseline;
   }
 }
@@ -209,15 +212,19 @@
   }
 @media (max-width: 1024px) {
   .contact-icon {
-    width: 48px;
-    height: 48px;
-    font-size: 1.3rem;
-    border-radius: 12px;
-    background: var(--gradient-primary);
-    color: #fff;
-    border: none;
-    box-shadow: 0 1px 6px 0 rgba(30,34,40,0.08);
-    transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+  .hero-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6em !important;
+    margin-bottom: 0.5em;
+    /* ...other properties... */
+  }
+  .hero-name .name-part {
+    margin: 0 !important;
+    /* ...other properties... */
+  }
   }
   .contact-item:hover .contact-icon {
     background: var(--gradient-secondary);
@@ -235,7 +242,7 @@
     color: unset !important;
     text-shadow: none !important;
     font-weight: 700 !important;
-    margin-right: 0.6em !important;
+    margin-right: 0 !important;
 }
 [data-theme="light"] .hero,
 [data-theme="light"] .hero * {
@@ -245,6 +252,16 @@
 
 /* Advanced mobile optimizations */
 @media (max-width: 768px) {
+    .hero-name {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.6em !important;
+    }
+    .hero-name .name-part {
+        margin: 0 !important;
+    }
     [data-theme="light"] .hero-name .name-part {
         background: none !important;
         color: #23272f !important;
@@ -253,6 +270,7 @@
         background-clip: initial !important;
         text-shadow: none !important;
         font-weight: 900 !important;
+        margin: 0 !important;
     }
 }
 [data-theme="light"] .hero-title {
@@ -1071,9 +1089,7 @@ body {
 }
 
 .hero-name {
-    display: flex;
-    flex-direction: row;
-    gap: var(--spacing-xs);
+    /* Desktop only: do not set gap or flex here, mobile will override in media query */
 }
 
 .name-part {
@@ -1087,6 +1103,7 @@ body {
     display: inline-block;
     animation: slideInUp 0.8s ease;
     transform-origin: bottom;
+    margin: 0 !important;
 }
 
 .name-part:first-child {
@@ -3601,7 +3618,13 @@ section {
         display: inline-block;
     }
     .hero-name .name-part:first-child {
-        margin-right: 0.6em !important;
+        margin-right: 0 !important;
+    }
+    .hero-name {
+        gap: 0.2em !important;
+    }
+    .hero-name .name-part {
+        margin: 0 !important;
     }
 }
     .projects-filter {
