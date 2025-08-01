@@ -1,3 +1,93 @@
+  /* Center certificate skills section on mobile */
+  .certificates .certificate-skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 0.4em;
+  }
+  /* Center certificate provider and description for Udemy and all certificates on mobile */
+  .certificates .certificate-provider,
+  .certificates .certificate-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .certificates .provider-logo {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Center certificate card content on mobile */
+  .certificates .certificate-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .certificates .certificate-icon {
+    margin: 0 auto 0.5em auto !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .certificates .certificate-content {
+    align-items: center !important;
+    text-align: center !important;
+    width: 100%;
+  }
+  .certificates .certificate-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5em;
+  }
+  /* Center hero name on small devices */
+  .hero-name {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .hero-name .name-part {
+    display: inline-block;
+    width: auto;
+    margin: 0 0.1em;
+  }
+
+  /* Center all section headers and subtitles on mobile */
+  .section-header,
+  .section-title,
+  .section-subtitle {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Center certificate section content on mobile */
+  .certificates .section-header,
+  .certificates .section-title,
+  .certificates .section-subtitle {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .certificates .certificates-grid {
+    justify-content: center !important;
+    align-items: center !important;
+  }
 @media (max-width: 1024px) {
   .contact-icon {
     width: 48px;
@@ -2675,7 +2765,6 @@ section {
 }
 .contact .social-grid .social-link i {
     font-size: 2.2rem;
-}
 }
 
 .social-grid .social-link:hover {
