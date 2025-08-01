@@ -1,3 +1,25 @@
+  [data-theme="light"] .hero-name .name-part {
+    background: none !important;
+    color: #23272f !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    text-shadow: none !important;
+  }
+  [data-theme="light"] .hero-name .name-part {
+    color: #23272f !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+  }
+  [data-theme="light"] .hero-name .name-part {
+    color: #23272f !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+  }
   .hero-name {
     text-align: center !important;
     justify-content: center !important;
@@ -224,7 +246,12 @@
 /* Advanced mobile optimizations */
 @media (max-width: 768px) {
     [data-theme="light"] .hero-name .name-part {
-        text-shadow: 0 3px 15px #fff, 0 2px 2px #222, 0 0 5px #fff !important;
+        background: none !important;
+        color: #23272f !important;
+        -webkit-background-clip: initial !important;
+        -webkit-text-fill-color: initial !important;
+        background-clip: initial !important;
+        text-shadow: none !important;
         font-weight: 900 !important;
     }
 }
