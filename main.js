@@ -734,6 +734,21 @@ class ProjectFilter {
                 this.filterProjects(filter);
             });
         });
+        
+        // Make project cards clickable (whole card links to GitHub)
+        this.projectCards.forEach(card => {
+            const githubLink = card.querySelector('.project-link[href*="github"]');
+            if (githubLink) {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', (e) => {
+                    // Don't trigger if clicking on an actual link or button
+                    if (e.target.closest('a') || e.target.closest('button')) {
+                        return;
+                    }
+                    window.open(githubLink.href, '_blank');
+                });
+            }
+        });
     }
 
     setActiveFilter(filter) {

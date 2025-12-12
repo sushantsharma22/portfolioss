@@ -1247,10 +1247,6 @@ body {
     font-weight: 400;
 }
 
-.hero-name {
-    /* Desktop only: do not set gap or flex here, mobile will override in media query */
-}
-
 .name-part {
     font-size: 3.5rem;
     font-weight: 700;
@@ -2483,6 +2479,37 @@ section {
     font-size: 1.1rem;
     color: var(--text-secondary);
     margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================
+   PROJECT CARD IMPROVEMENTS
+   ============================================ */
+
+/* Ensure project cards have consistent height */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.project-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-description {
+    flex: 1;
+}
+
+.project-highlights {
+    margin-top: auto;
+}
+
+/* Make project image area look clickable */
+.project-image {
+    cursor: pointer;
+    position: relative;
 }
 
 /* ============================================
