@@ -63,20 +63,50 @@ function Hero() {
     // Smooth spring for parallax
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
     const y = useTransform(smoothProgress, [0, 1], ['0%', '25%']);
-    const opacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
-    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.98]);
+    const opacity = useTransform(smoothProgress, [0, 0.6], [1, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.97]);
+    
+    // Page curl effect - the section "curls up" as you scroll
+    const rotateX = useTransform(smoothProgress, [0, 1], [0, -12]);
+    const clipPath = useTransform(
+        smoothProgress,
+        [0, 0.3, 0.6, 1],
+        [
+            'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            'polygon(0% 0%, 100% 0%, 100% 90%, 0% 95%)',
+            'polygon(0% 0%, 100% 0%, 100% 60%, 0% 75%)',
+            'polygon(0% 0%, 100% 0%, 100% 0%, 0% 15%)',
+        ]
+    );
+    
+    // Shadow that follows the curl
+    const shadowOpacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 0.25, 0.35, 0]);
 
     return (
-        <section
+        <motion.section
             id="hero"
             ref={ref}
             className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#FEFCF6] via-[#FDF8EE] to-[#F5EFE6]"
+            style={{
+                clipPath,
+                transformOrigin: 'top center',
+                perspective: 1200,
+            }}
         >
+            {/* Page curl shadow */}
+            <motion.div
+                className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+                style={{
+                    opacity: shadowOpacity,
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.3), transparent)',
+                }}
+            />
+            
             <DecorativeOrbs />
 
             {/* Content */}
             <motion.div 
-                style={{ y, opacity, scale }} 
+                style={{ y, opacity, scale, rotateX, transformStyle: 'preserve-3d' }} 
                 className="relative z-10 text-center px-4 max-w-5xl mx-auto"
             >
                 <motion.div
@@ -145,7 +175,7 @@ function Hero() {
             </motion.div>
 
             <ScrollIndicator />
-        </section>
+        </motion.section>
     );
 }
 

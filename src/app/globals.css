@@ -26,6 +26,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* Smooth momentum scrolling on iOS */
   -webkit-overflow-scrolling: touch;
+  /* Magnetic scroll snap - only on desktop */
+  @media (min-width: 1024px) {
+    scroll-snap-type: y proximity;
+  }
+}
+
+/* Snap each main section */
+#hero, #about, #experience, #projects, #skills, #education, #certificates, #contact {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  scroll-margin-top: 0;
 }
 
 /* Selection - premium emerald highlight */

@@ -13,8 +13,9 @@ export default function About() {
     });
 
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-    const opacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-    const y = useTransform(smoothProgress, [0, 0.3], [60, 0]);
+    const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+    const y = useTransform(smoothProgress, [0, 0.2], [60, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.96, 1]);
 
     // Compute dynamic stats
     const aboutStats = [
@@ -54,7 +55,7 @@ export default function About() {
                 />
             </div>
 
-            <motion.div style={{ opacity, y }} className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
+            <motion.div style={{ opacity, y, scale }} className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
                 {/* Section header */}
                 <motion.div
                     initial={{ opacity: 0, y: 25 }}

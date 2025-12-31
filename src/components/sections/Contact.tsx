@@ -19,18 +19,23 @@ export default function Contact() {
     });
 
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
-    const scale = useTransform(smoothProgress, [0, 0.3], [0.97, 1]);
-    const opacity = useTransform(smoothProgress, [0, 0.3], [0, 1]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.95, 1]);
+    const opacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
+    const y = useTransform(smoothProgress, [0, 0.2], [40, 0]);
 
     // Find location from contactInfo
     const locationInfo = contactInfo.find(c => c.type === 'location');
 
     return (
-        <section id="contact" ref={ref} className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden py-24">
+        <section 
+            id="contact" 
+            ref={ref} 
+            className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden py-24"
+        >
             <div className="absolute top-20 left-20 w-96 h-96 bg-sky-100/50 rounded-full blur-[150px]" />
             <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-100/50 rounded-full blur-[120px]" />
 
-            <motion.div style={{ scale, opacity }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <motion.div style={{ opacity, scale, y }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
                 <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

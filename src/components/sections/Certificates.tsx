@@ -52,9 +52,13 @@ export default function Certificates() {
     const x = useTransform(smoothProgress, [0, 1], ['0%', '-75%']);
 
     return (
-        <section ref={targetRef} className="relative h-[350vh]" id="certificates">
-            {/* Gradient transition from previous section */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white via-stone-50 to-amber-50/30" />
+        <section 
+            ref={targetRef} 
+            className="relative h-[300vh]" 
+            id="certificates"
+        >
+            {/* Gradient background - seamless from Education */}
+            <div className="absolute inset-0 bg-gradient-to-b from-stone-50 via-white to-stone-50" />
 
             <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
                 {/* Decorative blobs */}

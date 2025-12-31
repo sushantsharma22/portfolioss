@@ -306,16 +306,21 @@ export default function Education() {
 
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
     const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const y = useTransform(smoothProgress, [0, 0.3], [40, 0]);
+    const y = useTransform(smoothProgress, [0, 0.2], [50, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.96, 1]);
 
     const handleFlip = useCallback((id: string) => {
         setFlippedCards(prev => ({ ...prev, [id]: !prev[id] }));
     }, []);
 
     return (
-        <section id="education" ref={ref} className="relative min-h-screen py-24 overflow-hidden">
+        <section 
+            id="education" 
+            ref={ref} 
+            className="relative min-h-screen py-16 md:py-20 overflow-hidden"
+        >
             {/* Premium background with paper texture effect */}
-            <div className="absolute inset-0 bg-gradient-to-b from-stone-50 via-amber-50/20 to-white" />
+            <div className="absolute inset-0 bg-gradient-to-b from-stone-50 via-amber-50/10 to-stone-50" />
             
             {/* Decorative academic elements */}
             <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-amber-100/40 to-yellow-100/40 rounded-full blur-[150px]" />
@@ -329,7 +334,7 @@ export default function Education() {
                 }}
             />
 
-            <motion.div style={{ opacity, y }} className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
+            <motion.div style={{ opacity, y, scale }} className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
                 {/* Header with academic styling */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}

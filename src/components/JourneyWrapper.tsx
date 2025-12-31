@@ -3,6 +3,18 @@
 import { ReactNode, useMemo, memo, useCallback, useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring, useTransform, AnimatePresence, useMotionValue } from 'framer-motion';
 import { easings, springs } from '@/lib/animations';
+import dynamic from 'next/dynamic';
+import type Lenis from 'lenis';
+
+// Extend window with lenis
+declare global {
+    interface Window {
+        lenis: Lenis | null;
+    }
+}
+
+// Dynamically import ParticleTrail for better performance
+const ParticleTrail = dynamic(() => import('./ParticleTrail'), { ssr: false });
 
 interface JourneyWrapperProps {
     children: ReactNode;
@@ -152,10 +164,12 @@ const ChapterDot = memo(function ChapterDot({
     chapter,
     isActive,
     index,
+    onNavigate,
 }: { 
     chapter: ChapterType;
     isActive: boolean;
     index: number;
+    onNavigate: (fromIndex: number, toIndex: number, fromPos: { x: number; y: number }, toPos: { x: number; y: number }) => void;
 }) {
     const [isHovered, setIsHovered] = useState(false);
     const [isRippling, setIsRippling] = useState(false);
@@ -187,11 +201,46 @@ const ChapterDot = memo(function ChapterDot({
         setIsRippling(true);
         setTimeout(() => setIsRippling(false), 600);
         
+        // Get current dot position for particle trail
+        if (dotRef.current) {
+            const rect = dotRef.current.getBoundingClientRect();
+            const fromPos = { 
+                x: rect.left + rect.width / 2, 
+                y: rect.top + rect.height / 2 
+            };
+            
+            // Find target dot position
+            const targetElement = document.querySelector(`[data-chapter-index="${index}"]`);
+            const targetRect = targetElement?.getBoundingClientRect();
+            const toPos = targetRect 
+                ? { x: targetRect.left + targetRect.width / 2, y: targetRect.top + targetRect.height / 2 }
+                : fromPos;
+            
+            // Trigger particle animation (will be handled by parent)
+            const activeIndex = chapters.findIndex(c => 
+                document.getElementById(c.id)?.getBoundingClientRect().top === 0 || 
+                (document.getElementById(c.id)?.getBoundingClientRect().top || 0) < window.innerHeight / 2
+            );
+            
+            if (activeIndex !== index) {
+                onNavigate(activeIndex >= 0 ? activeIndex : 0, index, fromPos, toPos);
+            }
+        }
+        
         const element = document.getElementById(chapter.id);
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Use Lenis for faster, smoother scroll
+            if (typeof window !== 'undefined' && window.lenis) {
+                window.lenis.scrollTo(element, {
+                    duration: 0.8,
+                    offset: 0,
+                });
+            } else {
+                // Fallback to native scroll
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
-    }, [chapter.id]);
+    }, [chapter.id, index, onNavigate]);
 
     const springConfig = { stiffness: 300, damping: 25 };
     const springX = useSpring(x, springConfig);
@@ -210,6 +259,8 @@ const ChapterDot = memo(function ChapterDot({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05, duration: 0.5, ease: easings.apple }}
+            data-chapter-dot
+            data-chapter-index={index}
         >
             {/* Main dot container */}
             <motion.div 
@@ -296,6 +347,52 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
     const { scrollYProgress } = useScroll();
     const activeSection = useActiveSection();
     
+    // Particle trail state
+    const [particleState, setParticleState] = useState<{
+        startPos: { x: number; y: number } | null;
+        endPos: { x: number; y: number } | null;
+        startColor: string;
+        endColor: string;
+        trigger: number;
+    }>({
+        startPos: null,
+        endPos: null,
+        startColor: '#f59e0b',
+        endColor: '#0ea5e9',
+        trigger: 0,
+    });
+    
+    // Handle navigation with particle effect
+    const handleNavigate = useCallback((
+        fromIndex: number, 
+        toIndex: number, 
+        fromPos: { x: number; y: number }, 
+        toPos: { x: number; y: number }
+    ) => {
+        const fromChapter = chapters[fromIndex];
+        const toChapter = chapters[toIndex];
+        
+        // Calculate target dot position
+        const dotElements = document.querySelectorAll('[data-chapter-dot]');
+        const targetDot = dotElements[toIndex] as HTMLElement;
+        
+        if (targetDot) {
+            const targetRect = targetDot.getBoundingClientRect();
+            const endPos = {
+                x: targetRect.left + targetRect.width / 2,
+                y: targetRect.top + targetRect.height / 2,
+            };
+            
+            setParticleState({
+                startPos: fromPos,
+                endPos,
+                startColor: fromChapter?.color || '#f59e0b',
+                endColor: toChapter?.color || '#0ea5e9',
+                trigger: Date.now(),
+            });
+        }
+    }, []);
+    
     // Smooth spring for progress
     const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -332,12 +429,22 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
                 chapter={chapter}
                 isActive={chapter.id === activeSection}
                 index={index}
+                onNavigate={handleNavigate}
             />
         )), 
-    [activeSection]);
+    [activeSection, handleNavigate]);
 
     return (
         <div className="relative">
+            {/* Particle Trail Canvas - for journey navigation */}
+            <ParticleTrail
+                startPos={particleState.startPos}
+                endPos={particleState.endPos}
+                startColor={particleState.startColor}
+                endColor={particleState.endColor}
+                trigger={particleState.trigger}
+            />
+            
             {/* Premium Journey Navigation - Fixed Right Side */}
             <nav
                 className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-end"
@@ -360,15 +467,15 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
                     <ProgressCounter progress={displayProgress} />
                     
                     {/* Chapter dots */}
-                    <div className="relative flex flex-col items-center">
+                    <div className="relative flex flex-col items-end">
                         {chapterDots}
                         
-                        {/* Progress line (background) */}
-                        <div className="absolute top-4 bottom-4 right-[19px] w-[2px] bg-stone-200/50 -z-10 rounded-full" />
+                        {/* Progress line (background) - positioned to left of dots */}
+                        <div className="absolute top-4 bottom-4 left-0 w-[2px] bg-stone-200/50 -z-10 rounded-full" />
                         
                         {/* Progress line (active) */}
                         <motion.div
-                            className="absolute top-4 right-[19px] w-[2px] origin-top rounded-full"
+                            className="absolute top-4 left-0 w-[2px] origin-top rounded-full"
                             style={{ 
                                 scaleY: smoothProgress,
                                 background: `linear-gradient(180deg, ${chapters[0]?.color || '#f59e0b'}, ${activeColor})`,
@@ -379,7 +486,7 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
 
                         {/* Active section indicator dot on progress line */}
                         <motion.div
-                            className="absolute right-[15px] w-[10px] h-[10px] rounded-full z-20"
+                            className="absolute left-[-4px] w-[10px] h-[10px] rounded-full z-20"
                             style={{
                                 background: activeColor,
                                 boxShadow: `0 0 12px ${activeColor}`,
@@ -408,16 +515,6 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
                     </motion.div>
                 </motion.div>
             </nav>
-
-            {/* Mobile progress bar */}
-            <motion.div
-                className="fixed top-0 left-0 right-0 h-1 z-50 lg:hidden"
-                style={{
-                    background: `linear-gradient(90deg, ${chapters[0]?.color || '#f59e0b'}, ${activeColor})`,
-                    scaleX: smoothProgress,
-                    transformOrigin: 'left',
-                }}
-            />
 
             {/* Content */}
             <div className="relative">

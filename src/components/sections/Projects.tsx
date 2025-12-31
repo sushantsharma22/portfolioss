@@ -14,7 +14,8 @@ export default function Projects() {
 
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
     const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const scale = useTransform(smoothProgress, [0, 0.2], [0.97, 1]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.96, 1]);
+    const y = useTransform(smoothProgress, [0, 0.2], [50, 0]);
 
     const colorMap: Record<string, string> = {
         'ai-ml': 'from-violet-500 to-purple-600',
@@ -24,7 +25,11 @@ export default function Projects() {
     };
 
     return (
-        <section id="projects" ref={ref} className="relative min-h-screen py-24 overflow-hidden">
+        <section 
+            id="projects" 
+            ref={ref} 
+            className="relative min-h-screen py-24 overflow-hidden"
+        >
             {/* Gradient transition from previous section */}
             <div className="absolute inset-0 bg-gradient-to-b from-white via-sky-50/30 to-violet-50/20" />
 
@@ -32,7 +37,7 @@ export default function Projects() {
             <div className="absolute top-40 -left-20 w-80 h-80 bg-gradient-to-br from-violet-200/30 to-purple-200/30 rounded-full blur-[100px]" />
             <div className="absolute bottom-40 -right-20 w-96 h-96 bg-gradient-to-br from-sky-200/30 to-blue-200/30 rounded-full blur-[120px]" />
 
-            <motion.div style={{ opacity, scale }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div style={{ opacity, scale, y }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}

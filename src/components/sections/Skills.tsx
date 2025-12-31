@@ -20,11 +20,16 @@ export default function Skills() {
     });
 
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
-    const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const y = useTransform(smoothProgress, [0, 0.3], [50, 0]);
+    const opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 1]);
+    const y = useTransform(smoothProgress, [0, 0.2], [50, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.98, 1]);
 
     return (
-        <section id="skills" ref={ref} className="relative min-h-screen py-24 overflow-hidden">
+        <section 
+            id="skills" 
+            ref={ref} 
+            className="relative min-h-screen py-24 overflow-hidden"
+        >
             {/* Gradient transition from previous section */}
             <div className="absolute inset-0 bg-gradient-to-b from-white via-amber-50/20 to-teal-50/20" />
 
@@ -32,7 +37,7 @@ export default function Skills() {
             <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-[100px]" />
             <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-full blur-[120px]" />
 
-            <motion.div style={{ opacity, y }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div style={{ opacity, y, scale }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
