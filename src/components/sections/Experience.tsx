@@ -78,14 +78,6 @@ export default function Experience() {
                     ))}
                 </div>
 
-                {/* Progress bar - exactly like Certificates */}
-                <div className="absolute bottom-8 left-8 md:left-16 right-8 md:right-16 h-1 bg-stone-200/50 rounded-full overflow-hidden">
-                    <motion.div
-                        style={{ scaleX: smoothProgress }}
-                        className="h-full bg-gradient-to-r from-sky-500 to-amber-500 origin-left"
-                    />
-                </div>
-
                 {/* Counter */}
                 <div className="absolute bottom-16 right-8 md:right-16 text-stone-400 font-mono">
                     <ProgressCounter progress={smoothProgress} total={experience.length} />

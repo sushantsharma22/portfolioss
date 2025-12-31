@@ -79,15 +79,6 @@ export default function Projects() {
                     </motion.div>
                 </div>
 
-                {/* Progress bar */}
-                <div className="flex-shrink-0 px-8 md:px-16 pb-6">
-                    <div className="h-1 bg-stone-200/50 rounded-full overflow-hidden">
-                        <motion.div
-                            style={{ scaleX: smoothProgress }}
-                            className="h-full bg-gradient-to-r from-violet-500 to-sky-500 origin-left"
-                        />
-                    </div>
-                </div>
             </div>
         </section>
     );

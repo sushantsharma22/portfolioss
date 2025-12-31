@@ -31,7 +31,7 @@ export const personalInfo: PersonalInfo = {
     'Full-Stack Developer',
     'Deep Learning Expert',
   ],
-  location: 'Windsor, Ontario, Canada',
+  location: 'Toronto, Ontario, Canada',
   email: 'sharmasj53@gmail.com',
   phone: '(226) 961-5873',
   availability: 'Available Now',
@@ -661,7 +661,7 @@ export const certificateGroups: CertificateGroup[] = [
     id: 'base-camp',
     camp: 'Base Camp',
     title: 'Programming Foundations',
-    certificates: certificates.filter(c => 
+    certificates: certificates.filter(c =>
       ['java', 'javascript', 'r-programming', 'android', 'unix'].includes(c.id)
     ),
   },
@@ -669,7 +669,7 @@ export const certificateGroups: CertificateGroup[] = [
     id: 'camp-1',
     camp: 'Camp 1',
     title: 'AI/ML Core',
-    certificates: certificates.filter(c => 
+    certificates: certificates.filter(c =>
       ['ml-andrew-ng', 'deep-learning', 'ml-az'].includes(c.id)
     ),
   },
@@ -677,7 +677,7 @@ export const certificateGroups: CertificateGroup[] = [
     id: 'camp-2',
     camp: 'Camp 2',
     title: 'Advanced ML',
-    certificates: certificates.filter(c => 
+    certificates: certificates.filter(c =>
       ['unsupervised-rl', 'dsa'].includes(c.id)
     ),
   },
@@ -685,7 +685,7 @@ export const certificateGroups: CertificateGroup[] = [
     id: 'camp-3',
     camp: 'Camp 3',
     title: 'Data Engineering',
-    certificates: certificates.filter(c => 
+    certificates: certificates.filter(c =>
       ['hadoop', 'spark', 'databases'].includes(c.id)
     ),
   },
@@ -693,7 +693,7 @@ export const certificateGroups: CertificateGroup[] = [
     id: 'camp-4',
     camp: 'Camp 4',
     title: 'DevOps & Tools',
-    certificates: certificates.filter(c => 
+    certificates: certificates.filter(c =>
       ['rest-design', 'http', 'selenium', 'agile', 'bash', 'rest-apis', 'api-testing', 'oauth', 'regex'].includes(c.id)
     ),
   },
@@ -723,7 +723,7 @@ export const conference: Conference = {
 export const contactInfo: ContactInfo[] = [
   { type: 'email', icon: '📧', label: 'Email', value: 'sharmasj53@gmail.com', href: 'mailto:sharmasj53@gmail.com' },
   { type: 'phone', icon: '📱', label: 'Phone', value: '(226) 961-5873', href: 'tel:+12269615873' },
-  { type: 'location', icon: '📍', label: 'Location', value: 'Windsor, Ontario, Canada' },
+  { type: 'location', icon: '📍', label: 'Location', value: 'Toronto, Ontario, Canada' },
   { type: 'linkedin', icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/sushantsharma22', displayValue: 'Connect on LinkedIn', href: 'https://linkedin.com/in/sushantsharma22' },
 ];
 

@@ -137,13 +137,6 @@ export default function About() {
                     </div>
                 </div>
 
-                {/* Progress bar */}
-                <div className="absolute bottom-6 left-8 md:left-16 right-8 md:right-16 h-1 bg-stone-200/50 rounded-full overflow-hidden">
-                    <motion.div
-                        style={{ scaleX: smoothProgress }}
-                        className="h-full bg-gradient-to-r from-sky-500 to-violet-500 origin-left"
-                    />
-                </div>
             </div>
         </section>
     );
