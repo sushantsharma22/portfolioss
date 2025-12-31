@@ -44,9 +44,9 @@ export default function Certificates() {
             {/* STICKY CONTAINER */}
             <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
                 {/* Decorative blobs */}
-                <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-violet-100/50 to-purple-100/50 rounded-full blur-[150px]" />
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-sky-100/50 to-blue-100/50 rounded-full blur-[120px]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-full blur-[180px]" />
+                <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-violet-100/50 to-purple-100/50 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-sky-100/50 to-blue-100/50 rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-full blur-3xl" />
 
                 {/* Header */}
                 <div className="pt-12 px-8 md:px-16 z-30">
@@ -102,15 +102,15 @@ export default function Certificates() {
                                             </span>
                                         </div>
 
-                                        {/* Verified badge */}
-                                        <div className="absolute top-4 right-4 px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full flex items-center gap-1.5">
+                                        {/* Verified badge - light glassmorphism is OK on small elements */}
+                                        <div className="absolute top-4 right-4 px-2.5 py-1 bg-black/30 backdrop-blur-sm rounded-full flex items-center gap-1.5">
                                             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                                             <span className="text-white text-xs font-bold">Verified</span>
                                         </div>
 
                                         {/* Highlight badge */}
                                         {isHighlight && (
-                                            <div className="absolute top-4 left-4 px-2.5 py-1 bg-amber-400/90 backdrop-blur-sm rounded-full">
+                                            <div className="absolute top-4 left-4 px-2.5 py-1 bg-amber-500 backdrop-blur-sm rounded-full shadow-lg">
                                                 <span className="text-white text-xs font-bold">⭐ Premium</span>
                                             </div>
                                         )}

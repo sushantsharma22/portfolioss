@@ -42,9 +42,9 @@ export default function About() {
             <div className="sticky top-0 h-screen overflow-hidden flex items-center">
                 {/* Decorative background elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-20 right-10 w-80 h-80 bg-gradient-to-br from-sky-100/60 to-blue-100/60 rounded-full blur-[100px]" />
-                    <div className="absolute bottom-20 left-10 w-72 h-72 bg-gradient-to-br from-amber-100/60 to-orange-100/60 rounded-full blur-[100px]" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-violet-50/40 to-purple-50/40 rounded-full blur-[120px]" />
+                    <div className="absolute top-20 right-10 w-80 h-80 bg-gradient-to-br from-sky-100/60 to-blue-100/60 rounded-full blur-3xl" />
+                    <div className="absolute bottom-20 left-10 w-72 h-72 bg-gradient-to-br from-amber-100/60 to-orange-100/60 rounded-full blur-3xl" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-violet-50/40 to-purple-50/40 rounded-full blur-3xl" />
 
                     {/* Floating shapes */}
                     <motion.div

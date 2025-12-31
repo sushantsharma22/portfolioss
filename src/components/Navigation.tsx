@@ -85,7 +85,7 @@ export default function Navigation() {
               <div className="flex items-center justify-between h-16">
                 {/* Logo */}
                 <a href="#hero" className="text-xl font-bold text-stone-800">
-                  Sushant<span className="text-sky-500">.</span>
+                  Sushant<span className="text-sky-500"></span>
                 </a>
 
                 {/* Desktop Navigation */}

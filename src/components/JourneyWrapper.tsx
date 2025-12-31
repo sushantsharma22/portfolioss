@@ -13,8 +13,7 @@ declare global {
     }
 }
 
-// Dynamically import ParticleTrail for better performance
-const ParticleTrail = dynamic(() => import('./ParticleTrail'), { ssr: false });
+// ParticleTrail removed - was imported but never rendered
 
 interface JourneyWrapperProps {
     children: ReactNode;
@@ -344,96 +343,6 @@ const ChapterDot = memo(function ChapterDot({
 
 // Main JourneyWrapper component
 function JourneyWrapper({ children }: JourneyWrapperProps) {
-    const { scrollYProgress } = useScroll();
-    const activeSection = useActiveSection();
-
-    // Particle trail state
-    const [particleState, setParticleState] = useState<{
-        startPos: { x: number; y: number } | null;
-        endPos: { x: number; y: number } | null;
-        startColor: string;
-        endColor: string;
-        trigger: number;
-    }>({
-        startPos: null,
-        endPos: null,
-        startColor: '#f59e0b',
-        endColor: '#0ea5e9',
-        trigger: 0,
-    });
-
-    // Handle navigation with particle effect
-    const handleNavigate = useCallback((
-        fromIndex: number,
-        toIndex: number,
-        fromPos: { x: number; y: number },
-        toPos: { x: number; y: number }
-    ) => {
-        const fromChapter = chapters[fromIndex];
-        const toChapter = chapters[toIndex];
-
-        // Calculate target dot position
-        const dotElements = document.querySelectorAll('[data-chapter-dot]');
-        const targetDot = dotElements[toIndex] as HTMLElement;
-
-        if (targetDot) {
-            const targetRect = targetDot.getBoundingClientRect();
-            const endPos = {
-                x: targetRect.left + targetRect.width / 2,
-                y: targetRect.top + targetRect.height / 2,
-            };
-
-            setParticleState({
-                startPos: fromPos,
-                endPos,
-                startColor: fromChapter?.color || '#f59e0b',
-                endColor: toChapter?.color || '#0ea5e9',
-                trigger: Date.now(),
-            });
-        }
-    }, []);
-
-    // Smooth spring for progress
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001,
-    });
-
-    // Transform progress for visual indicator
-    const progressValue = useTransform(smoothProgress, [0, 1], [0, 1]);
-    const [displayProgress, setDisplayProgress] = useState(0);
-
-    useEffect(() => {
-        const unsubscribe = progressValue.on('change', (latest) => {
-            setDisplayProgress(latest);
-        });
-        return () => unsubscribe();
-    }, [progressValue]);
-
-    // Get active section index
-    const activeIndex = useMemo(() =>
-        chapters.findIndex(c => c.id === activeSection),
-        [activeSection]);
-
-    // Get active color
-    const activeColor = useMemo(() =>
-        chapters[activeIndex]?.color || chapters[0]?.color || '#f59e0b',
-        [activeIndex]);
-
-    // Memoize chapter dots
-    const chapterDots = useMemo(() =>
-        chapters.map((chapter, index) => (
-            <ChapterDot
-                key={chapter.id}
-                chapter={chapter}
-                isActive={chapter.id === activeSection}
-                index={index}
-                onNavigate={handleNavigate}
-            />
-        )),
-        [activeSection, handleNavigate]);
-
     return (
         <div className="relative">
             {/* Content */}

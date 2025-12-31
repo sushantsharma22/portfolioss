@@ -38,8 +38,8 @@ export default function Experience() {
             {/* STICKY CONTAINER - exactly like Certificates */}
             <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
                 {/* Decorative blobs */}
-                <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-sky-100/30 to-blue-100/30 rounded-full blur-[150px]" />
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/30 to-orange-100/30 rounded-full blur-[120px]" />
+                <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-sky-100/30 to-blue-100/30 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/30 to-orange-100/30 rounded-full blur-3xl" />
 
                 {/* Header */}
                 <motion.div
@@ -130,7 +130,7 @@ function ExperienceCard({
                 y: cardY,
             }}
         >
-            <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100/80">
+            <div className="bg-white/95 rounded-[2rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100/80">
                 {/* Gradient top bar */}
                 <div className={`h-1.5 bg-gradient-to-r ${colors?.color}`} />
 

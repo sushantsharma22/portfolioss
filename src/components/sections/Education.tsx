@@ -56,8 +56,8 @@ export default function Education() {
             {/* STICKY CONTAINER */}
             <div className="sticky top-0 h-screen overflow-hidden">
                 {/* Decorative blobs */}
-                <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-amber-100/40 to-yellow-100/40 rounded-full blur-[150px]" />
-                <div className="absolute bottom-20 left-10 w-80 h-80 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-[130px]" />
+                <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-amber-100/40 to-yellow-100/40 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 left-10 w-80 h-80 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-3xl" />
 
                 {/* Header - animates first */}
                 <motion.div
@@ -223,7 +223,7 @@ function EducationCard({
                 >
                     {/* Front of card */}
                     <div
-                        className="relative bg-white/95 backdrop-blur rounded-2xl overflow-hidden border border-stone-100 shadow-xl"
+                        className="relative bg-stone-50 rounded-2xl overflow-hidden border border-stone-100 shadow-xl"
                         style={{ backfaceVisibility: 'hidden' }}
                     >
                         {/* Gold accent bar */}
@@ -290,7 +290,7 @@ function EducationCard({
 
                     {/* Back of card - full coursework */}
                     <div
-                        className="absolute inset-0 bg-white/95 backdrop-blur rounded-2xl overflow-hidden border border-stone-100 shadow-xl"
+                        className="absolute inset-0 bg-stone-50 rounded-2xl overflow-hidden border border-stone-100 shadow-xl"
                         style={{
                             backfaceVisibility: 'hidden',
                             transform: 'rotateY(180deg)',

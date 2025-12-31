@@ -152,7 +152,7 @@ function ProjectCard({
                             {project.icon}
                         </span>
                         {project.featured && (
-                            <span className="absolute top-5 left-5 px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
+                            <span className="absolute top-5 left-5 px-3 py-1 bg-white/90 text-stone-800 text-xs font-bold rounded-full">
                                 ⭐ Featured
                             </span>
                         )}

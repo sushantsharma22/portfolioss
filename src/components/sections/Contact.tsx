@@ -27,13 +27,13 @@ export default function Contact() {
     const locationInfo = contactInfo.find(c => c.type === 'location');
 
     return (
-        <section 
-            id="contact" 
-            ref={ref} 
+        <section
+            id="contact"
+            ref={ref}
             className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden py-24"
         >
-            <div className="absolute top-20 left-20 w-96 h-96 bg-sky-100/50 rounded-full blur-[150px]" />
-            <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-100/50 rounded-full blur-[120px]" />
+            <div className="absolute top-20 left-20 w-96 h-96 bg-sky-100/50 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl" />
 
             <motion.div style={{ opacity, scale, y }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
                 <motion.span

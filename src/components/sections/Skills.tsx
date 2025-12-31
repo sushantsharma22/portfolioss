@@ -39,8 +39,8 @@ export default function Skills() {
             {/* STICKY CONTAINER */}
             <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
                 {/* Decorative elements */}
-                <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-[100px]" />
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-full blur-[120px]" />
+                <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-full blur-3xl" />
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
                     {/* Header - animates first */}
@@ -175,7 +175,7 @@ function SkillTag({
         <motion.span
             style={{ opacity, scale }}
             whileHover={{ scale: 1.05, boxShadow: '0 6px 15px rgba(0,0,0,0.08)' }}
-            className="px-3 py-1.5 bg-white/80 backdrop-blur-sm text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
+            className="px-3 py-1.5 bg-white/90 text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
         >
             {name}
         </motion.span>
