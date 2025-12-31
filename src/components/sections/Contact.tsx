@@ -2,14 +2,13 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { personalInfo, socialLinks, contactInfo } from '@/lib/constants';
 
-const socialLinks = [
-    { name: 'LinkedIn', url: 'https://linkedin.com/in/sushantsharma22', icon: '💼' },
-    { name: 'GitHub', url: 'https://github.com/sushantsharma22', icon: '🐙' },
-    { name: 'Email', url: 'mailto:sharmasj53@gmail.com', icon: '📧' },
-    { name: 'Phone', url: 'tel:+12269615873', icon: '📞' },
-    { name: 'Portfolio', url: 'https://sushantsharma22.github.io/Portfolio', icon: '🌐' },
-];
+const iconMap: Record<string, string> = {
+    linkedin: '💼',
+    github: '🐙',
+    email: '📧',
+};
 
 export default function Contact() {
     const ref = useRef<HTMLDivElement>(null);
@@ -20,6 +19,9 @@ export default function Contact() {
 
     const scale = useTransform(scrollYProgress, [0, 0.3], [0.95, 1]);
     const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+
+    // Find location from contactInfo
+    const locationInfo = contactInfo.find(c => c.type === 'location');
 
     return (
         <section id="contact" ref={ref} className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden py-24">
@@ -42,7 +44,7 @@ export default function Contact() {
                     viewport={{ once: true }}
                     className="text-4xl md:text-6xl lg:text-7xl font-black text-stone-800 mt-6 tracking-tight leading-[1.1]"
                 >
-                    Let's Build
+                    Let&apos;s Build
                     <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-teal-500 to-amber-500">Something Great</span>
                     <br />
@@ -59,7 +61,7 @@ export default function Contact() {
                 </motion.p>
 
                 <motion.a
-                    href="mailto:sharmasj53@gmail.com"
+                    href={`mailto:${personalInfo.email}`}
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -67,7 +69,7 @@ export default function Contact() {
                     className="inline-flex items-center gap-4 mt-12 px-8 py-5 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-lg md:text-xl font-semibold rounded-full shadow-xl"
                 >
                     <span>📧</span>
-                    <span>sharmasj53@gmail.com</span>
+                    <span>{personalInfo.email}</span>
                     <span>→</span>
                 </motion.a>
 
@@ -79,17 +81,37 @@ export default function Contact() {
                 >
                     {socialLinks.map((link) => (
                         <motion.a
-                            key={link.name}
-                            href={link.url}
-                            target={link.url.startsWith('http') ? '_blank' : undefined}
+                            key={link.platform}
+                            href={link.href}
+                            target={link.href.startsWith('http') ? '_blank' : undefined}
                             rel="noopener noreferrer"
                             whileHover={{ y: -5, scale: 1.05 }}
                             className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
                         >
-                            <span className="text-xl">{link.icon}</span>
-                            <span className="text-sm font-medium">{link.name}</span>
+                            <span className="text-xl">{iconMap[link.icon] || '🔗'}</span>
+                            <span className="text-sm font-medium">{link.platform}</span>
                         </motion.a>
                     ))}
+                    {/* Add phone link */}
+                    <motion.a
+                        href={`tel:${personalInfo.phone.replace(/[^+\d]/g, '')}`}
+                        whileHover={{ y: -5, scale: 1.05 }}
+                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
+                    >
+                        <span className="text-xl">📞</span>
+                        <span className="text-sm font-medium">Phone</span>
+                    </motion.a>
+                    {/* Add portfolio link */}
+                    <motion.a
+                        href={personalInfo.portfolio}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ y: -5, scale: 1.05 }}
+                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
+                    >
+                        <span className="text-xl">🌐</span>
+                        <span className="text-sm font-medium">Portfolio</span>
+                    </motion.a>
                 </motion.div>
 
                 <motion.div
@@ -100,11 +122,11 @@ export default function Contact() {
                 >
                     <div className="flex items-center gap-3 text-stone-500">
                         <span>📍</span>
-                        <span>Windsor, Ontario, Canada</span>
+                        <span>{locationInfo?.value || personalInfo.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-3 h-3 bg-green-400 rounded-full" />
-                        <span className="text-green-600 font-medium">Available Now</span>
+                        <span className="text-green-600 font-medium">{personalInfo.availability}</span>
                     </div>
                 </motion.div>
             </motion.div>

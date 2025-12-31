@@ -2,37 +2,14 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { skillCategories, stats } from '@/lib/constants';
 
-const skillGroups = [
-    {
-        name: 'Programming Languages',
-        icon: '💻',
-        color: 'from-sky-400 to-blue-500',
-        bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50',
-        skills: ['Python', 'Java', 'C++', 'C', 'JavaScript', 'TypeScript', 'SQL', 'R', 'Bash'],
-    },
-    {
-        name: 'AI & Machine Learning',
-        icon: '🧠',
-        color: 'from-violet-400 to-purple-500',
-        bgColor: 'bg-gradient-to-br from-violet-50 to-purple-50',
-        skills: ['LLMs', 'Transformers', 'NLP', 'Reinforcement Learning', 'Deep Learning', 'Computer Vision', 'RAG', 'Fine-tuning'],
-    },
-    {
-        name: 'Frameworks & Libraries',
-        icon: '⚡',
-        color: 'from-amber-400 to-orange-500',
-        bgColor: 'bg-gradient-to-br from-amber-50 to-orange-50',
-        skills: ['PyTorch', 'TensorFlow', 'HuggingFace', 'Scikit-learn', 'Pandas', 'NumPy', 'LangChain', 'FastAPI', 'React', 'Next.js'],
-    },
-    {
-        name: 'Tools & Platforms',
-        icon: '🛠️',
-        color: 'from-teal-400 to-emerald-500',
-        bgColor: 'bg-gradient-to-br from-teal-50 to-emerald-50',
-        skills: ['Git', 'Docker', 'Kubernetes', 'AWS', 'GCP', 'Linux', 'Jupyter', 'VS Code', 'MongoDB', 'PostgreSQL'],
-    },
-];
+const colorMap: Record<string, { color: string; bgColor: string }> = {
+    'languages': { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' },
+    'ai-ml': { color: 'from-violet-400 to-purple-500', bgColor: 'bg-gradient-to-br from-violet-50 to-purple-50' },
+    'frameworks': { color: 'from-amber-400 to-orange-500', bgColor: 'bg-gradient-to-br from-amber-50 to-orange-50' },
+    'tools': { color: 'from-teal-400 to-emerald-500', bgColor: 'bg-gradient-to-br from-teal-50 to-emerald-50' },
+};
 
 export default function Skills() {
     const ref = useRef<HTMLDivElement>(null);
@@ -70,33 +47,36 @@ export default function Skills() {
 
                 {/* Grid */}
                 <div className="grid md:grid-cols-2 gap-8">
-                    {skillGroups.map((group, i) => (
-                        <motion.div
-                            key={group.name}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: '-30px' }}
-                            transition={{ delay: i * 0.1, duration: 0.6 }}
-                            whileHover={{ y: -5 }}
-                            className={`${group.bgColor} rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50`}
-                        >
-                            <div className="flex items-center gap-4 mb-6">
-                                <span className="text-4xl">{group.icon}</span>
-                                <h3 className={`text-xl font-bold bg-gradient-to-r ${group.color} bg-clip-text text-transparent`}>{group.name}</h3>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {group.skills.map((skill) => (
-                                    <motion.span
-                                        key={skill}
-                                        whileHover={{ scale: 1.05 }}
-                                        className="px-4 py-2 bg-white/80 backdrop-blur-sm text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white hover:shadow-md transition-all duration-300 cursor-default"
-                                    >
-                                        {skill}
-                                    </motion.span>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
+                    {skillCategories.map((group, i) => {
+                        const colors = colorMap[group.id] || { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
+                        return (
+                            <motion.div
+                                key={group.id}
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-30px' }}
+                                transition={{ delay: i * 0.1, duration: 0.6 }}
+                                whileHover={{ y: -5 }}
+                                className={`${colors.bgColor} rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50`}
+                            >
+                                <div className="flex items-center gap-4 mb-6">
+                                    <span className="text-4xl">{group.icon}</span>
+                                    <h3 className={`text-xl font-bold bg-gradient-to-r ${colors.color} bg-clip-text text-transparent`}>{group.title}</h3>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {group.skills.map((skill) => (
+                                        <motion.span
+                                            key={skill.name}
+                                            whileHover={{ scale: 1.05 }}
+                                            className="px-4 py-2 bg-white/80 backdrop-blur-sm text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white hover:shadow-md transition-all duration-300 cursor-default"
+                                        >
+                                            {skill.name}
+                                        </motion.span>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
 
                 {/* Stats */}
@@ -110,7 +90,7 @@ export default function Skills() {
                     {[
                         { label: 'Technologies', value: '40+', color: 'from-sky-500 to-blue-500' },
                         { label: 'Years Coding', value: '6+', color: 'from-violet-500 to-purple-500' },
-                        { label: 'Projects Built', value: '50+', color: 'from-amber-500 to-orange-500' },
+                        { label: 'Projects Built', value: `${stats[0]?.value || 50}+`, color: 'from-amber-500 to-orange-500' },
                     ].map((stat) => (
                         <div key={stat.label} className="text-center">
                             <div className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>

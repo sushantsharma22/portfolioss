@@ -2,59 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-
-const projects = [
-    {
-        title: 'Image Caption Generator',
-        description: 'Deep learning model using CNN-LSTM architecture for automated image captioning with attention mechanisms.',
-        tech: ['Python', 'PyTorch', 'CNN', 'LSTM', 'NLP'],
-        github: 'https://github.com/sushantsharma22/Image-Caption-Generator',
-        featured: true,
-        color: 'from-violet-500 to-purple-600',
-        icon: '🖼️',
-    },
-    {
-        title: 'Aurora Alert System',
-        description: 'Real-time aurora borealis notification system with weather API integration and SMS alerts.',
-        tech: ['Python', 'APIs', 'Automation', 'Twilio'],
-        github: 'https://github.com/sushantsharma22/Aurora-Alert-System',
-        color: 'from-emerald-500 to-teal-600',
-        icon: '🌌',
-    },
-    {
-        title: 'Flight Fare Prediction',
-        description: 'ML model predicting flight prices using Random Forest with 85%+ accuracy.',
-        tech: ['Python', 'Scikit-learn', 'Random Forest', 'Flask'],
-        github: 'https://github.com/sushantsharma22/Flight-Fare-Prediction',
-        featured: true,
-        color: 'from-sky-500 to-blue-600',
-        icon: '✈️',
-    },
-    {
-        title: 'Facial Recognition System',
-        description: 'Real-time face detection and recognition using OpenCV and deep learning models.',
-        tech: ['Python', 'OpenCV', 'Deep Learning', 'Computer Vision'],
-        github: 'https://github.com/sushantsharma22/Facial-Recognition-System',
-        color: 'from-amber-500 to-orange-600',
-        icon: '👤',
-    },
-    {
-        title: 'Portfolio Website',
-        description: 'Modern portfolio with smooth animations, scroll effects, and responsive design.',
-        tech: ['Next.js', 'React', 'Framer Motion', 'Tailwind'],
-        github: 'https://github.com/sushantsharma22/Portfolio',
-        color: 'from-rose-500 to-pink-600',
-        icon: '🌐',
-    },
-    {
-        title: 'SS Engineering Website',
-        description: 'Business website for industrial engineering company with modern UI/UX.',
-        tech: ['React', 'Node.js', 'CSS', 'Responsive'],
-        github: 'https://github.com/sushantsharma22/SS-Engineering-Website',
-        color: 'from-indigo-500 to-blue-600',
-        icon: '🏭',
-    },
-];
+import { projects } from '@/lib/constants';
 
 export default function Projects() {
     const ref = useRef<HTMLDivElement>(null);
@@ -65,6 +13,13 @@ export default function Projects() {
 
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
     const scale = useTransform(scrollYProgress, [0, 0.2], [0.95, 1]);
+
+    const colorMap: Record<string, string> = {
+        'ai-ml': 'from-violet-500 to-purple-600',
+        'data': 'from-emerald-500 to-teal-600',
+        'web': 'from-sky-500 to-blue-600',
+        'mobile': 'from-amber-500 to-orange-600',
+    };
 
     return (
         <section id="projects" ref={ref} className="relative min-h-screen py-24 overflow-hidden">
@@ -88,14 +43,14 @@ export default function Projects() {
                     <h2 className="text-5xl md:text-7xl font-black text-stone-800 mt-4 tracking-tight">
                         Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-sky-500 to-amber-500">Projects</span>
                     </h2>
-                    <p className="text-stone-500 mt-4 max-w-lg mx-auto">Passion projects and professional work</p>
+                    <p className="text-stone-500 mt-4 max-w-lg mx-auto">Innovative solutions showcasing expertise in AI and full-stack development</p>
                 </motion.div>
 
                 {/* Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project, i) => (
                         <motion.a
-                            key={project.title}
+                            key={project.id}
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -104,11 +59,10 @@ export default function Projects() {
                             viewport={{ once: true, margin: '-50px' }}
                             transition={{ delay: i * 0.08, duration: 0.6 }}
                             whileHover={{ y: -8 }}
-                            className={`group relative bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-lg hover:shadow-2xl transition-all duration-500 ${project.featured ? 'ring-2 ring-amber-200/50' : ''
-                                }`}
+                            className={`group relative bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-lg hover:shadow-2xl transition-all duration-500 ${project.featured ? 'ring-2 ring-amber-200/50' : ''}`}
                         >
                             {/* Gradient header */}
-                            <div className={`h-24 md:h-28 bg-gradient-to-br ${project.color} relative overflow-hidden`}>
+                            <div className={`h-24 md:h-28 bg-gradient-to-br ${colorMap[project.category] || 'from-stone-500 to-stone-600'} relative overflow-hidden`}>
                                 <div className="absolute inset-0 bg-black/10" />
                                 <span className="absolute top-4 right-4 text-4xl md:text-5xl opacity-80">{project.icon}</span>
                                 {project.featured && (
@@ -124,7 +78,7 @@ export default function Projects() {
                                 </h3>
                                 <p className="text-stone-500 text-sm mb-4 leading-relaxed">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
-                                    {project.tech.map((t) => (
+                                    {project.techStack.map((t) => (
                                         <span key={t} className="px-2.5 py-1 bg-stone-50 text-stone-600 text-xs font-medium rounded-full border border-stone-100">
                                             {t}
                                         </span>
@@ -134,6 +88,25 @@ export default function Projects() {
                         </motion.a>
                     ))}
                 </div>
+
+                {/* CTA */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 }}
+                    className="text-center mt-12"
+                >
+                    <a
+                        href="https://github.com/sushantsharma22"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white font-semibold rounded-full hover:bg-stone-800 transition-colors"
+                    >
+                        <span>View All on GitHub</span>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    </a>
+                </motion.div>
             </motion.div>
 
             {/* Bottom transition gradient */}

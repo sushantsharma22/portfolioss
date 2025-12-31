@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { about, stats, certificates } from '@/lib/constants';
 
 export default function About() {
     const ref = useRef<HTMLDivElement>(null);
@@ -12,6 +13,14 @@ export default function About() {
 
     const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
     const y = useTransform(scrollYProgress, [0, 0.3], [80, 0]);
+
+    // Compute dynamic stats
+    const aboutStats = [
+        { value: '6+', label: 'Years of Coding', color: 'from-sky-400 to-blue-500', icon: '💻' },
+        { value: `${stats[2]?.value || 50}+`, label: 'Hackathons Led', color: 'from-violet-400 to-purple-500', icon: '🚀' },
+        { value: `${stats[0]?.value || 17}+`, label: 'GitHub Projects', color: 'from-amber-400 to-orange-500', icon: '📦' },
+        { value: `${certificates.length}+`, label: 'Certifications', color: 'from-teal-400 to-emerald-500', icon: '🏆' },
+    ];
 
     return (
         <section
@@ -115,12 +124,7 @@ export default function About() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="grid grid-cols-2 gap-4"
                     >
-                        {[
-                            { value: '6+', label: 'Years of Coding', color: 'from-sky-400 to-blue-500', icon: '💻' },
-                            { value: '50+', label: 'Hackathons Led', color: 'from-violet-400 to-purple-500', icon: '🚀' },
-                            { value: '8+', label: 'GitHub Projects', color: 'from-amber-400 to-orange-500', icon: '📦' },
-                            { value: '20+', label: 'Certifications', color: 'from-teal-400 to-emerald-500', icon: '🏆' },
-                        ].map((stat, i) => (
+                        {aboutStats.map((stat, i) => (
                             <motion.div
                                 key={stat.label}
                                 initial={{ opacity: 0, y: 30 }}

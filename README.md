@@ -1,110 +1,36 @@
-# Portfolio Website
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This is Sushant Sharma's professional portfolio website showcasing AI research engineering and full stack development skills.
+## Getting Started
 
-## Features
-
-- **Modern Design**: Sky blue gradient theme with dark background
-- **Responsive**: Mobile-first responsive design
-- **Interactive**: Smooth animations, typing effects, and hover states
-- **Accessibility**: Proper ARIA labels and keyboard navigation
-- **Performance**: Optimized loading and smooth transitions
-
-## 📁 File Structure
-
-```
-portfoliomain/
-├── index.html          # Main HTML file
-├── main.js             # JavaScript functionality
-├── style.css           # CSS styles (fixed)
-├── assets/             # Assets directory
-│   └── resume.txt      # Resume placeholder
-└── README.md           # This file
-```
-
-## 🔧 How to Run
-
-### Option 1: Local Web Server (Recommended)
-```bash
-cd portfoliomain
-python3 -m http.server 8000
-```
-Then open http://localhost:8000
-
-### Option 2: Direct File Access
-Open `index.html` directly in a web browser, though some features may not work due to CORS restrictions.
-
-## Customization
-
-### Colors
-The website uses CSS custom properties (variables) for easy theming:
-- `--sky-blue-1`: #87CEEB (Light sky blue)
-- `--sky-blue-2`: #4A90E2 (Medium sky blue)
-- `--sky-blue-3`: #2E86AB (Dark sky blue)
-- Primary background: #0a0a0a (Very dark)
-
-### Content
-All content is in the HTML file and can be easily updated:
-- Personal information in the hero section
-- Project details in the projects section
-- Experience and education information
-
-## Browser Support
-
--  Chrome/Chromium (recommended)
--  Firefox
--  Safari
--  Edge
--  Internet Explorer (limited support)
-
-## Technologies Used
-
-- **HTML5**: Semantic markup and accessibility
-- **CSS3**: Modern styling with variables, grid, flexbox
-- **JavaScript**: Vanilla JS for interactivity
-- **Font Awesome**: Icons
-- **Google Fonts**: Inter and JetBrains Mono fonts
-
-## Resume
-
-The website includes download links for the resume. Currently points to `assets/myresume.pdf` . Replace this with an actual PDF resume:
+First, run the development server:
 
 ```bash
-# Replace the placeholder with actual resume
-cp your-resume.pdf assets/resume.pdf
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## SEO & Meta Tags
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The website includes comprehensive meta tags for:
-- Social media sharing (Open Graph, Twitter)
-- Search engine optimization
-- Structured data (JSON-LD)
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## Deployment
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-The website is ready for deployment to any static hosting service:
-- GitHub Pages
-- Netlify
-- Vercel
-- AWS S3
-- Any web server
+## Learn More
 
-## Tips
+To learn more about Next.js, take a look at the following resources:
 
-1. **Performance**: The website loads quickly with optimized assets
-2. **Mobile**: Fully responsive design works on all screen sizes
-3. **Accessibility**: Screen reader friendly with proper ARIA labels
-4. **Animations**: Smooth animations enhance user experience
-5. **Code**: Clean, maintainable code structure
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 📞 Contact
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- **Email**: sharmasj53@gmail.com
-- **LinkedIn**: https://linkedin.com/in/sushantsharma22
-- **GitHub**: https://github.com/sushantsharma22
-- **Phone**: (226) 961-5873
+## Deploy on Vercel
 
----
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-**Status**: Website is now fully functional and ready to use!
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

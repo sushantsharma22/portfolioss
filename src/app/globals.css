@@ -264,6 +264,32 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   PERFORMANCE OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* GPU-accelerated transforms */
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Contain layout for better rendering */
+section {
+  contain: layout style paint;
+}
+
+/* Optimize will-change for animated elements */
+[data-animated="true"] {
+  will-change: transform, opacity;
+}
+
+/* Reduce paint on fixed elements */
+.fixed {
+  transform: translateZ(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
    REDUCED MOTION
    ═══════════════════════════════════════════════════════════════ */
 
@@ -273,5 +299,9 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  .float, .float-delayed, .shimmer::after {
+    animation: none !important;
   }
 }
