@@ -43,7 +43,7 @@ const ScrollIndicator = memo(function ScrollIndicator() {
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                 className="w-5 h-8 border-2 border-stone-300 rounded-full flex justify-center pt-1"
             >
-                <motion.div 
+                <motion.div
                     className="w-1 h-2 bg-stone-400 rounded-full"
                     animate={{ opacity: [1, 0.4, 1] }}
                     transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -62,51 +62,21 @@ function Hero() {
 
     // Smooth spring for parallax
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-    const y = useTransform(smoothProgress, [0, 1], ['0%', '25%']);
-    const opacity = useTransform(smoothProgress, [0, 0.6], [1, 0]);
-    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.97]);
-    
-    // Page curl effect - the section "curls up" as you scroll
-    const rotateX = useTransform(smoothProgress, [0, 1], [0, -12]);
-    const clipPath = useTransform(
-        smoothProgress,
-        [0, 0.3, 0.6, 1],
-        [
-            'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-            'polygon(0% 0%, 100% 0%, 100% 90%, 0% 95%)',
-            'polygon(0% 0%, 100% 0%, 100% 60%, 0% 75%)',
-            'polygon(0% 0%, 100% 0%, 100% 0%, 0% 15%)',
-        ]
-    );
-    
-    // Shadow that follows the curl
-    const shadowOpacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 0.25, 0.35, 0]);
+    const y = useTransform(smoothProgress, [0, 1], ['0%', '30%']);
+    const opacity = useTransform(smoothProgress, [0, 0.8], [1, 0]);
+    const scale = useTransform(smoothProgress, [0, 1], [1, 0.95]);
 
     return (
-        <motion.section
+        <section
             id="hero"
             ref={ref}
             className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#FEFCF6] via-[#FDF8EE] to-[#F5EFE6]"
-            style={{
-                clipPath,
-                transformOrigin: 'top center',
-                perspective: 1200,
-            }}
         >
-            {/* Page curl shadow */}
-            <motion.div
-                className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-                style={{
-                    opacity: shadowOpacity,
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.3), transparent)',
-                }}
-            />
-            
             <DecorativeOrbs />
 
             {/* Content */}
-            <motion.div 
-                style={{ y, opacity, scale, rotateX, transformStyle: 'preserve-3d' }} 
+            <motion.div
+                style={{ y, opacity, scale }}
                 className="relative z-10 text-center px-4 max-w-5xl mx-auto"
             >
                 <motion.div
@@ -128,7 +98,7 @@ function Hero() {
                 >
                     {personalInfo.firstName.toUpperCase()}
                     <br />
-                    <motion.span 
+                    <motion.span
                         className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-teal-400 to-amber-500"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -175,7 +145,7 @@ function Hero() {
             </motion.div>
 
             <ScrollIndicator />
-        </motion.section>
+        </section>
     );
 }
 
