@@ -1,38 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sushant Sharma - AI Research Engineer & Full-Stack Developer</title>
-    <meta name="description" content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems. Available for full-time opportunities starting September 2025.">
-    <meta name="keywords" content="AI Research Engineer, Machine Learning, Deep Learning, Full Stack Developer, Python, PyTorch, TensorFlow">
+    <meta name="description"
+        content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems. Available for full-time opportunities starting September 2025.">
+    <meta name="keywords"
+        content="AI Research Engineer, Machine Learning, Deep Learning, Full Stack Developer, Python, PyTorch, TensorFlow">
     <meta name="author" content="Sushant Sharma">
-    
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Sushant Sharma - AI Research Engineer">
-    <meta property="og:description" content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems">
+    <meta property="og:description"
+        content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sushantsharma22.github.io/Portfolio">
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sushant Sharma - AI Research Engineer">
-    <meta name="twitter:description" content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems">
-    
+    <meta name="twitter:description"
+        content="AI Research Engineer specializing in Machine Learning, Deep Learning, and Distributed Systems">
+
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <!-- CSS Files -->
     <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="cinematic-styles.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -54,6 +68,7 @@
     }
     </script>
 </head>
+
 <body>
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
@@ -99,7 +114,7 @@
                     <div class="logo-subtitle">Portfolio</div>
                 </a>
             </div>
-            
+
             <ul class="nav-menu" id="nav-menu">
                 <li class="nav-item">
                     <a href="#home" class="nav-link" data-text="Home">
@@ -150,7 +165,7 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="nav-actions">
                 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
                     <i class="fas fa-moon"></i>
@@ -161,12 +176,43 @@
                     <span>Resume</span>
                 </a>
             </div>
-            
+
             <div class="hamburger" id="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </div>
+        </div>
+    </nav>
+
+    <!-- Chapter Navigation (Fixed Right Side) -->
+    <nav class="chapter-nav" aria-label="Section navigation">
+        <div class="chapter-nav-inner">
+            <div class="chapter-progress-line"></div>
+            <a href="#home" class="chapter-dot active" data-section="home" title="Home">
+                <span class="chapter-label">Home</span>
+            </a>
+            <a href="#about" class="chapter-dot" data-section="about" title="About">
+                <span class="chapter-label">About</span>
+            </a>
+            <a href="#experience" class="chapter-dot" data-section="experience" title="Experience">
+                <span class="chapter-label">Experience</span>
+            </a>
+            <a href="#projects" class="chapter-dot" data-section="projects" title="Projects">
+                <span class="chapter-label">Projects</span>
+            </a>
+            <a href="#skills" class="chapter-dot" data-section="skills" title="Skills">
+                <span class="chapter-label">Skills</span>
+            </a>
+            <a href="#education" class="chapter-dot" data-section="education" title="Education">
+                <span class="chapter-label">Education</span>
+            </a>
+            <a href="#certificates" class="chapter-dot" data-section="certificates" title="Certificates">
+                <span class="chapter-label">Certificates</span>
+            </a>
+            <a href="#contact" class="chapter-dot" data-section="contact" title="Contact">
+                <span class="chapter-label">Contact</span>
+            </a>
         </div>
     </nav>
 
@@ -176,7 +222,7 @@
             <div class="hero-particles" id="particles"></div>
             <div class="hero-gradient"></div>
         </div>
-        
+
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-intro">
@@ -186,28 +232,28 @@
                         <span class="name-part" data-text="Sharma">Sharma</span>
                     </h1>
                 </div>
-                
+
                 <div class="hero-titles">
                     <h2 class="hero-title">
                         <span class="typing-text" id="typing-text"></span>
                         <span class="cursor-blink">|</span>
                     </h2>
                 </div>
-                
+
                 <div class="hero-description">
                     <p class="hero-subtitle">
-                        Specializing in 
+                        Specializing in
                         <span class="highlight">Machine Learning</span>,
                         <span class="highlight">Deep Learning</span>, and
                         <span class="highlight">Distributed Systems</span>
                     </p>
                     <p class="hero-details">
-                        Recently completed Master's in Applied Computing at University of Windsor, 
-                        with focus on Artificial Intelligence and Finance. Experienced in collaborating 
+                        Recently completed Master's in Applied Computing at University of Windsor,
+                        with focus on Artificial Intelligence and Finance. Experienced in collaborating
                         with industry leaders like <strong>JLR North America</strong> and <strong>TD Bank</strong>.
                     </p>
                 </div>
-                
+
                 <div class="hero-stats">
                     <div class="stat-item">
                         <div class="stat-number" data-count="17">0</div>
@@ -226,7 +272,7 @@
                         <div class="stat-label">Participants Engaged</div>
                     </div>
                 </div>
-                
+
                 <div class="hero-location">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>Windsor, Ontario, Canada</span>
@@ -235,7 +281,7 @@
                         Available Now
                     </div>
                 </div>
-                
+
                 <div class="hero-buttons">
                     <a href="#projects" class="btn btn-primary">
                         <span>View Portfolio</span>
@@ -250,12 +296,14 @@
                         <i class="fas fa-paper-plane"></i>
                     </a>
                 </div>
-                
+
                 <div class="hero-social">
-                    <a href="https://linkedin.com/in/sushantsharma22" target="_blank" class="social-link" aria-label="LinkedIn">
+                    <a href="https://linkedin.com/in/sushantsharma22" target="_blank" class="social-link"
+                        aria-label="LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="https://github.com/sushantsharma22" target="_blank" class="social-link" aria-label="GitHub">
+                    <a href="https://github.com/sushantsharma22" target="_blank" class="social-link"
+                        aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
                     <a href="mailto:sharmasj53@gmail.com" class="social-link" aria-label="Email">
@@ -264,12 +312,13 @@
                     <a href="tel:+12269615873" class="social-link" aria-label="Phone">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://sushantsharma22.github.io/Portfolio" target="_blank" class="social-link" aria-label="Portfolio">
+                    <a href="https://sushantsharma22.github.io/Portfolio" target="_blank" class="social-link"
+                        aria-label="Portfolio">
                         <i class="fas fa-globe"></i>
                     </a>
                 </div>
             </div>
-            
+
             <div class="hero-visual">
                 <div class="hero-card main-card">
                     <div class="card-header">
@@ -283,11 +332,11 @@
                     <div class="card-content">
                         <div class="code-block">
                             <div class="code-line">
-                                <span class="code-keyword">class</span> 
+                                <span class="code-keyword">class</span>
                                 <span class="code-class">AIEngineer</span>:
                             </div>
                             <div class="code-line">
-                                <span class="code-indent">def</span> 
+                                <span class="code-indent">def</span>
                                 <span class="code-function">__init__</span>(self):
                             </div>
                             <div class="code-line">
@@ -313,7 +362,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="hero-card floating-card-1">
                     <div class="mini-card">
                         <h4>Current Focus</h4>
@@ -323,7 +372,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="hero-card floating-card-2">
                     <div class="mini-card">
                         <h4>Expertise</h4>
@@ -336,7 +385,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="scroll-indicator">
             <div class="scroll-text">Scroll to explore</div>
             <div class="scroll-arrow">
@@ -353,42 +402,43 @@
                 <h2 class="section-title">About Me</h2>
                 <div class="section-subtitle">Getting to know the person behind the code</div>
             </div>
-            
+
             <div class="about-content">
                 <div class="about-text">
                     <div class="about-intro">
-                        <h3 class="about-heading">Hello! I'm Sushant, an AI Research Engineer passionate about creating intelligent solutions.</h3>
+                        <h3 class="about-heading">Hello! I'm Sushant, an AI Research Engineer passionate about creating
+                            intelligent solutions.</h3>
                         <p class="about-description highlight-text">
-                            Recently completed Master of Applied Computing at University of Windsor, 
-                            specializing in <strong>Artificial Intelligence and Finance</strong>. 
+                            Recently completed Master of Applied Computing at University of Windsor,
+                            specializing in <strong>Artificial Intelligence and Finance</strong>.
                             Available for full-time opportunities.
                         </p>
                     </div>
-                    
+
                     <div class="about-details">
                         <p class="about-paragraph">
-                            My journey in AI and machine learning has been driven by a fascination with 
-                            creating systems that can learn, adapt, and make intelligent decisions. 
-                            I specialize in developing <strong>AI-driven solutions</strong>, 
+                            My journey in AI and machine learning has been driven by a fascination with
+                            creating systems that can learn, adapt, and make intelligent decisions.
+                            I specialize in developing <strong>AI-driven solutions</strong>,
                             <strong>predictive analytics</strong>, and <strong>scalable distributed systems</strong>.
                         </p>
-                        
+
                         <p class="about-paragraph">
-                            Throughout my career, I've had the privilege of collaborating with industry 
-                            leaders like <strong>JLR North America</strong> and <strong>TD Bank</strong>, 
-                            working on cutting-edge automotive AI research and financial ML systems. 
-                            My experience spans from developing self-improving language models to 
+                            Throughout my career, I've had the privilege of collaborating with industry
+                            leaders like <strong>JLR North America</strong> and <strong>TD Bank</strong>,
+                            working on cutting-edge automotive AI research and financial ML systems.
+                            My experience spans from developing self-improving language models to
                             implementing real-time IoT analytics pipelines.
                         </p>
-                        
+
                         <p class="about-paragraph">
-                            When I'm not coding, you'll find me exploring the latest research papers, 
-                            contributing to open-source projects, or coordinating tech events. 
-                            I've organized <strong>50+ AI & coding hackathons</strong>, engaging over 
+                            When I'm not coding, you'll find me exploring the latest research papers,
+                            contributing to open-source projects, or coordinating tech events.
+                            I've organized <strong>50+ AI & coding hackathons</strong>, engaging over
                             <strong>200+ participants</strong> and fostering innovation in the tech community.
                         </p>
                     </div>
-                    
+
                     <div class="about-highlights">
                         <div class="highlight-item">
                             <i class="fas fa-rocket"></i>
@@ -413,7 +463,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="about-visual">
                     <div class="about-image-container">
                         <div class="about-image">
@@ -442,7 +492,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon">
@@ -454,7 +504,7 @@
                                 <div class="stat-description">End-to-end ML/AI solutions</div>
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-calendar"></i>
@@ -465,7 +515,7 @@
                                 <div class="stat-description">In AI/ML development</div>
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-trophy"></i>
@@ -476,7 +526,7 @@
                                 <div class="stat-description">AI & coding hackathons</div>
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-users"></i>
@@ -501,7 +551,7 @@
                 <h2 class="section-title">Professional Experience</h2>
                 <div class="section-subtitle">My journey through the world of AI and technology</div>
             </div>
-            
+
             <div class="experience-timeline">
                 <!-- JLR North America -->
                 <div class="timeline-item">
@@ -530,29 +580,36 @@
                             </div>
                             <div class="job-description">
                                 <p class="job-summary">
-                                    Leading cutting-edge AI research initiatives for a global automotive leader, 
+                                    Leading cutting-edge AI research initiatives for a global automotive leader,
                                     advancing innovative solutions through state-of-the-art AI technologies.
                                 </p>
                                 <ul class="achievements-list">
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Drove impactful research initiatives for a global automotive leader, advancing innovative solutions through cutting edge AI technologies</span>
+                                        <span>Drove impactful research initiatives for a global automotive leader,
+                                            advancing innovative solutions through cutting edge AI technologies</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Designed and executed sophisticated experiments with advanced computational tools to analyze complex datasets, delivering high precision results</span>
+                                        <span>Designed and executed sophisticated experiments with advanced
+                                            computational tools to analyze complex datasets, delivering high precision
+                                            results</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Developed streamlined workflows to process and evaluate data, ensuring alignment with stringent project standards and timelines</span>
+                                        <span>Developed streamlined workflows to process and evaluate data, ensuring
+                                            alignment with stringent project standards and timelines</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Collaborated with cross functional teams, including academic partners from the University, maintaining strict confidentiality and IP protocols</span>
+                                        <span>Collaborated with cross functional teams, including academic partners from
+                                            the University, maintaining strict confidentiality and IP protocols</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Leveraged expertise in artificial intelligence, machine learning, data analysis, and software development for transformative automotive research outcomes</span>
+                                        <span>Leveraged expertise in artificial intelligence, machine learning, data
+                                            analysis, and software development for transformative automotive research
+                                            outcomes</span>
                                     </li>
                                 </ul>
                                 <div class="tech-stack">
@@ -567,7 +624,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- University of Windsor -->
                 <div class="timeline-item">
                     <div class="timeline-marker">
@@ -595,25 +652,29 @@
                             </div>
                             <div class="job-description">
                                 <p class="job-summary">
-                                    Collaborated directly with TD Bank as project client, developing ML systems 
+                                    Collaborated directly with TD Bank as project client, developing ML systems
                                     for credit-lending decision predictions with focus on production readiness.
                                 </p>
                                 <ul class="achievements-list">
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Collaborated directly with TD Bank as project client, holding regular meetings to align system requirements and progress</span>
+                                        <span>Collaborated directly with TD Bank as project client, holding regular
+                                            meetings to align system requirements and progress</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Independently designed and implemented the full backend system, managing data pipelines and infrastructure</span>
+                                        <span>Independently designed and implemented the full backend system, managing
+                                            data pipelines and infrastructure</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Developed machine learning modules focused on credit-lending decision predictions, optimizing for model integrity and production readiness</span>
+                                        <span>Developed machine learning modules focused on credit-lending decision
+                                            predictions, optimizing for model integrity and production readiness</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Contributed to rigorous model validation, testing workflows, and system documentation to ensure deployment quality</span>
+                                        <span>Contributed to rigorous model validation, testing workflows, and system
+                                            documentation to ensure deployment quality</span>
                                     </li>
                                 </ul>
                                 <div class="tech-stack">
@@ -629,7 +690,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- S.S. Engineering Works - ML Engineer -->
                 <div class="timeline-item">
                     <div class="timeline-marker">
@@ -657,21 +718,25 @@
                             </div>
                             <div class="job-description">
                                 <p class="job-summary">
-                                    Developed AI-based predictive analytics and deep learning models for 
-                                    industrial operations, achieving significant cost reductions and efficiency improvements.
+                                    Developed AI-based predictive analytics and deep learning models for
+                                    industrial operations, achieving significant cost reductions and efficiency
+                                    improvements.
                                 </p>
                                 <ul class="achievements-list">
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Developed AI-based predictive analytics, <strong>reducing inventory costs by 15%</strong> and improving financial decision-making</span>
+                                        <span>Developed AI-based predictive analytics, <strong>reducing inventory costs
+                                                by 15%</strong> and improving financial decision-making</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Implemented fine-tuned deep learning models using PyTorch & TensorFlow for anomaly detection in industrial operations</span>
+                                        <span>Implemented fine-tuned deep learning models using PyTorch & TensorFlow for
+                                            anomaly detection in industrial operations</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Automated data pipelines and reporting using Python, Pandas, and SQL, <strong>improving efficiency by 20%</strong></span>
+                                        <span>Automated data pipelines and reporting using Python, Pandas, and SQL,
+                                            <strong>improving efficiency by 20%</strong></span>
                                     </li>
                                 </ul>
                                 <div class="tech-stack">
@@ -687,7 +752,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- S.S. Engineering Works - Data Science Intern -->
                 <div class="timeline-item">
                     <div class="timeline-marker">
@@ -715,17 +780,19 @@
                             </div>
                             <div class="job-description">
                                 <p class="job-summary">
-                                    Built custom data processing solutions and automated workflows for 
+                                    Built custom data processing solutions and automated workflows for
                                     enterprise-scale operations, focusing on performance optimization.
                                 </p>
                                 <ul class="achievements-list">
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Built custom data loaders to optimize performance and reduce processing time for enterprise-scale workloads</span>
+                                        <span>Built custom data loaders to optimize performance and reduce processing
+                                            time for enterprise-scale workloads</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Automated and documented feed generation pipelines, streamlining team operations and supporting process improvement</span>
+                                        <span>Automated and documented feed generation pipelines, streamlining team
+                                            operations and supporting process improvement</span>
                                     </li>
                                 </ul>
                                 <div class="tech-stack">
@@ -738,7 +805,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Tech Event Coordinator -->
                 <div class="timeline-item">
                     <div class="timeline-marker">
@@ -765,17 +832,19 @@
                             </div>
                             <div class="job-description">
                                 <p class="job-summary">
-                                    Led coordination of major tech events and hackathons, managing large-scale 
+                                    Led coordination of major tech events and hackathons, managing large-scale
                                     operations and engaging hundreds of participants in AI and coding competitions.
                                 </p>
                                 <ul class="achievements-list">
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Coordinated events using project management tools (MS Project, MS Excel, MS Word etc.), enhancing operational efficiency</span>
+                                        <span>Coordinated events using project management tools (MS Project, MS Excel,
+                                            MS Word etc.), enhancing operational efficiency</span>
                                     </li>
                                     <li>
                                         <i class="fas fa-check-circle"></i>
-                                        <span>Managed <strong>50+ AI & coding hackathons</strong>, engaging over <strong>200+ participants</strong> and boosting team collaboration</span>
+                                        <span>Managed <strong>50+ AI & coding hackathons</strong>, engaging over
+                                            <strong>200+ participants</strong> and boosting team collaboration</span>
                                     </li>
                                 </ul>
                                 <div class="tech-stack">
@@ -799,9 +868,10 @@
             <div class="section-header">
                 <div class="section-number">03</div>
                 <h2 class="section-title">Featured Projects</h2>
-                <div class="section-subtitle">Innovative solutions showcasing my expertise in AI and full-stack development</div>
+                <div class="section-subtitle">Innovative solutions showcasing my expertise in AI and full-stack
+                    development</div>
             </div>
-            
+
             <div class="projects-filter">
                 <button class="filter-btn active" data-filter="all">All Projects</button>
                 <button class="filter-btn" data-filter="ai-ml">AI/ML</button>
@@ -809,7 +879,7 @@
                 <button class="filter-btn" data-filter="data">Data Engineering</button>
                 <button class="filter-btn" data-filter="mobile">Mobile/Desktop</button>
             </div>
-            
+
             <div class="projects-grid">
                 <!-- Self-Learning LLMs -->
                 <div class="project-card featured ai-ml" data-category="ai-ml">
@@ -820,10 +890,12 @@
                                 <p>Reinforcement Learning + Large Language Models</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/self-learning-LLMS" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/self-learning-LLMS" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/self-learning-LLMS" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/self-learning-LLMS" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -839,7 +911,8 @@
                         </div>
                         <h3 class="project-title">self-learning-LLMS</h3>
                         <p class="project-description">
-                            A Scalable Pipeline for Self-Improving Language Models via Reinforcement Learning and LoRA fine-tuning
+                            A Scalable Pipeline for Self-Improving Language Models via Reinforcement Learning and LoRA
+                            fine-tuning
                         </p>
                         <div class="project-highlights">
                             <div class="highlight">
@@ -865,7 +938,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- IntelliCity Architecture -->
                 <div class="project-card featured data" data-category="data">
                     <div class="project-image">
@@ -875,10 +948,12 @@
                                 <p>End-to-end data processing architecture</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/IntelliCity-Architecture" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/IntelliCity-Architecture" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/IntelliCity-Architecture" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/IntelliCity-Architecture" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -920,7 +995,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Project Synth - AI Assistant -->
                 <div class="project-card ai-ml" data-category="ai-ml">
                     <div class="project-image">
@@ -930,10 +1005,12 @@
                                 <p>GPU-powered backend cluster</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/Project-Synth" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/Project-Synth" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/Project-Synth" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/Project-Synth" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -949,7 +1026,9 @@
                         </div>
                         <h3 class="project-title">Project Synth</h3>
                         <p class="project-description">
-                            Powerful personal AI assistant running on Mac, powered by specialized language model backend. Features question answering, writing assistance, document analysis, and brainstorming - all processed privately through your own GPU infrastructure
+                            Powerful personal AI assistant running on Mac, powered by specialized language model
+                            backend. Features question answering, writing assistance, document analysis, and
+                            brainstorming - all processed privately through your own GPU infrastructure
                         </p>
                         <div class="project-highlights">
                             <div class="highlight">
@@ -973,7 +1052,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- SS Engineering Works Website -->
                 <div class="project-card web" data-category="web">
                     <div class="project-image">
@@ -983,10 +1062,12 @@
                                 <p>Next.js + GSAP + Tailwind</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/ssengineeringworks_website" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/ssengineeringworks_website" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/ssengineeringworks_website" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/ssengineeringworks_website" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -1002,7 +1083,9 @@
                         </div>
                         <h3 class="project-title">SS Engineering Works Website</h3>
                         <p class="project-description">
-                            Modern futuristic website for SS Engineering Works - Premier pumping machinery service provider. Features dynamic day-night gradients, glassmorphism UI, and motion-first design with GSAP animations
+                            Modern futuristic website for SS Engineering Works - Premier pumping machinery service
+                            provider. Features dynamic day-night gradients, glassmorphism UI, and motion-first design
+                            with GSAP animations
                         </p>
                         <div class="project-highlights">
                             <div class="highlight">
@@ -1027,7 +1110,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- EmotionSentimentNet -->
                 <div class="project-card ai-ml" data-category="ai-ml">
                     <div class="project-image">
@@ -1037,10 +1120,12 @@
                                 <p>Emotion & Sentiment Classification</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/EmotionSentimentNet" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/EmotionSentimentNet" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/EmotionSentimentNet" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/EmotionSentimentNet" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -1081,7 +1166,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- EdgeAIOptimizer -->
                 <div class="project-card ai-ml" data-category="ai-ml">
                     <div class="project-image">
@@ -1091,10 +1176,12 @@
                                 <p>Optimized inference for edge devices</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/EdgeAIOptimizer" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/EdgeAIOptimizer" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/EdgeAIOptimizer" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/EdgeAIOptimizer" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -1135,7 +1222,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- SmartPay UPI -->
                 <div class="project-card mobile" data-category="mobile">
                     <div class="project-image">
@@ -1145,10 +1232,12 @@
                                 <p>Secure QR-based transactions</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/SmartPay-UPI" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/SmartPay-UPI" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/SmartPay-UPI" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/SmartPay-UPI" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -1189,7 +1278,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Aurora Alert System -->
                 <div class="project-card web" data-category="web">
                     <div class="project-image">
@@ -1199,10 +1288,12 @@
                                 <p>Aurora borealis alert system</p>
                             </div>
                             <div class="overlay-actions">
-                                <a href="https://github.com/sushantsharma22/Aurora-Alert" target="_blank" class="project-link" aria-label="View on GitHub">
+                                <a href="https://github.com/sushantsharma22/Aurora-Alert" target="_blank"
+                                    class="project-link" aria-label="View on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://github.com/sushantsharma22/Aurora-Alert" target="_blank" class="project-link" aria-label="View Project Details">
+                                <a href="https://github.com/sushantsharma22/Aurora-Alert" target="_blank"
+                                    class="project-link" aria-label="View Project Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
@@ -1244,7 +1335,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="projects-cta">
                 <p>Interested in seeing more of my work?</p>
                 <a href="https://github.com/sushantsharma22" target="_blank" class="btn btn-primary">
@@ -1263,7 +1354,7 @@
                 <h2 class="section-title">Technical Skills</h2>
                 <div class="section-subtitle">The technologies and tools I use to bring ideas to life</div>
             </div>
-            
+
             <div class="skills-content">
                 <div class="skills-grid">
                     <!-- Programming Languages -->
@@ -1322,7 +1413,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- AI & Machine Learning -->
                     <div class="skill-category">
                         <div class="category-header">
@@ -1397,7 +1488,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Frameworks & Libraries -->
                     <div class="skill-category">
                         <div class="category-header">
@@ -1454,7 +1545,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Tools & Platforms -->
                     <div class="skill-category">
                         <div class="category-header">
@@ -1503,7 +1594,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Key Proficiencies -->
                 <div class="key-proficiencies">
                     <h3 class="proficiencies-title">Key Proficiencies</h3>
@@ -1567,7 +1658,7 @@
                 <h2 class="section-title">Education</h2>
                 <div class="section-subtitle">Academic foundation in computer science and artificial intelligence</div>
             </div>
-            
+
             <div class="education-timeline">
                 <!-- Master's Degree -->
                 <div class="education-item">
@@ -1626,7 +1717,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Bachelor's Degree -->
                 <div class="education-item">
                     <div class="education-marker">
@@ -1640,7 +1731,8 @@
                         <div class="education-card">
                             <div class="card-header">
                                 <div class="degree-info">
-                                    <h3 class="degree-title">Bachelor of Technology in Computer Science and Engineering</h3>
+                                    <h3 class="degree-title">Bachelor of Technology in Computer Science and Engineering
+                                    </h3>
                                     <h4 class="institution">Lovely Professional University</h4>
                                     <div class="location">
                                         <i class="fas fa-map-marker-alt"></i>
@@ -1697,7 +1789,7 @@
                 <h2 class="section-title">Certificates & Training</h2>
                 <div class="section-subtitle">Professional certifications and continuous learning</div>
             </div>
-            
+
             <div class="certificates-grid">
                 <!-- Machine Learning Certification -->
                 <div class="certificate-card">
@@ -1708,13 +1800,15 @@
                         <h3 class="certificate-title" style="margin-bottom: 0.3em;">Machine Learning Certification</h3>
                         <span style="display: block; margin-bottom: 0.2em;">by Andrew Ng</span>
                         <div class="certificate-provider" style="margin-top: 0.1em;">
-                            <div class="provider-logo" style="display: flex; align-items: left; gap: 0.15em; margin-top: 0.15em;">
+                            <div class="provider-logo"
+                                style="display: flex; align-items: left; gap: 0.15em; margin-top: 0.15em;">
                                 <i class="fab fa-coursera"></i>
                                 <span>Stanford University (Coursera)</span>
                             </div>
                         </div>
                         <div class="certificate-description">
-                            <p>Comprehensive machine learning course covering supervised learning, unsupervised learning.</p>
+                            <p>Comprehensive machine learning course covering supervised learning, unsupervised
+                                learning.</p>
                         </div>
                         <div class="certificate-skills">
                             <span class="skill-tag">Machine Learning</span>
@@ -1722,13 +1816,14 @@
                             <span class="skill-tag">Unsupervised Learning</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://coursera.org/share/9a7d9b01a88e538271047850410725d4" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://coursera.org/share/9a7d9b01a88e538271047850410725d4" target="_blank"
+                                class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
                         </div>
                     </div>
-                </div>               
-                
+                </div>
+
                 <!-- AI with Deep Learning -->
-                 <div class="certificate-card">
+                <div class="certificate-card">
                     <div class="certificate-icon">
                         <i class="fas fa-robot"></i>
                     </div>
@@ -1742,7 +1837,8 @@
                             </div>
                         </div>
                         <div class="certificate-description">
-                            <p>Advanced deep learning techniques including neural networks, CNNs, RNNs, and modern architectures.</p>
+                            <p>Advanced deep learning techniques including neural networks, CNNs, RNNs, and modern
+                                architectures.</p>
                         </div>
                         <div class="certificate-skills">
                             <span class="skill-tag">Deep Learning</span>
@@ -1751,7 +1847,9 @@
                             <span class="skill-tag">TensorFlow</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.udemy.com/certificate/UC-6355bd2a-b5fe-46ae-af57-01c1283c2db3/" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.udemy.com/certificate/UC-6355bd2a-b5fe-46ae-af57-01c1283c2db3/"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1779,7 +1877,8 @@
                             <span class="skill-tag">AI</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="http://ude.my/UC-a4c54070-59a2-4559-918d-ebab15216fc3" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="http://ude.my/UC-a4c54070-59a2-4559-918d-ebab15216fc3" target="_blank"
+                                class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1804,7 +1903,9 @@
                             <span class="skill-tag">Reinforcement Learning</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.coursera.org/account/accomplishments/verify/CURSZY446BUY" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.coursera.org/account/accomplishments/verify/CURSZY446BUY"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1829,7 +1930,9 @@
                             <span class="skill-tag">System Administration</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/25248a2df39974064f14a6afdbdb782406602a926d11bab3698444d16fc7fa53" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/25248a2df39974064f14a6afdbdb782406602a926d11bab3698444d16fc7fa53"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1854,7 +1957,9 @@
                             <span class="skill-tag">Problem Solving</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://media.geeksforgeeks.org/courses/certificates/945fe474080a8bccfa6af1d1d7bb5000.pdf" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://media.geeksforgeeks.org/courses/certificates/945fe474080a8bccfa6af1d1d7bb5000.pdf"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1879,7 +1984,9 @@
                             <span class="skill-tag">App Development</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.udemy.com/certificate/UC-a94ff48c-b0c8-4832-8dea-ece77fb95ea3/" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.udemy.com/certificate/UC-a94ff48c-b0c8-4832-8dea-ece77fb95ea3/"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1904,7 +2011,9 @@
                             <span class="skill-tag">Best Practices</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.udemy.com/certificate/UC-e2d254ce-c8f9-4e79-b185-56d40cca1b53/" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.udemy.com/certificate/UC-e2d254ce-c8f9-4e79-b185-56d40cca1b53/"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1930,7 +2039,9 @@
                             <span class="skill-tag">Web Development</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.udemy.com/certificate/UC-6f91871d-4af4-4cb8-9d5c-1e461780f849/" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.udemy.com/certificate/UC-6f91871d-4af4-4cb8-9d5c-1e461780f849/"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1955,7 +2066,9 @@
                             <span class="skill-tag">Statistics</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.udemy.com/certificate/UC-75fe1731-00ea-4028-8553-348b7d9c4117/" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.udemy.com/certificate/UC-75fe1731-00ea-4028-8553-348b7d9c4117/"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -1980,7 +2093,9 @@
                             <span class="skill-tag">OpenID Connect</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/1df089f1907950279a80943c4da2cb2c077fef36c67815285e817d2c3833f20f" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/1df089f1907950279a80943c4da2cb2c077fef36c67815285e817d2c3833f20f"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2005,7 +2120,9 @@
                             <span class="skill-tag">Data Processing</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/45c7c5ede971f4772f8254037764b58de8554aa075b5ebffede3be621e2fbbfd" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/45c7c5ede971f4772f8254037764b58de8554aa075b5ebffede3be621e2fbbfd"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2030,7 +2147,9 @@
                             <span class="skill-tag">Database Design</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/bb3abfd2118f5dc5dc57a42fe89ccf76ec59e4eb1d2448374d7173e71d420f17" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/bb3abfd2118f5dc5dc57a42fe89ccf76ec59e4eb1d2448374d7173e71d420f17"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2055,7 +2174,9 @@
                             <span class="skill-tag">Pattern Matching</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/38a501a31bdbe788920d6edfd9592303ba6add0b2d61047863904a025a58496f" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/38a501a31bdbe788920d6edfd9592303ba6add0b2d61047863904a025a58496f"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2080,7 +2201,9 @@
                             <span class="skill-tag">Jira</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/7bf925b0efab9000fbfc02ed80eefb07ca748eecc4ff33631c3ec57f5009a38d" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/7bf925b0efab9000fbfc02ed80eefb07ca748eecc4ff33631c3ec57f5009a38d"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2105,7 +2228,9 @@
                             <span class="skill-tag">Testing</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/8603f22232bf09054a704a99b4070133ec346decf817e7e122cde0e82ded0657" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/8603f22232bf09054a704a99b4070133ec346decf817e7e122cde0e82ded0657"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2130,7 +2255,9 @@
                             <span class="skill-tag">Web Architecture</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/4355b799208a45166f3c37e5bf106ec49f96a125dabb5482f9ffe62c0b29a717" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/4355b799208a45166f3c37e5bf106ec49f96a125dabb5482f9ffe62c0b29a717"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2155,7 +2282,9 @@
                             <span class="skill-tag">Networking</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/6f2825e6324912bb8796f45499f98932b5789e3c8b8edd08874a03806d30959f" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/6f2825e6324912bb8796f45499f98932b5789e3c8b8edd08874a03806d30959f"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2180,7 +2309,9 @@
                             <span class="skill-tag">API Development</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/a9fe8819717ad4b80b17906fbe1a8b6e419eac8ea1e83fe89fa44f2f4411ec37" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/a9fe8819717ad4b80b17906fbe1a8b6e419eac8ea1e83fe89fa44f2f4411ec37"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2205,7 +2336,9 @@
                             <span class="skill-tag">Automation</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/6a6826a335fb7e37eb6e40b8dc0536ad69d8d494ae7a10f9a8d85993828432ec" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/6a6826a335fb7e37eb6e40b8dc0536ad69d8d494ae7a10f9a8d85993828432ec"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2230,7 +2363,9 @@
                             <span class="skill-tag">Big Data Analytics</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/9c2564f6c3d811d3bdfca1286e9c53c3eff78303e25ff1a9e8921d70daa90ad4" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/9c2564f6c3d811d3bdfca1286e9c53c3eff78303e25ff1a9e8921d70daa90ad4"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
@@ -2255,12 +2390,14 @@
                             <span class="skill-tag">Quality Assurance</span>
                         </div>
                         <div class="certificate-actions">
-                            <a href="https://www.linkedin.com/learning/certificates/1d61577c5e0c55d0050b9501d6a881d2bacbc4f8b279b2391dddd4ffc1f1860f" target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show Credential</a>
+                            <a href="https://www.linkedin.com/learning/certificates/1d61577c5e0c55d0050b9501d6a881d2bacbc4f8b279b2391dddd4ffc1f1860f"
+                                target="_blank" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Show
+                                Credential</a>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Conference Presentation -->
             <div class="conference-section">
                 <h3 class="conference-title">Conference Presentations</h3>
@@ -2280,8 +2417,8 @@
                         </div>
                         <div class="conference-description">
                             <p>
-                                Presented research showcasing NLP techniques using Python and applying diverse 
-                                ML algorithms for performance metrics, maintaining data pipelines, and statistical 
+                                Presented research showcasing NLP techniques using Python and applying diverse
+                                ML algorithms for performance metrics, maintaining data pipelines, and statistical
                                 analysis in multimodal sentiment analysis.
                             </p>
                         </div>
@@ -2320,18 +2457,18 @@
                 <h2 class="section-title">Get In Touch</h2>
                 <div class="section-subtitle">Let's collaborate and create something amazing together</div>
             </div>
-            
+
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-intro">
                         <h3>Let's Connect</h3>
                         <p>
-                            Available for full-time opportunities immediately. 
-                            I'm passionate about AI research, machine learning, and creating innovative solutions. 
+                            Available for full-time opportunities immediately.
+                            I'm passionate about AI research, machine learning, and creating innovative solutions.
                             Let's discuss how I can contribute to your team and drive technological advancement.
                         </p>
                     </div>
-                    
+
                     <div class="contact-details">
                         <div class="contact-item">
                             <div class="contact-icon">
@@ -2342,7 +2479,7 @@
                                 <a href="mailto:sharmasj53@gmail.com">sharmasj53@gmail.com</a>
                             </div>
                         </div>
-                        
+
                         <div class="contact-item">
                             <div class="contact-icon">
                                 <i class="fas fa-phone"></i>
@@ -2352,7 +2489,7 @@
                                 <a href="tel:+12269615873">(226) 961-5873</a>
                             </div>
                         </div>
-                        
+
                         <div class="contact-item">
                             <div class="contact-icon">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -2362,7 +2499,7 @@
                                 <span>Windsor, Ontario, Canada</span>
                             </div>
                         </div>
-                        
+
                         <div class="contact-item">
                             <div class="contact-icon">
                                 <i class="fas fa-calendar-check"></i>
@@ -2373,46 +2510,49 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="social-links">
                         <div class="social-grid">
-                            <a href="https://linkedin.com/in/sushantsharma22" target="_blank" class="social-link" aria-label="LinkedIn">
+                            <a href="https://linkedin.com/in/sushantsharma22" target="_blank" class="social-link"
+                                aria-label="LinkedIn">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="https://github.com/sushantsharma22" target="_blank" class="social-link" aria-label="GitHub">
+                            <a href="https://github.com/sushantsharma22" target="_blank" class="social-link"
+                                aria-label="GitHub">
                                 <i class="fab fa-github"></i>
                             </a>
-                            <a href="https://sushantsharma22.github.io/Portfolio" target="_blank" class="social-link" aria-label="Portfolio">
+                            <a href="https://sushantsharma22.github.io/Portfolio" target="_blank" class="social-link"
+                                aria-label="Portfolio">
                                 <i class="fas fa-globe"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="contact-form">
                     <form id="contactForm" class="form">
                         <div class="form-header">
                             <h3>Send me a message</h3>
                             <p>I'd love to hear from you. Send me a message and I'll respond as soon as possible.</p>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="name">Full Name</label>
                             <input type="text" id="name" name="name" placeholder="Your full name" required>
                             <span class="form-error" id="name-error"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
                             <span class="form-error" id="email-error"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="company">Company/Organization</label>
                             <input type="text" id="company" name="company" placeholder="Your company or organization">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="subject">Subject</label>
                             <select id="subject" name="subject" required>
@@ -2425,23 +2565,25 @@
                             </select>
                             <span class="form-error" id="subject-error"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea id="message" name="message" placeholder="Tell me about your project, opportunity, or how I can help you..." rows="6" required></textarea>
+                            <textarea id="message" name="message"
+                                placeholder="Tell me about your project, opportunity, or how I can help you..." rows="6"
+                                required></textarea>
                             <span class="form-error" id="message-error"></span>
                         </div>
-                        
+
                         <div class="form-group checkbox-group">
                             <!-- Checkbox for newsletter removed as requested -->
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary form-submit">
                             <span class="btn-text">Send Message</span>
                             <i class="fas fa-paper-plane btn-icon"></i>
                             <div class="btn-loader"></div>
                         </button>
-                        
+
                         <div class="form-status" id="form-status"></div>
                     </form>
                 </div>
@@ -2464,7 +2606,7 @@
                             <p>Creating intelligent solutions for tomorrow's challenges</p>
                         </div>
                     </div>
-                    
+
                     <div class="footer-links">
                         <div class="footer-column">
                             <h4>Navigation</h4>
@@ -2475,7 +2617,7 @@
                                 <li><a href="#projects">Projects</a></li>
                             </ul>
                         </div>
-                        
+
                         <div class="footer-column">
                             <h4>More</h4>
                             <ul>
@@ -2485,7 +2627,7 @@
                                 <li><a href="#contact">Contact</a></li>
                             </ul>
                         </div>
-                        
+
                         <div class="footer-column">
                             <h4>External</h4>
                             <ul>
@@ -2496,12 +2638,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="footer-bottom">
                     <div class="footer-copyright">
                         <p>&copy; 2025 Sushant Sharma. All rights reserved.</p>
                     </div>
-                    
+
                     <div class="footer-social">
                         <a href="https://linkedin.com/in/sushantsharma22" target="_blank" aria-label="LinkedIn">
                             <i class="fab fa-linkedin-in"></i>
@@ -2528,5 +2670,8 @@
 
     <!-- JavaScript -->
     <script src="main.js"></script>
+    <!-- Cinematic Scroll Animations -->
+    <script src="scroll-animations.js"></script>
 </body>
+
 </html>
