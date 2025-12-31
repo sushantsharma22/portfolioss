@@ -1,247 +1,243 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
 const experiences = [
-  {
-    id: 1,
-    role: 'AI Research Intern',
-    company: 'JLR North America',
-    location: 'Michigan, USA',
-    period: 'May 2025 - Aug 2025',
-    description: 'Leading AI research initiatives for next-generation autonomous vehicle systems. Developing cutting-edge ML models for real-time perception and decision-making.',
-    tech: ['PyTorch', 'Computer Vision', 'Edge AI', 'ADAS'],
-    color: 'emerald',
-    icon: '🚗',
-  },
-  {
-    id: 2,
-    role: 'Machine Learning Intern',
-    company: 'University of Windsor × TD Bank',
-    location: 'Windsor, Canada',
-    period: 'Jan 2025 - Apr 2025',
-    description: 'Building ML solutions for financial services. Developed fraud detection systems and customer analytics models processing millions of transactions.',
-    tech: ['TensorFlow', 'NLP', 'Big Data', 'MLOps'],
-    color: 'cyan',
-    icon: '🏦',
-  },
-  {
-    id: 3,
-    role: 'ML Engineer',
-    company: 'S.S. Engineering Works',
-    location: 'India',
-    period: 'Jun 2023 - Apr 2024',
-    description: 'Architected end-to-end ML pipelines for manufacturing optimization. Implemented predictive maintenance systems reducing downtime by 40%.',
-    tech: ['Python', 'Scikit-learn', 'IoT', 'Data Analytics'],
-    color: 'sky',
-    icon: '⚙️',
-  },
-  {
-    id: 4,
-    role: 'Data Science Intern',
-    company: 'S.S. Engineering Works',
-    location: 'India',
-    period: 'Jun 2022 - Jun 2023',
-    description: 'Started my journey in data science. Built dashboards, automated reporting systems, and developed foundational ML models for business insights.',
-    tech: ['Python', 'SQL', 'Tableau', 'Statistics'],
-    color: 'violet',
-    icon: '📊',
-  },
+    {
+        role: 'AI Research Intern',
+        company: 'JLR North America',
+        location: 'Windsor, Ontario (Remote)',
+        period: 'May 2025 – August 2025',
+        description: 'Leading cutting-edge AI research initiatives for a global automotive leader, advancing innovative solutions through state-of-the-art AI technologies.',
+        achievements: [
+            'Drove impactful research initiatives for a global automotive leader',
+            'Designed sophisticated experiments with advanced computational tools',
+            'Developed streamlined workflows for data processing and evaluation',
+            'Collaborated with cross-functional teams including University academic partners',
+        ],
+        tech: ['AI Research', 'Machine Learning', 'Python', 'Data Analysis'],
+        color: 'from-sky-400 to-blue-500',
+        accent: 'sky',
+    },
+    {
+        role: 'Machine Learning Intern',
+        company: 'University of Windsor × TD Bank',
+        location: 'Windsor, Ontario',
+        period: 'January 2025 – April 2025',
+        description: 'Collaborated directly with TD Bank as project client, developing ML systems for credit-lending decision predictions.',
+        achievements: [
+            'Collaborated directly with TD Bank, holding regular meetings',
+            'Designed and implemented full backend system and data pipelines',
+            'Developed ML modules for credit-lending predictions',
+            'Contributed to model validation and testing workflows',
+        ],
+        tech: ['Python', 'Scikit-learn', 'XGBoost', 'SQL', 'Agile'],
+        color: 'from-teal-400 to-emerald-500',
+        accent: 'teal',
+    },
+    {
+        role: 'Machine Learning Engineer',
+        company: 'S.S. Engineering Works',
+        location: 'Una, India',
+        period: 'June 2023 – April 2024',
+        description: 'Developed AI-based predictive analytics and deep learning models for industrial operations.',
+        achievements: [
+            'Developed AI-based predictive analytics, reducing inventory costs by 15%',
+            'Implemented deep learning models for anomaly detection',
+            'Automated data pipelines, improving efficiency by 20%',
+        ],
+        tech: ['PyTorch', 'TensorFlow', 'Python', 'Pandas'],
+        color: 'from-amber-400 to-orange-500',
+        accent: 'amber',
+    },
+    {
+        role: 'Data Science Intern',
+        company: 'S.S. Engineering Works',
+        location: 'Una, India',
+        period: 'June 2022 – June 2023',
+        description: 'Built custom data processing solutions for enterprise-scale operations.',
+        achievements: [
+            'Built custom data loaders for enterprise-scale workloads',
+            'Automated and documented feed generation pipelines',
+        ],
+        tech: ['Python', 'Data Processing', 'Pipeline Automation'],
+        color: 'from-rose-400 to-pink-500',
+        accent: 'rose',
+    },
+    {
+        role: 'Tech Event Coordinator',
+        company: 'Gravity LPU',
+        location: 'Punjab, India',
+        period: 'October 2019 – April 2022',
+        description: 'Led coordination of major tech events and hackathons.',
+        achievements: [
+            'Managed 50+ AI & coding hackathons',
+            'Engaged 200+ participants across events',
+        ],
+        tech: ['Project Management', 'Event Coordination', 'Team Leadership'],
+        color: 'from-violet-400 to-purple-500',
+        accent: 'violet',
+    },
 ];
 
-// Color class mappings for Tailwind - dynamic classes don't work with purge
-const colorClasses: Record<string, { dot: string; ping: string; badge: string; badgeBorder: string; text: string; glow: string }> = {
-  emerald: {
-    dot: 'bg-emerald-500 shadow-emerald-500/50',
-    ping: 'bg-emerald-500',
-    badge: 'bg-emerald-500/10',
-    badgeBorder: 'border-emerald-500/20',
-    text: 'text-emerald-400',
-    glow: 'from-emerald-500/10',
-  },
-  cyan: {
-    dot: 'bg-cyan-500 shadow-cyan-500/50',
-    ping: 'bg-cyan-500',
-    badge: 'bg-cyan-500/10',
-    badgeBorder: 'border-cyan-500/20',
-    text: 'text-cyan-400',
-    glow: 'from-cyan-500/10',
-  },
-  sky: {
-    dot: 'bg-sky-500 shadow-sky-500/50',
-    ping: 'bg-sky-500',
-    badge: 'bg-sky-500/10',
-    badgeBorder: 'border-sky-500/20',
-    text: 'text-sky-400',
-    glow: 'from-sky-500/10',
-  },
-  violet: {
-    dot: 'bg-violet-500 shadow-violet-500/50',
-    ping: 'bg-violet-500',
-    badge: 'bg-violet-500/10',
-    badgeBorder: 'border-violet-500/20',
-    text: 'text-violet-400',
-    glow: 'from-violet-500/10',
-  },
-};
-
 export default function Experience() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start'],
-  });
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [activeIndex, setActiveIndex] = useState(0);
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ['start start', 'end end'],
+    });
 
-  // Timeline progress
-  const lineHeight = useTransform(smoothProgress, [0.1, 0.9], ['0%', '100%']);
+    const smoothProgress = useSpring(scrollYProgress, {
+        stiffness: 400,
+        damping: 50,
+        restDelta: 0.0001
+    });
 
-  return (
-    <section
-      id="experience"
-      ref={containerRef}
-      className="relative bg-gradient-to-b from-black via-slate-950 to-black py-32 overflow-hidden"
-    >
-      {/* Chapter header */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-20 relative z-10"
-      >
-        <span className="text-emerald-400/50 text-xs tracking-[0.5em] uppercase">Chapter 03</span>
-        <h2 className="mt-4 text-5xl md:text-7xl lg:text-8xl font-black text-white">
-          The
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400"> Journey</span>
-        </h2>
-        <p className="text-white/40 mt-6 text-lg max-w-2xl mx-auto">
-          A timeline of growth, learning, and building intelligent systems
-        </p>
-      </motion.div>
+    useEffect(() => {
+        const unsubscribe = smoothProgress.on('change', (latest) => {
+            const index = Math.min(
+                Math.floor(latest * experiences.length),
+                experiences.length - 1
+            );
+            if (index >= 0) setActiveIndex(index);
+        });
+        return () => unsubscribe();
+    }, [smoothProgress]);
 
-      {/* Removed giant background text */}
+    return (
+        <section
+            id="experience"
+            ref={containerRef}
+            className="relative"
+            style={{ height: `${experiences.length * 100}vh` }}
+        >
+            {/* Gradient transition from About */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white via-stone-50 to-stone-100" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Animated timeline line */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/[0.05]">
-          <motion.div
-            style={{ height: lineHeight }}
-            className="w-full bg-gradient-to-b from-emerald-500 via-cyan-500 to-violet-500"
-          />
-        </div>
+            <div className="sticky top-0 h-screen overflow-hidden">
+                {/* Premium backdrop */}
+                <div className="absolute inset-0 bg-stone-50" />
 
-        {/* Experience cards */}
-        <div className="relative space-y-24">
-          {experiences.map((exp, index) => {
-            const isLeft = index % 2 === 0;
-            const colors = colorClasses[exp.color];
+                {/* Decorative elements */}
+                <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-sky-100/30 to-blue-100/30 rounded-full blur-[150px]" />
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/30 to-orange-100/30 rounded-full blur-[120px]" />
 
-            return (
-              <motion.div
-                key={exp.id}
-                initial={{
-                  opacity: 0,
-                  x: isLeft ? -100 : 100,
-                  rotateY: isLeft ? -20 : 20,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  x: 0,
-                  rotateY: 0,
-                }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{
-                  duration: 0.8,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className={`relative flex items-center ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-                style={{ perspective: '1000px' }}
-              >
-                {/* Timeline dot */}
+                {/* Header */}
                 <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                  className={`absolute left-4 md:left-1/2 w-4 h-4 -translate-x-1/2 rounded-full ${colors.dot} shadow-lg z-10`}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="absolute top-16 left-8 md:left-16 z-30"
                 >
-                  <div className={`absolute inset-0 rounded-full ${colors.ping} animate-ping opacity-20`} />
+                    <span className="text-amber-600 text-xs md:text-sm font-bold tracking-[0.3em]">02 — EXPERIENCE</span>
+                    <h2 className="text-3xl md:text-5xl font-black text-stone-800 mt-2 tracking-tight">
+                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-amber-500">Journey</span>
+                    </h2>
                 </motion.div>
 
-                {/* Card */}
-                <div className={`w-full md:w-[calc(50%-3rem)] ${isLeft ? 'md:pr-12 ml-12 md:ml-0' : 'md:pl-12 ml-12 md:ml-0'}`}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.02,
-                      rotateY: isLeft ? 3 : -3,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="group relative p-8 rounded-3xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] backdrop-blur-sm hover:border-emerald-500/30 transition-all duration-500"
-                  >
-                    {/* Icon */}
-                    <motion.span
-                      initial={{ scale: 0, rotate: -180 }}
-                      whileInView={{ scale: 1, rotate: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4, type: 'spring' }}
-                      className="text-5xl block mb-6"
-                    >
-                      {exp.icon}
-                    </motion.span>
-
-                    {/* Period badge */}
-                    <div className={`inline-block px-3 py-1 rounded-full ${colors.badge} border ${colors.badgeBorder} mb-4`}>
-                      <span className={`${colors.text} text-sm font-medium`}>{exp.period}</span>
-                    </div>
-
-                    {/* Role & Company */}
-                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
-                      {exp.role}
-                    </h3>
-                    <p className={`${colors.text} font-medium mb-1`}>{exp.company}</p>
-                    <p className="text-white/40 text-sm mb-4">{exp.location}</p>
-
-                    {/* Description */}
-                    <p className="text-white/60 leading-relaxed mb-6">
-                      {exp.description}
-                    </p>
-
-                    {/* Tech stack */}
-                    <div className="flex flex-wrap gap-2">
-                      {exp.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1 text-xs bg-white/[0.05] border border-white/[0.08] rounded-full text-white/60"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Hover glow effect */}
-                    <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${colors.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
-                  </motion.div>
+                {/* Large background number */}
+                <div className="absolute top-1/2 right-8 md:right-16 -translate-y-1/2 hidden lg:block">
+                    <span className={`text-[20rem] font-black leading-none bg-gradient-to-br ${experiences[activeIndex]?.color} bg-clip-text text-transparent opacity-[0.03]`}>
+                        {(activeIndex + 1).toString().padStart(2, '0')}
+                    </span>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
 
-        {/* End of timeline indicator */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="relative mt-20 flex justify-center"
-        >
-          <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 flex items-center justify-center">
-            <span className="text-white text-xs">✓</span>
-          </div>
-          <p className="text-white/30 text-sm ml-12 md:ml-0 md:mt-12">And the journey continues...</p>
-        </motion.div>
-      </div>
-    </section>
-  );
+                {/* Cards */}
+                <div className="absolute inset-0 flex items-center justify-center pt-8">
+                    {experiences.map((exp, index) => {
+                        const isActive = index === activeIndex;
+
+                        return (
+                            <motion.div
+                                key={exp.role}
+                                className="absolute w-full max-w-4xl px-4 md:px-8"
+                                initial={false}
+                                animate={{
+                                    opacity: isActive ? 1 : 0,
+                                    scale: isActive ? 1 : 0.92,
+                                }}
+                                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+                            >
+                                <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100/80">
+                                    {/* Gradient top bar */}
+                                    <div className={`h-1.5 bg-gradient-to-r ${exp.color}`} />
+
+                                    <div className="p-8 md:p-12">
+                                        {/* Header */}
+                                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+                                            <div>
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${exp.color}`} />
+                                                    <span className="text-stone-400 text-sm font-semibold tracking-wide">{exp.period}</span>
+                                                </div>
+                                                <h3 className="text-3xl md:text-4xl font-bold text-stone-800 mb-2 leading-tight">{exp.role}</h3>
+                                                <p className={`text-xl md:text-2xl font-bold bg-gradient-to-r ${exp.color} bg-clip-text text-transparent`}>
+                                                    {exp.company}
+                                                </p>
+                                                <p className="text-stone-400 text-sm mt-2 flex items-center gap-2">
+                                                    <span>📍</span> {exp.location}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Description */}
+                                        <p className="text-stone-600 text-lg leading-relaxed mb-8">{exp.description}</p>
+
+                                        {/* Achievements */}
+                                        <div className="space-y-3 mb-8">
+                                            {exp.achievements.map((a, i) => (
+                                                <div key={i} className="flex items-start gap-4">
+                                                    <div className={`mt-2 w-2 h-2 rounded-full bg-gradient-to-r ${exp.color} flex-shrink-0`} />
+                                                    <span className="text-stone-500 leading-relaxed">{a}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Tech stack */}
+                                        <div className="flex flex-wrap gap-3">
+                                            {exp.tech.map((t) => (
+                                                <span key={t} className="px-4 py-2 bg-stone-50 text-stone-600 text-sm font-medium rounded-full border border-stone-100">
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                </div>
+
+                {/* Progress indicator */}
+                <div className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2 flex flex-col gap-4">
+                    {experiences.map((exp, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                            <div
+                                className={`rounded-full transition-all duration-300 ${i === activeIndex
+                                        ? `w-3 h-8 bg-gradient-to-b ${exp.color}`
+                                        : 'w-2 h-2 bg-stone-300'
+                                    }`}
+                            />
+                            {i === activeIndex && (
+                                <span className="text-stone-600 text-sm font-medium hidden md:block">
+                                    {exp.company.split(' ')[0]}
+                                </span>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Counter */}
+                <div className="absolute bottom-8 right-8 md:right-16 text-stone-400 font-mono">
+                    <span className="text-stone-800 font-bold text-2xl">{(activeIndex + 1).toString().padStart(2, '0')}</span>
+                    <span className="mx-2 text-stone-300">/</span>
+                    <span className="text-stone-400">{experiences.length.toString().padStart(2, '0')}</span>
+                </div>
+            </div>
+        </section>
+    );
 }

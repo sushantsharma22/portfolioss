@@ -1,111 +1,115 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Hero() {
-  return (
-    <section
-      id="home"
-      className="relative min-h-screen bg-black flex items-center justify-center overflow-hidden"
-    >
-      {/* Simple gradient background - no animations */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-slate-950 to-indigo-950" />
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ['start start', 'end start'],
+    });
 
-      {/* Static glow effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/10 rounded-full blur-[150px]" />
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-[100px]" />
+    const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+    const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
-        {/* Chapter indicator */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="mb-8"
+    return (
+        <section
+            id="hero"
+            ref={ref}
+            className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#FEFCF6] via-[#FDF8EE] to-[#F5EFE6]"
         >
-          <span className="text-white/30 text-xs tracking-[0.5em] uppercase font-light">Chapter 01 — The Beginning</span>
-        </motion.div>
-
-        {/* Main title - simple fade in */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="text-7xl md:text-9xl lg:text-[10rem] font-black text-white leading-[0.85] tracking-tighter"
-        >
-          SUSHANT
-        </motion.h1>
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-7xl md:text-9xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500"
-        >
-          SHARMA
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="text-xl md:text-2xl text-white/50 mt-8 font-light"
-        >
-          AI/ML Engineer · Building the Future with Intelligence
-        </motion.p>
-
-        {/* Role badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-3 mt-8"
-        >
-          {['LLM Specialist', 'Deep Learning', 'Computer Vision', 'NLP Expert'].map((role) => (
-            <span
-              key={role}
-              className="px-4 py-2 text-sm text-white/60 border border-white/10 rounded-full hover:border-emerald-500/30 hover:text-emerald-400 transition-colors duration-200"
-            >
-              {role}
-            </span>
-          ))}
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="grid grid-cols-3 gap-12 md:gap-20 mt-16"
-        >
-          {[
-            { value: '17+', label: 'Projects Built' },
-            { value: '3+', label: 'Years Experience' },
-            { value: '50+', label: 'Events Organized' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-4xl md:text-5xl font-black text-white">
-                {stat.value.replace('+', '')}<span className="text-emerald-400">+</span>
-              </div>
-              <div className="text-white/40 text-sm mt-2 tracking-wide">{stat.label}</div>
+            {/* Decorative Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute top-20 left-[10%] w-32 h-32 bg-sky-200/30 rounded-full blur-2xl"
+                />
+                <motion.div
+                    animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
+                    transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute bottom-32 right-[15%] w-48 h-48 bg-amber-200/30 rounded-full blur-3xl"
+                />
+                <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute top-1/3 right-[20%] w-24 h-24 bg-teal-200/20 rounded-full blur-2xl"
+                />
             </div>
-          ))}
-        </motion.div>
 
-        {/* Scroll indicator - simple CSS animation */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
-        >
-          <span className="text-white/20 text-xs tracking-[0.3em] uppercase">Scroll to Explore</span>
-          <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">
-            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
+            {/* Content */}
+            <motion.div style={{ y, opacity }} className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="mb-6"
+                >
+                    <span className="text-stone-400 text-sm md:text-base tracking-[0.3em] font-medium">
+                        AI RESEARCH ENGINEER
+                    </span>
+                </motion.div>
+
+                <motion.h1
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                    className="text-6xl md:text-8xl lg:text-9xl font-black text-stone-800 tracking-tight leading-[0.9]"
+                >
+                    SUSHANT
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-teal-400 to-amber-500">
+                        SHARMA
+                    </span>
+                </motion.h1>
+
+                <motion.p
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                    className="text-stone-500 text-lg md:text-xl mt-8 max-w-2xl mx-auto leading-relaxed"
+                >
+                    Crafting intelligent solutions through Machine Learning, Deep Learning & Distributed Systems.
+                </motion.p>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    className="mt-12 flex flex-wrap justify-center gap-4"
+                >
+                    <a
+                        href="#contact"
+                        className="px-8 py-4 bg-stone-900 text-white font-semibold rounded-full hover:bg-stone-800 transition-colors"
+                    >
+                        Get in Touch
+                    </a>
+                    <a
+                        href="#experience"
+                        className="px-8 py-4 border-2 border-stone-300 text-stone-700 font-semibold rounded-full hover:border-stone-400 transition-colors"
+                    >
+                        View My Journey
+                    </a>
+                </motion.div>
+            </motion.div>
+
+            {/* Scroll indicator */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            >
+                <span className="text-stone-400 text-xs tracking-widest">SCROLL</span>
+                <motion.div
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="w-5 h-8 border-2 border-stone-300 rounded-full flex justify-center pt-1"
+                >
+                    <div className="w-1 h-2 bg-stone-400 rounded-full" />
+                </motion.div>
+            </motion.div>
+        </section>
+    );
 }

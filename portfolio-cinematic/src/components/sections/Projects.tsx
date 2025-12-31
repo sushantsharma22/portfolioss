@@ -1,205 +1,143 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const projects = [
-  {
-    id: 1,
-    title: 'Self-Learning LLMs',
-    description: 'Advanced framework for fine-tuning Large Language Models using PEFT/LoRA techniques with RLHF.',
-    tech: ['PyTorch', 'HuggingFace', 'PEFT/LoRA', 'DeepSpeed'],
-    github: 'https://github.com/SushantSharma29/self-learning-LLMS',
-    image: '🧠',
-    color: 'from-purple-600 to-pink-600',
-  },
-  {
-    id: 2,
-    title: 'IntelliCity Architecture',
-    description: 'Real-time smart city data pipeline processing millions of IoT sensor readings.',
-    tech: ['Apache NiFi', 'Kafka', 'Hadoop', 'Spark'],
-    github: 'https://github.com/SushantSharma29/IntelliCity-Architecture',
-    image: '🏙️',
-    color: 'from-cyan-600 to-blue-600',
-  },
-  {
-    id: 3,
-    title: 'Project Synth',
-    description: 'Personal AI assistant powered by state-of-the-art language models.',
-    tech: ['OpenAI API', 'LangChain', 'Whisper', 'FastAPI'],
-    github: 'https://github.com/SushantSharma29/project-synth',
-    image: '🤖',
-    color: 'from-emerald-600 to-teal-600',
-  },
-  {
-    id: 4,
-    title: 'EmotionSentimentNet',
-    description: 'Multi-label emotion and sentiment classifier using DeBERTa-v3.',
-    tech: ['DeBERTa-v3', 'PyTorch', 'HuggingFace'],
-    github: 'https://github.com/SushantSharma29/EmotionSentimentNet',
-    image: '😊',
-    color: 'from-yellow-600 to-orange-600',
-  },
-  {
-    id: 5,
-    title: 'EdgeAI Optimizer',
-    description: 'C++ framework for deploying optimized ML models on edge devices.',
-    tech: ['C++', 'ONNX Runtime', 'TensorRT', 'OpenVINO'],
-    github: 'https://github.com/SushantSharma29/EdgeAIOptimizer',
-    image: '⚡',
-    color: 'from-red-600 to-rose-600',
-  },
-  {
-    id: 6,
-    title: 'SmartPay UPI',
-    description: 'Blockchain-based secure payment system with UPI integration.',
-    tech: ['Solidity', 'Web3.js', 'Node.js', 'Ethereum'],
-    github: 'https://github.com/SushantSharma29/SmartPay-UPI',
-    image: '💳',
-    color: 'from-indigo-600 to-violet-600',
-  },
-  {
-    id: 7,
-    title: 'SS Engineering Works',
-    description: 'Modern futuristic website with glassmorphism UI and motion-first design.',
-    tech: ['Next.js 14', 'TypeScript', 'Tailwind', 'GSAP'],
-    github: 'https://github.com/sushantsharma22/ssengineeringworks_website',
-    image: '🏢',
-    color: 'from-blue-600 to-cyan-600',
-  },
-  {
-    id: 8,
-    title: 'Aurora Alert System',
-    description: 'Real-Time Event Notification Pipeline for aurora borealis alerts.',
-    tech: ['Python', 'REST API', 'Google Sheets', 'SMTP'],
-    github: 'https://github.com/sushantsharma22/Aurora-Alert',
-    image: '🛰️',
-    color: 'from-green-500 to-teal-500',
-  },
+    {
+        title: 'Image Caption Generator',
+        description: 'Deep learning model using CNN-LSTM architecture for automated image captioning with attention mechanisms.',
+        tech: ['Python', 'PyTorch', 'CNN', 'LSTM', 'NLP'],
+        github: 'https://github.com/sushantsharma22/Image-Caption-Generator',
+        featured: true,
+        color: 'from-violet-500 to-purple-600',
+        icon: '🖼️',
+    },
+    {
+        title: 'Aurora Alert System',
+        description: 'Real-time aurora borealis notification system with weather API integration and SMS alerts.',
+        tech: ['Python', 'APIs', 'Automation', 'Twilio'],
+        github: 'https://github.com/sushantsharma22/Aurora-Alert-System',
+        color: 'from-emerald-500 to-teal-600',
+        icon: '🌌',
+    },
+    {
+        title: 'Flight Fare Prediction',
+        description: 'ML model predicting flight prices using Random Forest with 85%+ accuracy.',
+        tech: ['Python', 'Scikit-learn', 'Random Forest', 'Flask'],
+        github: 'https://github.com/sushantsharma22/Flight-Fare-Prediction',
+        featured: true,
+        color: 'from-sky-500 to-blue-600',
+        icon: '✈️',
+    },
+    {
+        title: 'Facial Recognition System',
+        description: 'Real-time face detection and recognition using OpenCV and deep learning models.',
+        tech: ['Python', 'OpenCV', 'Deep Learning', 'Computer Vision'],
+        github: 'https://github.com/sushantsharma22/Facial-Recognition-System',
+        color: 'from-amber-500 to-orange-600',
+        icon: '👤',
+    },
+    {
+        title: 'Portfolio Website',
+        description: 'Modern portfolio with smooth animations, scroll effects, and responsive design.',
+        tech: ['Next.js', 'React', 'Framer Motion', 'Tailwind'],
+        github: 'https://github.com/sushantsharma22/Portfolio',
+        color: 'from-rose-500 to-pink-600',
+        icon: '🌐',
+    },
+    {
+        title: 'SS Engineering Website',
+        description: 'Business website for industrial engineering company with modern UI/UX.',
+        tech: ['React', 'Node.js', 'CSS', 'Responsive'],
+        github: 'https://github.com/sushantsharma22/SS-Engineering-Website',
+        color: 'from-indigo-500 to-blue-600',
+        icon: '🏭',
+    },
 ];
 
 export default function Projects() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ['start end', 'end start'],
+    });
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+    const scale = useTransform(scrollYProgress, [0, 0.2], [0.95, 1]);
 
-  // Horizontal scroll - calculated for exactly 8 projects
-  const x = useTransform(smoothProgress, [0, 1], ['0%', '-87.5%']);
+    return (
+        <section id="projects" ref={ref} className="relative min-h-screen py-24 overflow-hidden">
+            {/* Gradient transition from previous section */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white via-sky-50/30 to-violet-50/20" />
 
-  // Progress bar
-  const progressWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%']);
+            {/* Decorative blobs */}
+            <div className="absolute top-40 -left-20 w-80 h-80 bg-gradient-to-br from-violet-200/30 to-purple-200/30 rounded-full blur-[100px]" />
+            <div className="absolute bottom-40 -right-20 w-96 h-96 bg-gradient-to-br from-sky-200/30 to-blue-200/30 rounded-full blur-[120px]" />
 
-  return (
-    <section
-      id="projects"
-      ref={containerRef}
-      className="relative bg-black"
-      style={{ height: '400vh' }} // Fixed height for 8 projects
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-black to-slate-950" />
+            <motion.div style={{ opacity, scale }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center mb-16"
+                >
+                    <span className="text-sky-500 text-sm font-bold tracking-[0.3em]">03 — WORK</span>
+                    <h2 className="text-5xl md:text-7xl font-black text-stone-800 mt-4 tracking-tight">
+                        Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-sky-500 to-amber-500">Projects</span>
+                    </h2>
+                    <p className="text-stone-500 mt-4 max-w-lg mx-auto">Passion projects and professional work</p>
+                </motion.div>
 
-        {/* Header */}
-        <div className="absolute top-8 left-0 right-0 z-20 px-8">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div>
-              <span className="text-emerald-400/50 text-xs tracking-[0.5em] uppercase">Chapter 04</span>
-              <h2 className="text-4xl md:text-5xl font-black text-white mt-2">
-                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Creations</span>
-              </h2>
-            </div>
-            <div className="hidden md:block text-right">
-              <div className="text-5xl font-black text-white/10">08</div>
-              <div className="text-white/30 text-sm">Projects</div>
-            </div>
-          </div>
+                {/* Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {projects.map((project, i) => (
+                        <motion.a
+                            key={project.title}
+                            href={project.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: '-50px' }}
+                            transition={{ delay: i * 0.08, duration: 0.6 }}
+                            whileHover={{ y: -8 }}
+                            className={`group relative bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-lg hover:shadow-2xl transition-all duration-500 ${project.featured ? 'ring-2 ring-amber-200/50' : ''
+                                }`}
+                        >
+                            {/* Gradient header */}
+                            <div className={`h-24 md:h-28 bg-gradient-to-br ${project.color} relative overflow-hidden`}>
+                                <div className="absolute inset-0 bg-black/10" />
+                                <span className="absolute top-4 right-4 text-4xl md:text-5xl opacity-80">{project.icon}</span>
+                                {project.featured && (
+                                    <span className="absolute top-4 left-4 px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
+                                        ⭐ Featured
+                                    </span>
+                                )}
+                            </div>
 
-          {/* Progress bar */}
-          <div className="max-w-7xl mx-auto mt-6">
-            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                style={{ width: progressWidth }}
-                className="h-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Horizontal scrolling projects */}
-        <motion.div
-          style={{ x }}
-          className="absolute top-1/2 -translate-y-1/2 flex gap-8 pl-[5%]"
-        >
-          {projects.map((project, index) => (
-            <motion.a
-              key={project.id}
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02, y: -10 }}
-              className="group relative flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[50vw] h-[65vh] rounded-3xl overflow-hidden cursor-pointer"
-            >
-              {/* Card background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/[0.1]" />
-
-              {/* Content */}
-              <div className="relative h-full p-8 md:p-12 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="text-7xl">{project.image}</span>
-                    <span className="text-6xl font-black text-white/10">
-                      {(index + 1).toString().padStart(2, '0')}
-                    </span>
-                  </div>
-                  <h3 className="text-3xl md:text-4xl font-black text-white mb-4 group-hover:text-emerald-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-white/60 text-lg max-w-xl">{project.description}</p>
-                </div>
-
-                <div>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((tech) => (
-                      <span key={tech} className="px-4 py-2 text-sm bg-white/[0.05] border border-white/[0.1] rounded-full text-white/70">
-                        {tech}
-                      </span>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-sky-600 transition-all duration-300">
+                                    {project.title}
+                                </h3>
+                                <p className="text-stone-500 text-sm mb-4 leading-relaxed">{project.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.tech.map((t) => (
+                                        <span key={t} className="px-2.5 py-1 bg-stone-50 text-stone-600 text-xs font-medium rounded-full border border-stone-100">
+                                            {t}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.a>
                     ))}
-                  </div>
-                  <div className="flex items-center gap-2 text-white/40 group-hover:text-emerald-400 transition-colors">
-                    <span>View on GitHub</span>
-                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </div>
                 </div>
-              </div>
-            </motion.a>
-          ))}
-        </motion.div>
+            </motion.div>
 
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <motion.div
-            animate={{ x: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="flex items-center gap-2 text-white/30 text-sm"
-          >
-            <span>Scroll to explore</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
+            {/* Bottom transition gradient */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+        </section>
+    );
 }
