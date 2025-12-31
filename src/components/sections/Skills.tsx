@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import { skillCategories, stats } from '@/lib/constants';
-import { easings, springs } from '@/lib/animations';
+import { springs } from '@/lib/animations';
 
 const colorMap: Record<string, { color: string; bgColor: string }> = {
     'languages': { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' },
@@ -15,9 +15,17 @@ const colorMap: Record<string, { color: string; bgColor: string }> = {
 export default function Skills() {
     const targetRef = useRef<HTMLDivElement>(null);
 
-    // Same pattern as Experience/Certificates
     const { scrollYProgress } = useScroll({ target: targetRef });
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
+
+    // Header animation
+    const headerOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
+    const headerY = useTransform(smoothProgress, [0, 0.15], [40, 0]);
+    const headerScale = useTransform(smoothProgress, [0, 0.15], [0.95, 1]);
+
+    // Stats animation (bottom)
+    const statsOpacity = useTransform(smoothProgress, [0.6, 0.8], [0, 1]);
+    const statsY = useTransform(smoothProgress, [0.6, 0.8], [30, 0]);
 
     return (
         <section
@@ -35,12 +43,9 @@ export default function Skills() {
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-full blur-[120px]" />
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
-                    {/* Header */}
+                    {/* Header - animates first */}
                     <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.9, ease: easings.apple }}
+                        style={{ opacity: headerOpacity, y: headerY, scale: headerScale }}
                         className="text-center mb-12"
                     >
                         <span className="text-teal-500 text-sm font-bold tracking-[0.3em]">04 — EXPERTISE</span>
@@ -49,57 +54,21 @@ export default function Skills() {
                         </h2>
                     </motion.div>
 
-                    {/* Grid */}
+                    {/* Grid - each card animates with stagger */}
                     <div className="grid md:grid-cols-2 gap-6">
-                        {skillCategories.map((group, i) => {
-                            const defaultColor = { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
-                            const colors = colorMap[group.id] ?? defaultColor;
-                            return (
-                                <motion.div
-                                    key={group.id}
-                                    initial={{ opacity: 0, y: 40 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.08, duration: 0.8, ease: easings.apple }}
-                                    whileHover={{ y: -4, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
-                                    className={`${colors?.bgColor} rounded-2xl p-6 shadow-lg border border-white/50`}
-                                >
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <motion.span
-                                            className="text-3xl"
-                                            whileHover={{ scale: 1.15, rotate: 5 }}
-                                            transition={{ type: 'spring', ...springs.snappy }}
-                                        >
-                                            {group.icon}
-                                        </motion.span>
-                                        <h3 className={`text-lg font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {group.skills.map((skill, skillIndex) => (
-                                            <motion.span
-                                                key={skill.name}
-                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                whileInView={{ opacity: 1, scale: 1 }}
-                                                viewport={{ once: true }}
-                                                transition={{ delay: skillIndex * 0.02, duration: 0.4, ease: easings.apple }}
-                                                whileHover={{ scale: 1.05, boxShadow: '0 6px 15px rgba(0,0,0,0.08)' }}
-                                                className="px-3 py-1.5 bg-white/80 backdrop-blur-sm text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
-                                            >
-                                                {skill.name}
-                                            </motion.span>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                        {skillCategories.map((group, i) => (
+                            <SkillCard
+                                key={group.id}
+                                group={group}
+                                index={i}
+                                smoothProgress={smoothProgress}
+                            />
+                        ))}
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats - animate last */}
                     <motion.div
-                        initial={{ opacity: 0, y: 25 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.9, ease: easings.apple }}
+                        style={{ opacity: statsOpacity, y: statsY }}
                         className="mt-12 flex flex-wrap justify-center gap-12 md:gap-20"
                     >
                         {[
@@ -110,10 +79,6 @@ export default function Skills() {
                             <motion.div
                                 key={stat.label}
                                 className="text-center"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1, duration: 0.7, ease: easings.apple }}
                                 whileHover={{ scale: 1.05 }}
                             >
                                 <div className={`text-4xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
@@ -132,5 +97,94 @@ export default function Skills() {
                 </div>
             </div>
         </section>
+    );
+}
+
+// Individual skill card with scroll animation
+function SkillCard({
+    group,
+    index,
+    smoothProgress
+}: {
+    group: typeof skillCategories[0];
+    index: number;
+    smoothProgress: MotionValue<number>;
+}) {
+    const defaultColor = { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
+    const colors = colorMap[group.id] ?? defaultColor;
+
+    // Staggered animation based on index
+    const startProgress = 0.15 + (index * 0.1);
+    const endProgress = startProgress + 0.15;
+
+    const opacity = useTransform(smoothProgress, [startProgress, endProgress], [0, 1]);
+    const y = useTransform(smoothProgress, [startProgress, endProgress], [40, 0]);
+    const scale = useTransform(smoothProgress, [startProgress, endProgress], [0.92, 1]);
+
+    // Alternate direction for visual interest
+    const x = useTransform(
+        smoothProgress,
+        [startProgress, endProgress],
+        [index % 2 === 0 ? -30 : 30, 0]
+    );
+
+    return (
+        <motion.div
+            style={{ opacity, y, scale, x }}
+            whileHover={{ y: -4, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
+            className={`${colors?.bgColor} rounded-2xl p-6 shadow-lg border border-white/50`}
+        >
+            <div className="flex items-center gap-3 mb-4">
+                <motion.span
+                    className="text-3xl"
+                    whileHover={{ scale: 1.15, rotate: 5 }}
+                    transition={{ type: 'spring', ...springs.snappy }}
+                >
+                    {group.icon}
+                </motion.span>
+                <h3 className={`text-lg font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {group.skills.map((skill, skillIndex) => (
+                    <SkillTag
+                        key={skill.name}
+                        name={skill.name}
+                        skillIndex={skillIndex}
+                        cardStartProgress={startProgress}
+                        smoothProgress={smoothProgress}
+                    />
+                ))}
+            </div>
+        </motion.div>
+    );
+}
+
+// Individual skill tag with micro-animation
+function SkillTag({
+    name,
+    skillIndex,
+    cardStartProgress,
+    smoothProgress
+}: {
+    name: string;
+    skillIndex: number;
+    cardStartProgress: number;
+    smoothProgress: MotionValue<number>;
+}) {
+    // Skills within each card animate with a micro-stagger
+    const tagStart = cardStartProgress + 0.08 + (skillIndex * 0.01);
+    const tagEnd = tagStart + 0.1;
+
+    const opacity = useTransform(smoothProgress, [tagStart, tagEnd], [0, 1]);
+    const scale = useTransform(smoothProgress, [tagStart, tagEnd], [0.8, 1]);
+
+    return (
+        <motion.span
+            style={{ opacity, scale }}
+            whileHover={{ scale: 1.05, boxShadow: '0 6px 15px rgba(0,0,0,0.08)' }}
+            className="px-3 py-1.5 bg-white/80 backdrop-blur-sm text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
+        >
+            {name}
+        </motion.span>
     );
 }

@@ -1,14 +1,13 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import { stats, certificates } from '@/lib/constants';
-import { easings, springs } from '@/lib/animations';
+import { springs } from '@/lib/animations';
 
 export default function About() {
     const targetRef = useRef<HTMLDivElement>(null);
 
-    // Same pattern as Experience/Certificates
     const { scrollYProgress } = useScroll({ target: targetRef });
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
 
@@ -19,6 +18,16 @@ export default function About() {
         { value: `${stats[0]?.value || 17}+`, label: 'GitHub Projects', color: 'from-amber-400 to-orange-500', icon: '📦' },
         { value: `${certificates.length}+`, label: 'Certifications', color: 'from-teal-400 to-emerald-500', icon: '🏆' },
     ];
+
+    // Scroll-driven animations for different elements
+    const headerOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
+    const headerY = useTransform(smoothProgress, [0, 0.15], [30, 0]);
+
+    const leftContentOpacity = useTransform(smoothProgress, [0.1, 0.35], [0, 1]);
+    const leftContentX = useTransform(smoothProgress, [0.1, 0.35], [-50, 0]);
+
+    const rightContentOpacity = useTransform(smoothProgress, [0.2, 0.45], [0, 1]);
+    const rightContentX = useTransform(smoothProgress, [0.2, 0.45], [50, 0]);
 
     return (
         <section
@@ -50,13 +59,10 @@ export default function About() {
                     />
                 </div>
 
-                <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
-                    {/* Section header */}
+                <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full">
+                    {/* Section header - animates first */}
                     <motion.div
-                        initial={{ opacity: 0, y: 25 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.9, ease: easings.apple }}
+                        style={{ opacity: headerOpacity, y: headerY }}
                         className="mb-12"
                     >
                         <span className="text-sky-500 text-sm font-bold tracking-[0.3em]">01 — ABOUT ME</span>
@@ -67,12 +73,9 @@ export default function About() {
 
                     {/* Content Grid */}
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-                        {/* Left: Story */}
+                        {/* Left: Story - slides in from left */}
                         <motion.div
-                            initial={{ opacity: 0, x: -40 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.9, ease: easings.apple }}
+                            style={{ opacity: leftContentOpacity, x: leftContentX }}
                             className="space-y-5"
                         >
                             <div className="relative">
@@ -117,28 +120,18 @@ export default function About() {
                             </div>
                         </motion.div>
 
-                        {/* Right: Stats */}
+                        {/* Right: Stats - slides in from right with stagger */}
                         <motion.div
-                            initial={{ opacity: 0, x: 40 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.9, ease: easings.apple, delay: 0.15 }}
+                            style={{ opacity: rightContentOpacity, x: rightContentX }}
                             className="grid grid-cols-2 gap-4"
                         >
                             {aboutStats.map((stat, i) => (
-                                <motion.div
+                                <StatCard
                                     key={stat.label}
-                                    initial={{ opacity: 0, y: 25 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.08, duration: 0.8, ease: easings.apple }}
-                                    whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
-                                    className="bg-white rounded-2xl p-5 border border-stone-100 shadow-lg"
-                                >
-                                    <span className="text-2xl mb-2 block">{stat.icon}</span>
-                                    <div className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
-                                    <div className="text-stone-500 text-sm mt-1 font-medium">{stat.label}</div>
-                                </motion.div>
+                                    stat={stat}
+                                    index={i}
+                                    smoothProgress={smoothProgress}
+                                />
                             ))}
                         </motion.div>
                     </div>
@@ -153,5 +146,36 @@ export default function About() {
                 </div>
             </div>
         </section>
+    );
+}
+
+// Stat card with individual animation
+function StatCard({
+    stat,
+    index,
+    smoothProgress
+}: {
+    stat: { value: string; label: string; color: string; icon: string };
+    index: number;
+    smoothProgress: MotionValue<number>;
+}) {
+    // Each stat animates in with a stagger
+    const startProgress = 0.35 + (index * 0.08);
+    const endProgress = startProgress + 0.15;
+
+    const opacity = useTransform(smoothProgress, [startProgress, endProgress], [0, 1]);
+    const y = useTransform(smoothProgress, [startProgress, endProgress], [30, 0]);
+    const scale = useTransform(smoothProgress, [startProgress, endProgress], [0.9, 1]);
+
+    return (
+        <motion.div
+            style={{ opacity, y, scale }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+            className="bg-white rounded-2xl p-5 border border-stone-100 shadow-lg"
+        >
+            <span className="text-2xl mb-2 block">{stat.icon}</span>
+            <div className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
+            <div className="text-stone-500 text-sm mt-1 font-medium">{stat.label}</div>
+        </motion.div>
     );
 }
