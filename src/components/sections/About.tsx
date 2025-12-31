@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { about, stats, certificates } from '@/lib/constants';
+import { easings, springs } from '@/lib/animations';
 
 export default function About() {
     const ref = useRef<HTMLDivElement>(null);
@@ -11,8 +12,9 @@ export default function About() {
         offset: ['start end', 'end start'],
     });
 
-    const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-    const y = useTransform(scrollYProgress, [0, 0.3], [80, 0]);
+    const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+    const opacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
+    const y = useTransform(smoothProgress, [0, 0.3], [60, 0]);
 
     // Compute dynamic stats
     const aboutStats = [
@@ -36,17 +38,17 @@ export default function About() {
 
                 {/* Floating shapes */}
                 <motion.div
-                    animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+                    animate={{ y: [0, -15, 0], rotate: [0, 4, 0] }}
                     transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
                     className="absolute top-32 left-[15%] w-16 h-16 bg-gradient-to-br from-sky-200/50 to-blue-200/50 rounded-2xl blur-sm"
                 />
                 <motion.div
-                    animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }}
+                    animate={{ y: [0, 12, 0], rotate: [0, -6, 0] }}
                     transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
                     className="absolute bottom-40 right-[20%] w-20 h-20 bg-gradient-to-br from-amber-200/50 to-orange-200/50 rounded-full blur-sm"
                 />
                 <motion.div
-                    animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
+                    animate={{ scale: [1, 1.08, 1], rotate: [0, 8, 0] }}
                     transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
                     className="absolute top-1/3 right-[10%] w-12 h-12 bg-gradient-to-br from-violet-200/50 to-purple-200/50 rounded-xl blur-sm"
                 />
@@ -55,9 +57,10 @@ export default function About() {
             <motion.div style={{ opacity, y }} className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
                 {/* Section header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, margin: '-10% 0px' }}
+                    transition={{ duration: 0.9, ease: easings.apple }}
                     className="mb-16"
                 >
                     <span className="text-sky-500 text-sm font-bold tracking-[0.3em]">01 — ABOUT ME</span>
@@ -70,10 +73,10 @@ export default function About() {
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
                     {/* Left: Story */}
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
+                        initial={{ opacity: 0, x: -40 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true, margin: '-10% 0px' }}
+                        transition={{ duration: 0.9, ease: easings.apple }}
                         className="space-y-6"
                     >
                         <div className="relative">
@@ -99,17 +102,19 @@ export default function About() {
                         <div className="flex flex-wrap gap-4 pt-4">
                             <motion.a
                                 href="#contact"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{ scale: 1.03, boxShadow: '0 15px 35px rgba(14, 165, 233, 0.2)' }}
                                 whileTap={{ scale: 0.98 }}
-                                className="px-6 py-3 bg-gradient-to-r from-sky-500 to-violet-500 text-white font-semibold rounded-full shadow-lg shadow-sky-200/50 hover:shadow-xl transition-shadow"
+                                transition={{ type: 'spring', ...springs.snappy }}
+                                className="px-6 py-3 bg-gradient-to-r from-sky-500 to-violet-500 text-white font-semibold rounded-full shadow-lg shadow-sky-200/50"
                             >
                                 Let's Connect →
                             </motion.a>
                             <motion.a
                                 href="#experience"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{ scale: 1.03, borderColor: '#a8a29e' }}
                                 whileTap={{ scale: 0.98 }}
-                                className="px-6 py-3 border-2 border-stone-200 text-stone-700 font-semibold rounded-full hover:border-stone-300 transition-colors"
+                                transition={{ type: 'spring', ...springs.snappy }}
+                                className="px-6 py-3 border-2 border-stone-200 text-stone-700 font-semibold rounded-full"
                             >
                                 View Journey
                             </motion.a>
@@ -118,21 +123,21 @@ export default function About() {
 
                     {/* Right: Stats */}
                     <motion.div
-                        initial={{ opacity: 0, x: 50 }}
+                        initial={{ opacity: 0, x: 40 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
+                        viewport={{ once: true, margin: '-10% 0px' }}
+                        transition={{ duration: 0.9, ease: easings.apple, delay: 0.15 }}
                         className="grid grid-cols-2 gap-4"
                     >
                         {aboutStats.map((stat, i) => (
                             <motion.div
                                 key={stat.label}
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 0, y: 25 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                                whileHover={{ y: -5, scale: 1.02 }}
-                                className="bg-white rounded-2xl p-6 border border-stone-100 shadow-lg hover:shadow-xl transition-all"
+                                transition={{ delay: i * 0.08, duration: 0.8, ease: easings.apple }}
+                                whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+                                className="bg-white rounded-2xl p-6 border border-stone-100 shadow-lg transition-shadow duration-400"
                             >
                                 <span className="text-3xl mb-3 block">{stat.icon}</span>
                                 <div className={`text-4xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>

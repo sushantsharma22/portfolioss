@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { experience } from '@/lib/constants';
+import { easings, springs } from '@/lib/animations';
 
 const colorMap = [
     { color: 'from-sky-400 to-blue-500', accent: 'sky' },
@@ -21,11 +22,7 @@ export default function Experience() {
         offset: ['start start', 'end end'],
     });
 
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 400,
-        damping: 50,
-        restDelta: 0.0001
-    });
+    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
 
     useEffect(() => {
         const unsubscribe = smoothProgress.on('change', (latest) => {
@@ -60,7 +57,7 @@ export default function Experience() {
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 0.9, ease: easings.apple }}
                     className="absolute top-16 left-8 md:left-16 z-30"
                 >
                     <span className="text-amber-600 text-xs md:text-sm font-bold tracking-[0.3em]">02 — EXPERIENCE</span>
@@ -89,9 +86,10 @@ export default function Experience() {
                                 initial={false}
                                 animate={{
                                     opacity: isActive ? 1 : 0,
-                                    scale: isActive ? 1 : 0.92,
+                                    scale: isActive ? 1 : 0.94,
+                                    y: isActive ? 0 : 20,
                                 }}
-                                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                                transition={{ duration: 0.6, ease: easings.apple }}
                                 style={{ pointerEvents: isActive ? 'auto' : 'none' }}
                             >
                                 <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100/80">

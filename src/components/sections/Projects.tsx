@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { projects } from '@/lib/constants';
+import { easings, springs } from '@/lib/animations';
 
 export default function Projects() {
     const ref = useRef<HTMLDivElement>(null);
@@ -11,8 +12,9 @@ export default function Projects() {
         offset: ['start end', 'end start'],
     });
 
-    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const scale = useTransform(scrollYProgress, [0, 0.2], [0.95, 1]);
+    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
+    const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.2], [0.97, 1]);
 
     const colorMap: Record<string, string> = {
         'ai-ml': 'from-violet-500 to-purple-600',
@@ -33,10 +35,10 @@ export default function Projects() {
             <motion.div style={{ opacity, scale }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
                 {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 50 }}
+                    initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
+                    viewport={{ once: true, margin: '-10% 0px' }}
+                    transition={{ duration: 0.9, ease: easings.apple }}
                     className="text-center mb-16"
                 >
                     <span className="text-sky-500 text-sm font-bold tracking-[0.3em]">03 — WORK</span>
@@ -54,17 +56,24 @@ export default function Projects() {
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            initial={{ opacity: 0, y: 50 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: '-50px' }}
-                            transition={{ delay: i * 0.08, duration: 0.6 }}
-                            whileHover={{ y: -8 }}
-                            className={`group relative bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-lg hover:shadow-2xl transition-all duration-500 ${project.featured ? 'ring-2 ring-amber-200/50' : ''}`}
+                            transition={{ delay: i * 0.06, duration: 0.8, ease: easings.apple }}
+                            whileHover={{ y: -8, scale: 1.02, boxShadow: '0 25px 50px rgba(0,0,0,0.12)' }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`group relative bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-lg transition-colors duration-400 ${project.featured ? 'ring-2 ring-amber-200/50' : ''}`}
                         >
                             {/* Gradient header */}
                             <div className={`h-24 md:h-28 bg-gradient-to-br ${colorMap[project.category] || 'from-stone-500 to-stone-600'} relative overflow-hidden`}>
                                 <div className="absolute inset-0 bg-black/10" />
-                                <span className="absolute top-4 right-4 text-4xl md:text-5xl opacity-80">{project.icon}</span>
+                                <motion.span 
+                                    className="absolute top-4 right-4 text-4xl md:text-5xl opacity-80"
+                                    whileHover={{ scale: 1.1, rotate: 5 }}
+                                    transition={{ type: 'spring', ...springs.snappy }}
+                                >
+                                    {project.icon}
+                                </motion.span>
                                 {project.featured && (
                                     <span className="absolute top-4 left-4 px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
                                         ⭐ Featured
@@ -73,7 +82,7 @@ export default function Projects() {
                             </div>
 
                             <div className="p-6">
-                                <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-sky-600 transition-all duration-300">
+                                <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-sky-600 transition-all duration-400">
                                     {project.title}
                                 </h3>
                                 <p className="text-stone-500 text-sm mb-4 leading-relaxed">{project.description}</p>
@@ -91,21 +100,24 @@ export default function Projects() {
 
                 {/* CTA */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
+                    transition={{ delay: 0.3, duration: 0.8, ease: easings.apple }}
                     className="text-center mt-12"
                 >
-                    <a
+                    <motion.a
                         href="https://github.com/sushantsharma22"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white font-semibold rounded-full hover:bg-stone-800 transition-colors"
+                        whileHover={{ scale: 1.03, boxShadow: '0 15px 30px rgba(0,0,0,0.15)' }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: 'spring', ...springs.snappy }}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white font-semibold rounded-full"
                     >
                         <span>View All on GitHub</span>
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                    </a>
+                    </motion.a>
                 </motion.div>
             </motion.div>
 

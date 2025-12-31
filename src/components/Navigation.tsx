@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
+import { easings, springs } from '@/lib/animations';
 
 const navLinks = [
   { name: 'Home', href: '#hero' },
@@ -77,8 +78,8 @@ export default function Navigation() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/70 backdrop-blur-xl border-b border-stone-200/50' : 'bg-transparent'}`}
+            transition={{ duration: 0.6, ease: easings.apple }}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/70 backdrop-blur-xl border-b border-stone-200/50' : 'bg-transparent'}`}
           >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
@@ -128,14 +129,15 @@ export default function Navigation() {
             className="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col items-center justify-center h-full gap-8">
-              {navLinks.map((link) => (
+              {navLinks.map((link, i) => (
                 <motion.a
                   key={link.name}
                   href={link.href}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 25 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.6, ease: easings.apple }}
                   onClick={() => setIsOpen(false)}
-                  className="text-3xl font-bold text-stone-800 hover:text-sky-500 transition-colors"
+                  className="text-3xl font-bold text-stone-800 hover:text-sky-500 transition-colors duration-300"
                 >
                   {link.name}
                 </motion.a>

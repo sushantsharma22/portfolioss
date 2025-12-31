@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { certificates } from '@/lib/constants';
+import { easings, springs } from '@/lib/animations';
 
 const colorMap = [
     'from-sky-400 to-blue-500',
@@ -47,7 +48,8 @@ const highlightedProviders = ['Stanford University (Coursera)', 'deeplearning.ai
 export default function Certificates() {
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({ target: targetRef });
-    const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%']);
+    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
+    const x = useTransform(smoothProgress, [0, 1], ['0%', '-75%']);
 
     return (
         <section ref={targetRef} className="relative h-[350vh]" id="certificates">
@@ -61,10 +63,10 @@ export default function Certificates() {
 
                 {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 0.9, ease: easings.apple }}
                     className="absolute top-16 left-8 md:left-20 z-10"
                 >
                     <span className="text-amber-600 text-sm font-bold tracking-[0.3em]">06 — CERTIFICATIONS</span>
@@ -87,21 +89,28 @@ export default function Certificates() {
                                 href={cert.credentialUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 0, y: 25 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: i * 0.02, duration: 0.5 }}
-                                whileHover={{ y: -8 }}
-                                className={`relative w-[340px] md:w-[420px] h-[260px] md:h-[300px] rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all duration-500 cursor-pointer overflow-hidden ${isHighlight
+                                transition={{ delay: i * 0.02, duration: 0.7, ease: easings.apple }}
+                                whileHover={{ y: -10, scale: 1.02, boxShadow: '0 30px 60px rgba(0,0,0,0.12)' }}
+                                whileTap={{ scale: 0.98 }}
+                                className={`relative w-[340px] md:w-[420px] h-[260px] md:h-[300px] rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-colors duration-400 cursor-pointer overflow-hidden ${isHighlight
                                         ? 'bg-gradient-to-br from-stone-50 to-sky-50 border-2 border-sky-200/50 shadow-xl shadow-sky-100/30'
-                                        : 'bg-white border border-stone-100 shadow-lg hover:shadow-xl'
+                                        : 'bg-white border border-stone-100 shadow-lg'
                                     }`}
                             >
                                 {/* Gradient accent */}
                                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${color}`} />
 
                                 <div className="flex justify-between items-start">
-                                    <span className="text-5xl">{icon}</span>
+                                    <motion.span 
+                                        className="text-5xl"
+                                        whileHover={{ scale: 1.15, rotate: 5 }}
+                                        transition={{ type: 'spring', ...springs.snappy }}
+                                    >
+                                        {icon}
+                                    </motion.span>
                                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-500 border border-stone-200">
                                         Verified
                                     </span>
@@ -115,7 +124,11 @@ export default function Certificates() {
                                 </div>
 
                                 {isHighlight && (
-                                    <div className="absolute top-6 right-6 w-2 h-2 bg-amber-400 rounded-full shadow-lg shadow-amber-300" />
+                                    <motion.div 
+                                        className="absolute top-6 right-6 w-2 h-2 bg-amber-400 rounded-full shadow-lg shadow-amber-300"
+                                        animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                                    />
                                 )}
                             </motion.a>
                         );
@@ -124,7 +137,7 @@ export default function Certificates() {
 
                 {/* Progress bar */}
                 <div className="absolute bottom-16 left-8 md:left-20 right-8 md:right-20 h-1 bg-stone-200/50 rounded-full overflow-hidden">
-                    <motion.div style={{ scaleX: scrollYProgress }} className="h-full bg-gradient-to-r from-sky-500 to-amber-500 origin-left" />
+                    <motion.div style={{ scaleX: smoothProgress }} className="h-full bg-gradient-to-r from-sky-500 to-amber-500 origin-left" />
                 </div>
             </div>
         </section>

@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { personalInfo, socialLinks, contactInfo } from '@/lib/constants';
+import { easings, springs } from '@/lib/animations';
 
 const iconMap: Record<string, string> = {
     linkedin: '💼',
@@ -17,8 +18,9 @@ export default function Contact() {
         offset: ['start end', 'end start'],
     });
 
-    const scale = useTransform(scrollYProgress, [0, 0.3], [0.95, 1]);
-    const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
+    const scale = useTransform(smoothProgress, [0, 0.3], [0.97, 1]);
+    const opacity = useTransform(smoothProgress, [0, 0.3], [0, 1]);
 
     // Find location from contactInfo
     const locationInfo = contactInfo.find(c => c.type === 'location');
@@ -32,16 +34,18 @@ export default function Contact() {
                 <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, margin: '-10% 0px' }}
+                    transition={{ duration: 0.8, ease: easings.apple }}
                     className="text-amber-600 text-sm font-medium tracking-[0.3em]"
                 >
                     07 — GET IN TOUCH
                 </motion.span>
 
                 <motion.h2
-                    initial={{ opacity: 0, y: 60 }}
+                    initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.9, ease: easings.apple, delay: 0.1 }}
                     className="text-4xl md:text-6xl lg:text-7xl font-black text-stone-800 mt-6 tracking-tight leading-[1.1]"
                 >
                     Let&apos;s Build
@@ -52,9 +56,10 @@ export default function Contact() {
                 </motion.h2>
 
                 <motion.p
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 35 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: easings.apple, delay: 0.2 }}
                     className="text-stone-500 text-lg md:text-xl mt-8 max-w-2xl mx-auto"
                 >
                     Available for full-time opportunities, collaborations, and exciting AI projects.
@@ -62,10 +67,12 @@ export default function Contact() {
 
                 <motion.a
                     href={`mailto:${personalInfo.email}`}
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 35 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    whileHover={{ scale: 1.03, y: -3 }}
+                    transition={{ duration: 0.8, ease: easings.apple, delay: 0.3 }}
+                    whileHover={{ scale: 1.03, y: -4, boxShadow: '0 20px 40px rgba(14, 165, 233, 0.3)' }}
+                    whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center gap-4 mt-12 px-8 py-5 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-lg md:text-xl font-semibold rounded-full shadow-xl"
                 >
                     <span>📧</span>
@@ -74,19 +81,25 @@ export default function Contact() {
                 </motion.a>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: easings.apple, delay: 0.4 }}
                     className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12"
                 >
-                    {socialLinks.map((link) => (
+                    {socialLinks.map((link, i) => (
                         <motion.a
                             key={link.platform}
                             href={link.href}
                             target={link.href.startsWith('http') ? '_blank' : undefined}
                             rel="noopener noreferrer"
-                            whileHover={{ y: -5, scale: 1.05 }}
-                            className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
+                            initial={{ opacity: 0, y: 15 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.5 + i * 0.05, duration: 0.6, ease: easings.apple }}
+                            whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                         >
                             <span className="text-xl">{iconMap[link.icon] || '🔗'}</span>
                             <span className="text-sm font-medium">{link.platform}</span>
@@ -95,8 +108,13 @@ export default function Contact() {
                     {/* Add phone link */}
                     <motion.a
                         href={`tel:${personalInfo.phone.replace(/[^+\d]/g, '')}`}
-                        whileHover={{ y: -5, scale: 1.05 }}
-                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.65, duration: 0.6, ease: easings.apple }}
+                        whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                     >
                         <span className="text-xl">📞</span>
                         <span className="text-sm font-medium">Phone</span>
@@ -106,8 +124,13 @@ export default function Contact() {
                         href={personalInfo.portfolio}
                         target="_blank"
                         rel="noopener noreferrer"
-                        whileHover={{ y: -5, scale: 1.05 }}
-                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 hover:shadow-md transition-all"
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.7, duration: 0.6, ease: easings.apple }}
+                        whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                     >
                         <span className="text-xl">🌐</span>
                         <span className="text-sm font-medium">Portfolio</span>
@@ -118,6 +141,7 @@ export default function Contact() {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
+                    transition={{ delay: 0.8, duration: 0.8, ease: easings.apple }}
                     className="mt-16 flex flex-col items-center gap-4"
                 >
                     <div className="flex items-center gap-3 text-stone-500">
@@ -125,7 +149,7 @@ export default function Contact() {
                         <span>{locationInfo?.value || personalInfo.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-3 h-3 bg-green-400 rounded-full" />
+                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} className="w-3 h-3 bg-green-400 rounded-full" />
                         <span className="text-green-600 font-medium">{personalInfo.availability}</span>
                     </div>
                 </motion.div>
