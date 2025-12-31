@@ -68,15 +68,15 @@ function useActiveSection() {
 }
 
 // Progress counter component
-const ProgressCounter = memo(function ProgressCounter({ 
-    progress 
-}: { 
-    progress: number 
+const ProgressCounter = memo(function ProgressCounter({
+    progress
+}: {
+    progress: number
 }) {
     const percentage = Math.round(progress * 100);
-    
+
     return (
-        <motion.div 
+        <motion.div
             className="mb-6 text-center"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -90,15 +90,15 @@ const ProgressCounter = memo(function ProgressCounter({
 });
 
 // Active indicator ring with pulse animation
-const ActiveIndicator = memo(function ActiveIndicator({ 
+const ActiveIndicator = memo(function ActiveIndicator({
     color,
-    isActive 
-}: { 
+    isActive
+}: {
     color: string;
     isActive: boolean;
 }) {
     if (!isActive) return null;
-    
+
     return (
         <>
             {/* Outer pulse ring */}
@@ -106,7 +106,7 @@ const ActiveIndicator = memo(function ActiveIndicator({
                 className="absolute inset-0 rounded-full"
                 style={{ backgroundColor: color }}
                 initial={{ scale: 1, opacity: 0.4 }}
-                animate={{ 
+                animate={{
                     scale: [1, 1.8, 2.2],
                     opacity: [0.4, 0.2, 0],
                 }}
@@ -119,12 +119,12 @@ const ActiveIndicator = memo(function ActiveIndicator({
             {/* Inner glow */}
             <motion.div
                 className="absolute inset-0 rounded-full"
-                style={{ 
+                style={{
                     backgroundColor: color,
                     filter: 'blur(4px)',
                 }}
                 initial={{ scale: 1, opacity: 0.6 }}
-                animate={{ 
+                animate={{
                     scale: [1, 1.3, 1],
                     opacity: [0.6, 0.3, 0.6],
                 }}
@@ -139,15 +139,15 @@ const ActiveIndicator = memo(function ActiveIndicator({
 });
 
 // Ripple effect component for click animation
-const ClickRipple = memo(function ClickRipple({ 
-    isAnimating, 
-    color 
-}: { 
+const ClickRipple = memo(function ClickRipple({
+    isAnimating,
+    color
+}: {
     isAnimating: boolean;
     color: string;
 }) {
     if (!isAnimating) return null;
-    
+
     return (
         <motion.div
             className="absolute inset-0 rounded-full"
@@ -160,12 +160,12 @@ const ClickRipple = memo(function ClickRipple({
 });
 
 // Premium chapter dot component with magnetic hover
-const ChapterDot = memo(function ChapterDot({ 
+const ChapterDot = memo(function ChapterDot({
     chapter,
     isActive,
     index,
     onNavigate,
-}: { 
+}: {
     chapter: ChapterType;
     isActive: boolean;
     index: number;
@@ -174,11 +174,11 @@ const ChapterDot = memo(function ChapterDot({
     const [isHovered, setIsHovered] = useState(false);
     const [isRippling, setIsRippling] = useState(false);
     const dotRef = useRef<HTMLAnchorElement>(null);
-    
+
     // Magnetic effect
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    
+
     const handleMouseMove = useCallback((e: React.MouseEvent) => {
         if (!dotRef.current) return;
         const rect = dotRef.current.getBoundingClientRect();
@@ -189,7 +189,7 @@ const ChapterDot = memo(function ChapterDot({
         x.set(deltaX);
         y.set(deltaY);
     }, [x, y]);
-    
+
     const handleMouseLeave = useCallback(() => {
         setIsHovered(false);
         x.set(0);
@@ -200,33 +200,33 @@ const ChapterDot = memo(function ChapterDot({
         e.preventDefault();
         setIsRippling(true);
         setTimeout(() => setIsRippling(false), 600);
-        
+
         // Get current dot position for particle trail
         if (dotRef.current) {
             const rect = dotRef.current.getBoundingClientRect();
-            const fromPos = { 
-                x: rect.left + rect.width / 2, 
-                y: rect.top + rect.height / 2 
+            const fromPos = {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
             };
-            
+
             // Find target dot position
             const targetElement = document.querySelector(`[data-chapter-index="${index}"]`);
             const targetRect = targetElement?.getBoundingClientRect();
-            const toPos = targetRect 
+            const toPos = targetRect
                 ? { x: targetRect.left + targetRect.width / 2, y: targetRect.top + targetRect.height / 2 }
                 : fromPos;
-            
+
             // Trigger particle animation (will be handled by parent)
-            const activeIndex = chapters.findIndex(c => 
-                document.getElementById(c.id)?.getBoundingClientRect().top === 0 || 
+            const activeIndex = chapters.findIndex(c =>
+                document.getElementById(c.id)?.getBoundingClientRect().top === 0 ||
                 (document.getElementById(c.id)?.getBoundingClientRect().top || 0) < window.innerHeight / 2
             );
-            
+
             if (activeIndex !== index) {
                 onNavigate(activeIndex >= 0 ? activeIndex : 0, index, fromPos, toPos);
             }
         }
-        
+
         const element = document.getElementById(chapter.id);
         if (element) {
             // Use Lenis for faster, smoother scroll
@@ -263,7 +263,7 @@ const ChapterDot = memo(function ChapterDot({
             data-chapter-index={index}
         >
             {/* Main dot container */}
-            <motion.div 
+            <motion.div
                 className="relative flex items-center justify-center"
                 animate={{
                     scale: isActive ? 1 : isHovered ? 1.6 : 1,
@@ -272,24 +272,24 @@ const ChapterDot = memo(function ChapterDot({
             >
                 {/* Active indicator rings */}
                 <ActiveIndicator color={chapter.color} isActive={isActive} />
-                
+
                 {/* Click ripple */}
                 <ClickRipple isAnimating={isRippling} color={chapter.color} />
-                
+
                 {/* Dot background */}
-                <motion.div 
+                <motion.div
                     className={`relative z-10 rounded-full flex items-center justify-center transition-colors duration-300`}
                     style={{
                         width: isActive ? 36 : isHovered ? 32 : 10,
                         height: isActive ? 36 : isHovered ? 32 : 10,
-                        background: isActive || isHovered 
+                        background: isActive || isHovered
                             ? `linear-gradient(135deg, ${chapter.color}, ${chapter.color}dd)`
                             : '#d6d3d1',
-                        boxShadow: isActive 
+                        boxShadow: isActive
                             ? `0 0 20px ${chapter.color}60, 0 4px 12px ${chapter.color}40`
-                            : isHovered 
-                            ? `0 0 15px ${chapter.color}40`
-                            : 'none',
+                            : isHovered
+                                ? `0 0 15px ${chapter.color}40`
+                                : 'none',
                     }}
                     animate={{
                         opacity: isActive ? 1 : isHovered ? 1 : 0.5,
@@ -316,16 +316,16 @@ const ChapterDot = memo(function ChapterDot({
             {/* Label - slides in from right */}
             <AnimatePresence>
                 {isHovered && (
-                    <motion.div 
+                    <motion.div
                         className="absolute right-12 flex items-center gap-2 whitespace-nowrap pointer-events-none"
                         initial={{ opacity: 0, x: 16 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 10 }}
                         transition={{ duration: 0.3, ease: easings.magnetic }}
                     >
-                        <span 
+                        <span
                             className="px-3 py-1.5 rounded-full text-sm font-semibold text-white shadow-lg"
-                            style={{ 
+                            style={{
                                 background: `linear-gradient(135deg, ${chapter.color}, ${chapter.color}cc)`,
                                 boxShadow: `0 4px 12px ${chapter.color}40`,
                             }}
@@ -346,7 +346,7 @@ const ChapterDot = memo(function ChapterDot({
 function JourneyWrapper({ children }: JourneyWrapperProps) {
     const { scrollYProgress } = useScroll();
     const activeSection = useActiveSection();
-    
+
     // Particle trail state
     const [particleState, setParticleState] = useState<{
         startPos: { x: number; y: number } | null;
@@ -361,28 +361,28 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
         endColor: '#0ea5e9',
         trigger: 0,
     });
-    
+
     // Handle navigation with particle effect
     const handleNavigate = useCallback((
-        fromIndex: number, 
-        toIndex: number, 
-        fromPos: { x: number; y: number }, 
+        fromIndex: number,
+        toIndex: number,
+        fromPos: { x: number; y: number },
         toPos: { x: number; y: number }
     ) => {
         const fromChapter = chapters[fromIndex];
         const toChapter = chapters[toIndex];
-        
+
         // Calculate target dot position
         const dotElements = document.querySelectorAll('[data-chapter-dot]');
         const targetDot = dotElements[toIndex] as HTMLElement;
-        
+
         if (targetDot) {
             const targetRect = targetDot.getBoundingClientRect();
             const endPos = {
                 x: targetRect.left + targetRect.width / 2,
                 y: targetRect.top + targetRect.height / 2,
             };
-            
+
             setParticleState({
                 startPos: fromPos,
                 endPos,
@@ -392,7 +392,7 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
             });
         }
     }, []);
-    
+
     // Smooth spring for progress
     const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -403,7 +403,7 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
     // Transform progress for visual indicator
     const progressValue = useTransform(smoothProgress, [0, 1], [0, 1]);
     const [displayProgress, setDisplayProgress] = useState(0);
-    
+
     useEffect(() => {
         const unsubscribe = progressValue.on('change', (latest) => {
             setDisplayProgress(latest);
@@ -412,110 +412,30 @@ function JourneyWrapper({ children }: JourneyWrapperProps) {
     }, [progressValue]);
 
     // Get active section index
-    const activeIndex = useMemo(() => 
+    const activeIndex = useMemo(() =>
         chapters.findIndex(c => c.id === activeSection),
-    [activeSection]);
+        [activeSection]);
 
     // Get active color
-    const activeColor = useMemo(() => 
+    const activeColor = useMemo(() =>
         chapters[activeIndex]?.color || chapters[0]?.color || '#f59e0b',
-    [activeIndex]);
+        [activeIndex]);
 
     // Memoize chapter dots
-    const chapterDots = useMemo(() => 
+    const chapterDots = useMemo(() =>
         chapters.map((chapter, index) => (
-            <ChapterDot 
-                key={chapter.id} 
+            <ChapterDot
+                key={chapter.id}
                 chapter={chapter}
                 isActive={chapter.id === activeSection}
                 index={index}
                 onNavigate={handleNavigate}
             />
-        )), 
-    [activeSection, handleNavigate]);
+        )),
+        [activeSection, handleNavigate]);
 
     return (
         <div className="relative">
-            {/* Particle Trail Canvas - for journey navigation */}
-            <ParticleTrail
-                startPos={particleState.startPos}
-                endPos={particleState.endPos}
-                startColor={particleState.startColor}
-                endColor={particleState.endColor}
-                trigger={particleState.trigger}
-            />
-            
-            {/* Premium Journey Navigation - Fixed Right Side */}
-            <nav
-                className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-end"
-                aria-label="Page sections"
-            >
-                {/* Glass container */}
-                <motion.div 
-                    className="relative p-4 rounded-2xl"
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.5, ease: easings.apple }}
-                    style={{
-                        background: 'rgba(255, 255, 255, 0.7)',
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
-                        boxShadow: `0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.2)`,
-                    }}
-                >
-                    {/* Progress counter */}
-                    <ProgressCounter progress={displayProgress} />
-                    
-                    {/* Chapter dots */}
-                    <div className="relative flex flex-col items-end">
-                        {chapterDots}
-                        
-                        {/* Progress line (background) - positioned to left of dots */}
-                        <div className="absolute top-4 bottom-4 left-0 w-[2px] bg-stone-200/50 -z-10 rounded-full" />
-                        
-                        {/* Progress line (active) */}
-                        <motion.div
-                            className="absolute top-4 left-0 w-[2px] origin-top rounded-full"
-                            style={{ 
-                                scaleY: smoothProgress,
-                                background: `linear-gradient(180deg, ${chapters[0]?.color || '#f59e0b'}, ${activeColor})`,
-                                height: 'calc(100% - 32px)',
-                                boxShadow: `0 0 10px ${activeColor}40`,
-                            }}
-                        />
-
-                        {/* Active section indicator dot on progress line */}
-                        <motion.div
-                            className="absolute left-[-4px] w-[10px] h-[10px] rounded-full z-20"
-                            style={{
-                                background: activeColor,
-                                boxShadow: `0 0 12px ${activeColor}`,
-                                top: `${16 + (activeIndex / (chapters.length - 1)) * (100 - 32)}%`,
-                            }}
-                            transition={{ type: 'spring', ...springs.smooth }}
-                        />
-                    </div>
-
-                    {/* Current section name at bottom */}
-                    <motion.div 
-                        className="mt-4 pt-4 border-t border-stone-200/50 text-center"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8 }}
-                    >
-                        <motion.span 
-                            key={activeSection}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-xs font-semibold tracking-wider uppercase"
-                            style={{ color: activeColor }}
-                        >
-                            {chapters.find(c => c.id === activeSection)?.name}
-                        </motion.span>
-                    </motion.div>
-                </motion.div>
-            </nav>
-
             {/* Content */}
             <div className="relative">
                 {children}

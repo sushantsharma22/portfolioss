@@ -16,35 +16,132 @@ const colorMap = [
 export default function Experience() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const lastScrollTime = useRef(0);
+    const isLocked = useRef(false);
+    const scrollAccumulator = useRef(0);
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Height: Sufficient to be a section, but lock handles the sticky behavior.
+    const itemHeightVh = 100;
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ['start start', 'end end'],
     });
 
-    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
-
     useEffect(() => {
-        const unsubscribe = smoothProgress.on('change', (latest) => {
-            const index = Math.min(
-                Math.floor(latest * experience.length),
-                experience.length - 1
-            );
-            if (index >= 0) setActiveIndex(index);
-        });
-        return () => unsubscribe();
-    }, [smoothProgress]);
+        setIsMounted(true);
+    }, []);
+
+    // OPTIMIZED SCROLL TRAP
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container || !isMounted) return;
+
+        // Threshold to trigger a card switch (e.g. 50px of virtual scroll)
+        const SCROLL_THRESHOLD = 60;
+
+        // Cooldown between switches (ms)
+        const SWITCH_COOLDOWN = 600;
+
+        const handleWheel = (e: WheelEvent) => {
+            // 1. FAST CHECK: Are we locked?
+            // If we are locked, we skip bounds checks and go straight to logic.
+            // If NOT locked, we check bounds.
+
+            let shouldBeLocked = isLocked.current;
+
+            if (!shouldBeLocked) {
+                const rect = container.getBoundingClientRect();
+                const isAtTop = rect.top <= 2 && rect.top >= -2; // Precise entry
+                const isInside = rect.top <= 0 && rect.bottom >= window.innerHeight;
+
+                // We only engage lock if we are strictly inside the content zone
+                if (isInside) {
+                    shouldBeLocked = true;
+                    isLocked.current = true;
+                    window.lenis?.stop();
+                }
+            }
+
+            if (!shouldBeLocked) return;
+
+            // We are locked. Intercept EVERYTHING.
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 2. Accumulate Delta
+            // Limit delta per event to prevent massive jumps from single frames
+            const delta = Math.sign(e.deltaY) * Math.min(Math.abs(e.deltaY), 100);
+            scrollAccumulator.current += delta;
+
+            const now = Date.now();
+            const timeSinceLast = now - lastScrollTime.current;
+
+            // 3. Check Threshold
+            if (Math.abs(scrollAccumulator.current) > SCROLL_THRESHOLD && timeSinceLast > SWITCH_COOLDOWN) {
+                const direction = Math.sign(scrollAccumulator.current);
+                const nextIndex = activeIndex + direction;
+
+                // CHECK BOUNDARIES for EXIT
+                if (nextIndex < 0) {
+                    // Exiting UP
+                    isLocked.current = false;
+                    window.lenis?.start();
+                    // No state update, just let go.
+                    // We might need to manually scroll lenis up a tiny bit to escape the trap zone?
+                    // Usually preventing default stops the scroll, so we are still at 0.
+                    // The USER has to scroll again to move up. 
+                    // OR we can manually nudge:
+                    return;
+                }
+
+                if (nextIndex >= experience.length) {
+                    // Exiting DOWN
+                    isLocked.current = false;
+                    window.lenis?.start();
+                    return;
+                }
+
+                // VALID SWITCH
+                setActiveIndex(nextIndex);
+                lastScrollTime.current = now;
+                scrollAccumulator.current = 0; // Reset bucket
+            }
+
+            // Decay/Reset accumulator if user stops scrolling?
+            // Or simple approach: just keep growing until threshold.
+            // But if user scrolls up then down, we should cancel out. (Already happens with +delta)
+        };
+
+        // Passive false for preventDefault
+        window.addEventListener('wheel', handleWheel, { passive: false });
+
+        return () => {
+            window.removeEventListener('wheel', handleWheel);
+            window.lenis?.start(); // Safety unlock
+        };
+    }, [activeIndex, isMounted]);
+
+    const colorMap = [
+        { color: 'from-sky-400 to-blue-500', accent: 'sky' },
+        { color: 'from-teal-400 to-emerald-500', accent: 'teal' },
+        { color: 'from-amber-400 to-orange-500', accent: 'amber' },
+        { color: 'from-rose-400 to-pink-500', accent: 'rose' },
+        { color: 'from-violet-400 to-purple-500', accent: 'violet' },
+    ];
 
     return (
         <section
             id="experience"
             ref={containerRef}
             className="relative"
-            style={{ height: `${experience.length * 100}vh` }}
+            style={{ height: `${experience.length * itemHeightVh}vh` }}
         >
             {/* Gradient transition from About */}
             <div className="absolute inset-0 bg-gradient-to-b from-white via-stone-50 to-stone-100" />
 
+            {/* Content is STICKY - it stays fixed while the container scrolls (or while we fake scroll) */}
             <div className="sticky top-0 h-screen overflow-hidden">
                 {/* Premium backdrop */}
                 <div className="absolute inset-0 bg-stone-50" />
@@ -150,8 +247,8 @@ export default function Experience() {
                             <div key={exp.id} className="flex items-center gap-3">
                                 <div
                                     className={`rounded-full transition-all duration-300 ${i === activeIndex
-                                            ? `w-3 h-8 bg-gradient-to-b ${colors?.color}`
-                                            : 'w-2 h-2 bg-stone-300'
+                                        ? `w-3 h-8 bg-gradient-to-b ${colors?.color}`
+                                        : 'w-2 h-2 bg-stone-300'
                                         }`}
                                 />
                                 {i === activeIndex && (
