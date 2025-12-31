@@ -79,7 +79,7 @@ export default function Experience() {
                 {/* Cards */}
                 <div className="absolute inset-0 flex items-center justify-center pt-8">
                     {experience.map((exp, index) => {
-                        const colors = colorMap[index % colorMap.length];
+                        const colors = colorMap[index % colorMap.length] ?? colorMap[0];
                         const isActive = index === activeIndex;
 
                         return (
@@ -96,18 +96,18 @@ export default function Experience() {
                             >
                                 <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100/80">
                                     {/* Gradient top bar */}
-                                    <div className={`h-1.5 bg-gradient-to-r ${colors.color}`} />
+                                    <div className={`h-1.5 bg-gradient-to-r ${colors?.color}`} />
 
                                     <div className="p-8 md:p-12">
                                         {/* Header */}
                                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
                                             <div>
                                                 <div className="flex items-center gap-3 mb-3">
-                                                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${colors.color}`} />
+                                                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${colors?.color}`} />
                                                     <span className="text-stone-400 text-sm font-semibold tracking-wide">{exp.dateRange}</span>
                                                 </div>
                                                 <h3 className="text-3xl md:text-4xl font-bold text-stone-800 mb-2 leading-tight">{exp.title}</h3>
-                                                <p className={`text-xl md:text-2xl font-bold bg-gradient-to-r ${colors.color} bg-clip-text text-transparent`}>
+                                                <p className={`text-xl md:text-2xl font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>
                                                     {exp.company}
                                                 </p>
                                                 <p className="text-stone-400 text-sm mt-2 flex items-center gap-2">
@@ -123,7 +123,7 @@ export default function Experience() {
                                         <div className="space-y-3 mb-8">
                                             {exp.achievements.map((a, i) => (
                                                 <div key={i} className="flex items-start gap-4">
-                                                    <div className={`mt-2 w-2 h-2 rounded-full bg-gradient-to-r ${colors.color} flex-shrink-0`} />
+                                                    <div className={`mt-2 w-2 h-2 rounded-full bg-gradient-to-r ${colors?.color} flex-shrink-0`} />
                                                     <span className="text-stone-500 leading-relaxed">{a}</span>
                                                 </div>
                                             ))}
@@ -147,12 +147,12 @@ export default function Experience() {
                 {/* Progress indicator */}
                 <div className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2 flex flex-col gap-4">
                     {experience.map((exp, i) => {
-                        const colors = colorMap[i % colorMap.length];
+                        const colors = colorMap[i % colorMap.length] ?? colorMap[0];
                         return (
                             <div key={exp.id} className="flex items-center gap-3">
                                 <div
                                     className={`rounded-full transition-all duration-300 ${i === activeIndex
-                                            ? `w-3 h-8 bg-gradient-to-b ${colors.color}`
+                                            ? `w-3 h-8 bg-gradient-to-b ${colors?.color}`
                                             : 'w-2 h-2 bg-stone-300'
                                         }`}
                                 />

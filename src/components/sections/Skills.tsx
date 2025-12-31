@@ -48,7 +48,8 @@ export default function Skills() {
                 {/* Grid */}
                 <div className="grid md:grid-cols-2 gap-8">
                     {skillCategories.map((group, i) => {
-                        const colors = colorMap[group.id] || { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
+                        const defaultColor = { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
+                        const colors = colorMap[group.id] ?? defaultColor;
                         return (
                             <motion.div
                                 key={group.id}
@@ -57,11 +58,11 @@ export default function Skills() {
                                 viewport={{ once: true, margin: '-30px' }}
                                 transition={{ delay: i * 0.1, duration: 0.6 }}
                                 whileHover={{ y: -5 }}
-                                className={`${colors.bgColor} rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50`}
+                                className={`${colors?.bgColor} rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50`}
                             >
                                 <div className="flex items-center gap-4 mb-6">
                                     <span className="text-4xl">{group.icon}</span>
-                                    <h3 className={`text-xl font-bold bg-gradient-to-r ${colors.color} bg-clip-text text-transparent`}>{group.title}</h3>
+                                    <h3 className={`text-xl font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {group.skills.map((skill) => (

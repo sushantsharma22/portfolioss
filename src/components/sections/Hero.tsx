@@ -88,7 +88,7 @@ function Hero() {
                     className="mb-6"
                 >
                     <span className="text-stone-400 text-sm md:text-base tracking-[0.3em] font-medium">
-                        {personalInfo.titles[0].toUpperCase()}
+                        {personalInfo.titles[0]?.toUpperCase() ?? ''}
                     </span>
                 </motion.div>
 

@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
     // Optimize package imports
     optimizePackageImports: ['framer-motion', 'gsap'],
   },
+
+  // Enable React 19 Compiler for automatic memoization (moved from experimental in Next.js 16)
+  reactCompiler: true,
   
   // Headers for caching
   async headers() {

@@ -46,7 +46,7 @@ export default function Education() {
                 {/* Cards */}
                 <div className="grid lg:grid-cols-2 gap-8">
                     {education.map((edu, i) => {
-                        const colors = colorMap[i % colorMap.length];
+                        const colors = colorMap[i % colorMap.length] ?? colorMap[0];
                         return (
                             <motion.div
                                 key={edu.id}
@@ -55,21 +55,21 @@ export default function Education() {
                                 viewport={{ once: true, margin: '-50px' }}
                                 transition={{ delay: i * 0.15, duration: 0.6 }}
                                 whileHover={{ y: -5 }}
-                                className={`${colors.bgColor} rounded-3xl p-8 border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden`}
+                                className={`${colors?.bgColor} rounded-3xl p-8 border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden`}
                             >
                                 {/* Decorative corner gradient */}
-                                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${colors.color} opacity-10 rounded-bl-full`} />
+                                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${colors?.color} opacity-10 rounded-bl-full`} />
 
                                 <div className="relative z-10">
                                     <div className="flex items-start justify-between mb-6">
-                                        <span className="text-5xl">{colors.icon}</span>
-                                        <span className={`px-4 py-1.5 text-xs font-bold rounded-full bg-gradient-to-r ${colors.color} text-white shadow-lg`}>
+                                        <span className="text-5xl">{colors?.icon}</span>
+                                        <span className={`px-4 py-1.5 text-xs font-bold rounded-full bg-gradient-to-r ${colors?.color} text-white shadow-lg`}>
                                             ✓ Completed
                                         </span>
                                     </div>
 
                                     <h3 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">{edu.degree}</h3>
-                                    <p className={`text-xl font-semibold bg-gradient-to-r ${colors.color} bg-clip-text text-transparent`}>{edu.institution}</p>
+                                    <p className={`text-xl font-semibold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{edu.institution}</p>
 
                                     <div className="flex flex-wrap gap-4 mt-4 text-stone-500 text-sm">
                                         <span>📍 {edu.location}</span>
