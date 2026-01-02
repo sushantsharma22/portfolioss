@@ -16,25 +16,27 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     useEffect(() => {
         // Check for reduced motion preference
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        
+
         if (prefersReducedMotion) {
-            return; // Skip smooth scroll for users who prefer reduced motion
+            return; // Use native scroll for reduced motion preference
         }
 
-        // Initialize Lenis with snappier configuration
+        const isMobile = window.innerWidth < 768;
+
+        // Initialize Lenis with device-specific settings
         const lenis = new Lenis({
-            duration: 1.0, // Faster: 1.0s instead of 1.2s
+            duration: isMobile ? 2.0 : 1.2, // Slower on mobile
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Premium easing
             orientation: 'vertical',
             gestureOrientation: 'vertical',
             smoothWheel: true,
             wheelMultiplier: 1.0,
-            touchMultiplier: 2,
+            touchMultiplier: isMobile ? 0.3 : 1.0, // Very slow touch scroll on mobile
             infinite: false,
         });
 
         lenisRef.current = lenis;
-        
+
         // Expose lenis globally for journey navigation
         window.lenis = lenis;
 
@@ -72,8 +74,8 @@ export function useLenis() {
                 });
             } else if (typeof window !== 'undefined') {
                 // Fallback to native scroll
-                const element = typeof target === 'string' ? document.querySelector(target) : 
-                               target instanceof HTMLElement ? target : null;
+                const element = typeof target === 'string' ? document.querySelector(target) :
+                    target instanceof HTMLElement ? target : null;
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
                 } else if (typeof target === 'number') {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { certificates } from '@/lib/constants';
 import { springs } from '@/lib/animations';
@@ -29,13 +29,26 @@ export default function Certificates() {
     const { scrollYProgress } = useScroll({ target: targetRef });
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
 
-    // Simple horizontal scroll - all cards visible, just move left
-    const x = useTransform(smoothProgress, [0, 1], ['1%', '-83%']);
+    // Hydration-safe mobile detection
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Separate scroll transforms for mobile and desktop
+    // Mobile: -95% to ensure last card is fully visible
+    // Desktop: -75% for proper alignment
+    const xMobile = useTransform(smoothProgress, [0.1, 0.85], ['2%', '-95%']);
+    const xDesktop = useTransform(smoothProgress, [0.1, 0.85], ['2%', '-85%']);
+    const x = isMobile ? xMobile : xDesktop;
 
     return (
         <section
             ref={targetRef}
-            className="relative h-[300vh]"
+            className="relative h-[400vh] md:h-[300vh]"
             id="certificates"
         >
             {/* Gradient background */}
@@ -49,27 +62,27 @@ export default function Certificates() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-full blur-3xl" />
 
                 {/* Header */}
-                <div className="pt-12 px-8 md:px-16 z-30">
-                    <div className="flex items-center gap-4 mb-2">
-                        <span className="text-amber-600 text-sm font-bold tracking-[0.3em]">06 — CERTIFICATIONS</span>
+                <div className="pt-4 md:pt-12 px-4 md:px-16 z-30">
+                    <div className="flex items-center gap-2 md:gap-4 mb-1 md:mb-2">
+                        <span className="text-amber-600 text-xs md:text-sm font-bold tracking-[0.3em]">06 — CERTIFICATIONS</span>
                         <div className="flex items-center gap-1">
-                            <span className="text-2xl">🏆</span>
-                            <span className="text-stone-500 text-sm font-medium">{certificates.length}+ verified</span>
+                            <span className="text-xl md:text-2xl">🏆</span>
+                            <span className="text-stone-500 text-xs md:text-sm font-medium">{certificates.length}+ verified</span>
                         </div>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-black text-stone-800 tracking-tight">
+                    <h2 className="text-2xl md:text-6xl font-black text-stone-800 tracking-tight">
                         Proven <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-violet-500 to-amber-500">Expertise</span>
                     </h2>
-                    <p className="text-stone-500 mt-3 text-lg max-w-2xl">
-                        Continuous learning through industry-recognized certifications from top platforms
+                    <p className="text-stone-500 mt-1 md:mt-3 text-xs md:text-lg max-w-2xl">
+                        Continuous learning through industry-recognized certifications
                     </p>
                 </div>
 
                 {/* Cards Container - ALL VISIBLE, just horizontal scroll */}
-                <div className="flex-1 relative mt-8 overflow-hidden">
+                <div className="flex-1 relative mt-4 md:mt-8 overflow-hidden">
                     <motion.div
                         style={{ x }}
-                        className="absolute top-1/2 -translate-y-1/2 left-0 flex gap-6 items-center px-8 md:px-16"
+                        className="absolute top-1/2 -translate-y-1/2 left-0 flex gap-4 md:gap-6 items-center px-4 md:px-16"
                     >
                         {certificates.map((cert, i) => {
                             const colors = colorMap[i % colorMap.length]!;
@@ -84,7 +97,7 @@ export default function Certificates() {
                                     rel="noopener noreferrer"
                                     whileHover={{ y: -12, scale: 1.02, boxShadow: '0 35px 70px rgba(0,0,0,0.15)' }}
                                     whileTap={{ scale: 0.98 }}
-                                    className={`flex-shrink-0 w-[320px] md:w-[380px] h-[420px] md:h-[480px] rounded-3xl overflow-hidden cursor-pointer transition-shadow duration-300 ${isHighlight
+                                    className={`flex-shrink-0 w-[280px] md:w-[380px] h-[380px] md:h-[480px] rounded-3xl overflow-hidden cursor-pointer transition-shadow duration-300 ${isHighlight
                                         ? 'ring-4 ring-amber-200/60 shadow-2xl shadow-amber-100/50'
                                         : 'shadow-xl'
                                         }`}
@@ -141,7 +154,7 @@ export default function Certificates() {
                         })}
 
                         {/* Final CTA card */}
-                        <div className="flex-shrink-0 w-[320px] h-[420px] rounded-3xl bg-gradient-to-br from-stone-100 to-stone-50 border-2 border-dashed border-stone-300 flex flex-col items-center justify-center gap-4 p-8">
+                        <div className="flex-shrink-0 w-[280px] md:w-[320px] h-[380px] md:h-[420px] rounded-3xl bg-gradient-to-br from-stone-100 to-stone-50 border-2 border-dashed border-stone-300 flex flex-col items-center justify-center gap-4 p-6 md:p-8">
                             <span className="text-6xl">🎯</span>
                             <p className="text-stone-600 font-bold text-xl text-center">Always Learning</p>
                             <p className="text-stone-400 text-center text-sm">More certifications in progress...</p>

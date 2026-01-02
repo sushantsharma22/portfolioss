@@ -30,7 +30,7 @@ export default function Skills() {
     return (
         <section
             ref={targetRef}
-            className="relative h-[200vh]"
+            className="relative h-[180vh] md:h-[200vh]"
             id="skills"
         >
             {/* Gradient background */}
@@ -46,16 +46,16 @@ export default function Skills() {
                     {/* Header - animates first */}
                     <motion.div
                         style={{ opacity: headerOpacity, y: headerY, scale: headerScale }}
-                        className="text-center mb-12"
+                        className="text-center mb-6 md:mb-12"
                     >
-                        <span className="text-teal-500 text-sm font-bold tracking-[0.3em]">04 — EXPERTISE</span>
-                        <h2 className="text-4xl md:text-6xl font-black text-stone-800 mt-4 tracking-tight">
+                        <span className="text-teal-500 text-xs md:text-sm font-bold tracking-[0.3em]">04 — EXPERTISE</span>
+                        <h2 className="text-2xl md:text-6xl font-black text-stone-800 mt-2 md:mt-4 tracking-tight">
                             Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-violet-500 to-amber-500">Arsenal</span>
                         </h2>
                     </motion.div>
 
                     {/* Grid - each card animates with stagger */}
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         {skillCategories.map((group, i) => (
                             <SkillCard
                                 key={group.id}
@@ -69,7 +69,7 @@ export default function Skills() {
                     {/* Stats - animate last */}
                     <motion.div
                         style={{ opacity: statsOpacity, y: statsY }}
-                        className="mt-12 flex flex-wrap justify-center gap-12 md:gap-20"
+                        className="mt-8 md:mt-12 flex flex-wrap justify-center gap-6 md:gap-20"
                     >
                         {[
                             { label: 'Technologies', value: '40+', color: 'from-sky-500 to-blue-500' },
@@ -81,8 +81,8 @@ export default function Skills() {
                                 className="text-center"
                                 whileHover={{ scale: 1.05 }}
                             >
-                                <div className={`text-4xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
-                                <div className="text-stone-500 text-sm mt-1 font-medium">{stat.label}</div>
+                                <div className={`text-2xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
+                                <div className="text-stone-500 text-xs md:text-sm mt-1 font-medium">{stat.label}</div>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -125,19 +125,19 @@ function SkillCard({
         <motion.div
             style={{ opacity, y, scale, x }}
             whileHover={{ y: -4, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
-            className={`${colors?.bgColor} rounded-2xl p-6 shadow-lg border border-white/50`}
+            className={`${colors?.bgColor} rounded-xl md:rounded-2xl p-3 md:p-6 shadow-lg border border-white/50`}
         >
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
                 <motion.span
-                    className="text-3xl"
+                    className="text-2xl md:text-3xl"
                     whileHover={{ scale: 1.15, rotate: 5 }}
                     transition={{ type: 'spring', ...springs.snappy }}
                 >
                     {group.icon}
                 </motion.span>
-                <h3 className={`text-lg font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
+                <h3 className={`text-sm md:text-lg font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
                 {group.skills.map((skill, skillIndex) => (
                     <SkillTag
                         key={skill.name}
@@ -175,7 +175,7 @@ function SkillTag({
         <motion.span
             style={{ opacity, scale }}
             whileHover={{ scale: 1.05, boxShadow: '0 6px 15px rgba(0,0,0,0.08)' }}
-            className="px-3 py-1.5 bg-white/90 text-stone-700 text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
+            className="px-2 py-1 md:px-3 md:py-1.5 bg-white/90 text-stone-700 text-xs md:text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
         >
             {name}
         </motion.span>

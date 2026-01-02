@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import { projects } from '@/lib/constants';
 import { easings, springs } from '@/lib/animations';
@@ -12,25 +12,63 @@ const colorMap: Record<string, string> = {
     'mobile': 'from-amber-500 to-orange-600',
 };
 
-// Card dimensions
-const CARD_WIDTH = 420;
+// Card dimensions - these will be overridden for mobile via CSS
+const CARD_WIDTH_DESKTOP = 420;
+const CARD_WIDTH_MOBILE = 300; // Will use calc(85vw) in practice
 const CARD_GAP = 24;
 const PADDING = 64; // px-16 = 64px
 
 export default function Projects() {
     const targetRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    const [viewportWidth, setViewportWidth] = useState(0);
+
+    // Hydration-safe mobile detection and viewport width tracking
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+            setViewportWidth(window.innerWidth);
+        };
+
+        // Initial check
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const { scrollYProgress } = useScroll({ target: targetRef });
     const smoothProgress = useSpring(scrollYProgress, springs.smooth);
 
+    // Calculate dimensions based on device
+    const CARD_WIDTH = isMobile ? CARD_WIDTH_MOBILE : CARD_WIDTH_DESKTOP;
+    // FASTER scroll on both mobile and desktop
+    const sectionHeightMultiplier = isMobile ? 0.45 : 0.5;
+
     // Calculate how much to shift left as cards accumulate
-    // Each card takes up CARD_WIDTH + CARD_GAP
-    // We start shifting once we have more than ~2 cards visible
-    const maxShift = Math.max(0, (projects.length - 2) * (CARD_WIDTH + CARD_GAP));
+    const totalCardsWidth = (projects.length * CARD_WIDTH_DESKTOP) + ((projects.length - 1) * CARD_GAP);
+    const visibleAreaDesktop = (viewportWidth || 1200) - (2 * PADDING);
+
+    // How many cards can fit in visible area?
+    const cardsPerScreen = Math.floor(visibleAreaDesktop / (CARD_WIDTH_DESKTOP + CARD_GAP));
+
+    // Total shift needed to show all cards (last card flush with right edge with padding)
+    const maxShiftDesktop = Math.max(0, totalCardsWidth - visibleAreaDesktop);
+
+    // Mobile fallback logic
+    const maxShiftMobile = Math.max(0, (projects.length - 1) * (CARD_WIDTH + CARD_GAP));
+
+    const maxShift = isMobile ? maxShiftMobile : maxShiftDesktop;
+
+    // Desktop: Container should START shifting BEFORE card (cardsPerScreen+1) appears
+    // So that when that card fades in, there's already room for it on screen
+    // Start shifting earlier: at (cardsPerScreen - 1) / total instead of (cardsPerScreen + 1) / total
+    const desktopScrollStart = Math.max(0.1, (cardsPerScreen - 1) / (projects.length + 1));
 
     const containerX = useTransform(
         smoothProgress,
-        [0.3, 0.9],
+        isMobile ? [0.15, 0.85] : [desktopScrollStart, 0.9],
         [0, -maxShift]
     );
 
@@ -38,7 +76,7 @@ export default function Projects() {
         <section
             ref={targetRef}
             className="relative"
-            style={{ height: `${(projects.length + 1) * 100}vh` }}
+            style={{ height: `${(projects.length + 1) * 100 * sectionHeightMultiplier}vh` }}
             id="projects"
         >
             {/* Gradient background */}
@@ -64,7 +102,7 @@ export default function Projects() {
                 <div className="flex-1 relative overflow-hidden">
                     {/* Horizontal scrolling container */}
                     <motion.div
-                        className="absolute left-0 top-0 bottom-0 flex items-center gap-6 px-8 md:px-16"
+                        className="absolute left-0 top-0 bottom-0 flex items-center gap-4 md:gap-6 px-4 md:px-16"
                         style={{ x: containerX }}
                     >
                         {projects.map((project, index) => (
@@ -130,8 +168,9 @@ function ProjectCard({
                 opacity,
                 scale,
                 y,
-                width: CARD_WIDTH,
-                height: '75%',
+                width: 'calc(85vw - 32px)', // Mobile: 85vw minus padding
+                maxWidth: CARD_WIDTH_DESKTOP, // Desktop caps at 420px
+                height: '70%',
             }}
         >
             <a

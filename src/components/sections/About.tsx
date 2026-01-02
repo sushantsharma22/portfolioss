@@ -32,7 +32,7 @@ export default function About() {
     return (
         <section
             ref={targetRef}
-            className="relative h-[200vh]"
+            className="relative h-[150vh] md:h-[200vh]"
             id="about"
         >
             {/* Gradient background */}
@@ -63,48 +63,48 @@ export default function About() {
                     {/* Section header - animates first */}
                     <motion.div
                         style={{ opacity: headerOpacity, y: headerY }}
-                        className="mb-12"
+                        className="mb-6 md:mb-12"
                     >
-                        <span className="text-sky-500 text-sm font-bold tracking-[0.3em]">01 — ABOUT ME</span>
-                        <h2 className="text-4xl md:text-6xl font-black text-stone-800 mt-4 tracking-tight">
+                        <span className="text-sky-500 text-xs md:text-sm font-bold tracking-[0.3em]">01 — ABOUT ME</span>
+                        <h2 className="text-3xl md:text-6xl font-black text-stone-800 mt-2 md:mt-4 tracking-tight">
                             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-violet-500 to-amber-500">Story</span>
                         </h2>
                     </motion.div>
 
                     {/* Content Grid */}
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                    <div className="grid lg:grid-cols-2 gap-6 lg:gap-16">
                         {/* Left: Story - slides in from left */}
                         <motion.div
                             style={{ opacity: leftContentOpacity, x: leftContentX }}
                             className="space-y-5"
                         >
                             <div className="relative">
-                                <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-sky-400 via-violet-400 to-amber-400 rounded-full" />
-                                <p className="text-lg md:text-xl text-stone-700 leading-relaxed font-medium pl-6">
+                                <div className="absolute -left-3 md:-left-4 top-0 bottom-0 w-0.5 md:w-1 bg-gradient-to-b from-sky-400 via-violet-400 to-amber-400 rounded-full" />
+                                <p className="text-sm md:text-xl text-stone-700 leading-relaxed font-medium pl-4 md:pl-6">
                                     I'm an <span className="text-sky-600 font-bold">AI Research Engineer</span> pursuing my Master of Applied Computing at the University of Windsor,
-                                    specializing in <span className="text-violet-600 font-bold">Artificial Intelligence</span> and <span className="text-amber-600 font-bold">Finance</span>.
+                                    specializing in <span className="text-violet-600 font-bold">AI</span> and <span className="text-amber-600 font-bold">Finance</span>.
                                 </p>
                             </div>
 
-                            <p className="text-stone-500 leading-relaxed">
+                            {/* Show all paragraphs but with smaller text on mobile */}
+                            <p className="text-xs md:text-base text-stone-500 leading-relaxed">
                                 With hands-on experience at <span className="font-semibold text-stone-700">JLR North America</span> and <span className="font-semibold text-stone-700">TD Bank</span>, I've developed production-ready
-                                ML systems for credit-lending predictions, predictive analytics for industrial operations,
-                                and cutting-edge AI research in the automotive sector.
+                                ML systems for credit-lending predictions and predictive analytics.
                             </p>
 
-                            <p className="text-stone-500 leading-relaxed">
+                            <p className="text-xs md:text-base text-stone-500 leading-relaxed">
                                 Beyond work, I've coordinated <span className="font-semibold text-stone-700">50+ AI & coding hackathons</span> at Gravity LPU, engaging over
-                                <span className="font-semibold text-stone-700"> 200 participants</span> and fostering a community of innovation and learning.
+                                <span className="font-semibold text-stone-700"> 200 participants</span> and fostering a community of innovation.
                             </p>
 
                             {/* Action items */}
-                            <div className="flex flex-wrap gap-4 pt-2">
+                            <div className="flex flex-wrap gap-2 md:gap-4 pt-2">
                                 <motion.a
                                     href="#contact"
                                     whileHover={{ scale: 1.03, boxShadow: '0 15px 35px rgba(14, 165, 233, 0.2)' }}
                                     whileTap={{ scale: 0.98 }}
                                     transition={{ type: 'spring', ...springs.snappy }}
-                                    className="px-6 py-3 bg-gradient-to-r from-sky-500 to-violet-500 text-white font-semibold rounded-full shadow-lg shadow-sky-200/50"
+                                    className="px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-sky-500 to-violet-500 text-white text-sm md:text-base font-semibold rounded-full shadow-lg shadow-sky-200/50"
                                 >
                                     Let's Connect →
                                 </motion.a>
@@ -113,7 +113,7 @@ export default function About() {
                                     whileHover={{ scale: 1.03, borderColor: '#a8a29e' }}
                                     whileTap={{ scale: 0.98 }}
                                     transition={{ type: 'spring', ...springs.snappy }}
-                                    className="px-6 py-3 border-2 border-stone-200 text-stone-700 font-semibold rounded-full"
+                                    className="px-4 py-2 md:px-6 md:py-3 border-2 border-stone-200 text-stone-700 text-sm md:text-base font-semibold rounded-full"
                                 >
                                     View Journey
                                 </motion.a>
@@ -123,7 +123,7 @@ export default function About() {
                         {/* Right: Stats - slides in from right with stagger */}
                         <motion.div
                             style={{ opacity: rightContentOpacity, x: rightContentX }}
-                            className="grid grid-cols-2 gap-4"
+                            className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4"
                         >
                             {aboutStats.map((stat, i) => (
                                 <StatCard

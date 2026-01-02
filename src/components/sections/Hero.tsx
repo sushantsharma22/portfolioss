@@ -12,17 +12,17 @@ const DecorativeOrbs = memo(function DecorativeOrbs() {
             <motion.div
                 animate={{ y: [0, -15, 0], rotate: [0, 3, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-20 left-[10%] w-32 h-32 bg-sky-200/30 rounded-full blur-2xl"
+                className="absolute top-20 left-[10%] w-20 h-20 md:w-32 md:h-32 bg-sky-200/30 rounded-full blur-2xl"
             />
             <motion.div
                 animate={{ y: [0, 15, 0], rotate: [0, -3, 0] }}
                 transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute bottom-32 right-[15%] w-48 h-48 bg-amber-200/30 rounded-full blur-3xl"
+                className="absolute bottom-32 right-[15%] w-32 h-32 md:w-48 md:h-48 bg-amber-200/30 rounded-full blur-3xl"
             />
             <motion.div
                 animate={{ scale: [1, 1.08, 1] }}
                 transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-1/3 right-[20%] w-24 h-24 bg-teal-200/20 rounded-full blur-2xl"
+                className="absolute top-1/3 right-[20%] w-16 h-16 md:w-24 md:h-24 bg-teal-200/20 rounded-full blur-2xl"
             />
         </div>
     );
@@ -35,7 +35,7 @@ const ScrollIndicator = memo(function ScrollIndicator() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.5, duration: 0.8, ease: easings.apple }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            className="absolute bottom-16 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
             <span className="text-stone-400 text-xs tracking-widest">SCROLL</span>
             <motion.div
@@ -94,7 +94,7 @@ function Hero() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.4, ease: easings.apple }}
-                    className="text-6xl md:text-8xl lg:text-9xl font-black text-stone-800 tracking-tight leading-[0.9]"
+                    className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-stone-800 tracking-tight leading-[0.9]"
                 >
                     {personalInfo.firstName.toUpperCase()}
                     <br />
@@ -112,7 +112,7 @@ function Hero() {
                     initial={{ opacity: 0, y: 25 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, delay: 0.8, ease: easings.apple }}
-                    className="text-stone-500 text-lg md:text-xl mt-8 max-w-2xl mx-auto leading-relaxed"
+                    className="text-stone-500 text-sm sm:text-lg md:text-xl mt-6 md:mt-8 max-w-2xl mx-auto leading-relaxed px-2"
                 >
                     Crafting intelligent solutions through Machine Learning, Deep Learning & Distributed Systems.
                 </motion.p>
@@ -121,11 +121,11 @@ function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, delay: 1.0, ease: easings.apple }}
-                    className="mt-12 flex flex-wrap justify-center gap-4"
+                    className="mt-8 md:mt-12 flex flex-wrap justify-center gap-3 md:gap-4"
                 >
                     <motion.a
                         href="#contact"
-                        className="px-8 py-4 bg-stone-900 text-white font-semibold rounded-full transition-all duration-300"
+                        className="px-6 py-3 md:px-8 md:py-4 bg-stone-900 text-white text-sm md:text-base font-semibold rounded-full transition-all duration-300"
                         whileHover={{ scale: 1.03, boxShadow: '0 10px 30px rgba(0,0,0,0.15)' }}
                         whileTap={{ scale: 0.98 }}
                         transition={{ type: 'spring', ...springs.snappy }}
@@ -134,7 +134,7 @@ function Hero() {
                     </motion.a>
                     <motion.a
                         href="#experience"
-                        className="px-8 py-4 border-2 border-stone-300 text-stone-700 font-semibold rounded-full transition-all duration-300"
+                        className="px-6 py-3 md:px-8 md:py-4 border-2 border-stone-300 text-stone-700 text-sm md:text-base font-semibold rounded-full transition-all duration-300"
                         whileHover={{ scale: 1.03, borderColor: '#a8a29e' }}
                         whileTap={{ scale: 0.98 }}
                         transition={{ type: 'spring', ...springs.snappy }}

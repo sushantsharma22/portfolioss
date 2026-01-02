@@ -41,7 +41,7 @@ export default function Contact() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-10% 0px' }}
                     transition={{ duration: 0.8, ease: easings.apple }}
-                    className="text-amber-600 text-sm font-medium tracking-[0.3em]"
+                    className="text-amber-600 text-xs md:text-sm font-medium tracking-[0.3em]"
                 >
                     07 — GET IN TOUCH
                 </motion.span>
@@ -51,7 +51,7 @@ export default function Contact() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.9, ease: easings.apple, delay: 0.1 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-black text-stone-800 mt-6 tracking-tight leading-[1.1]"
+                    className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-stone-800 mt-4 md:mt-6 tracking-tight leading-[1.1]"
                 >
                     Let&apos;s Build
                     <br />
@@ -65,20 +65,28 @@ export default function Contact() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, ease: easings.apple, delay: 0.2 }}
-                    className="text-stone-500 text-lg md:text-xl mt-8 max-w-2xl mx-auto"
+                    className="text-stone-500 text-xs md:text-xl mt-4 md:mt-8 max-w-2xl mx-auto"
                 >
-                    Available for full-time opportunities, collaborations, and exciting AI projects.
+                    Available for opportunities, collaborations, and AI projects.
                 </motion.p>
 
                 <motion.a
                     href={`mailto:${personalInfo.email}`}
                     initial={{ opacity: 0, y: 35 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.2, ease: easings.apple, delay: 0.3 }
+                    }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: easings.apple, delay: 0.3 }}
-                    whileHover={{ scale: 1.03, y: -4, boxShadow: '0 20px 40px rgba(14, 165, 233, 0.3)' }}
+                    whileHover={{
+                        scale: 1.03,
+                        y: -4,
+                        boxShadow: '0 20px 40px rgba(14, 165, 233, 0.3)',
+                        transition: { duration: 0.05, delay: 0, ease: 'linear' }
+                    }}
                     whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-4 mt-12 px-8 py-5 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-lg md:text-xl font-semibold rounded-full shadow-xl"
+                    className="inline-flex items-center gap-2 md:gap-4 mt-8 md:mt-12 px-5 py-3 md:px-8 md:py-5 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-sm md:text-xl font-semibold rounded-full shadow-xl"
                 >
                     <span>📧</span>
                     <span>{personalInfo.email}</span>
@@ -89,7 +97,7 @@ export default function Contact() {
                     initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: easings.apple, delay: 0.4 }}
+                    transition={{ duration: 0.2, ease: easings.apple, delay: 0.4 }}
                     className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12"
                 >
                     {socialLinks.map((link, i) => (
@@ -99,10 +107,18 @@ export default function Contact() {
                             target={link.href.startsWith('http') ? '_blank' : undefined}
                             rel="noopener noreferrer"
                             initial={{ opacity: 0, y: 15 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: { delay: 0.5 + i * 0.05, duration: 0.6, ease: easings.apple }
+                            }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.5 + i * 0.05, duration: 0.6, ease: easings.apple }}
-                            whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                            whileHover={{
+                                y: -6,
+                                scale: 1.05,
+                                boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
+                                transition: { duration: 0.05, delay: 0, ease: 'linear' }
+                            }}
                             whileTap={{ scale: 0.95 }}
                             className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                         >
@@ -114,10 +130,18 @@ export default function Contact() {
                     <motion.a
                         href={`tel:${personalInfo.phone.replace(/[^+\d]/g, '')}`}
                         initial={{ opacity: 0, y: 15 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: { delay: 0.65, duration: 0.6, ease: easings.apple }
+                        }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.65, duration: 0.6, ease: easings.apple }}
-                        whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                        whileHover={{
+                            y: -6,
+                            scale: 1.05,
+                            boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
+                            transition: { duration: 0.05, delay: 0, ease: 'linear' }
+                        }}
                         whileTap={{ scale: 0.95 }}
                         className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                     >
@@ -130,10 +154,18 @@ export default function Contact() {
                         target="_blank"
                         rel="noopener noreferrer"
                         initial={{ opacity: 0, y: 15 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: { delay: 0.7, duration: 0.6, ease: easings.apple }
+                        }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.7, duration: 0.6, ease: easings.apple }}
-                        whileHover={{ y: -6, scale: 1.05, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
+                        whileHover={{
+                            y: -6,
+                            scale: 1.05,
+                            boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
+                            transition: { duration: 0.05, delay: 0, ease: 'linear' }
+                        }}
                         whileTap={{ scale: 0.95 }}
                         className="flex items-center gap-2 px-5 py-3 bg-stone-50 border border-stone-200 rounded-full text-stone-600 hover:text-stone-800 hover:border-stone-300 transition-colors duration-300"
                     >

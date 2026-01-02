@@ -4,6 +4,19 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import { easings, springs } from '@/lib/animations';
 
+// Section offsets to scroll to visible content (negative = scroll less, positive = scroll more)
+// These values are added to the section's top position
+const sectionOffsets: Record<string, { mobile: number; desktop: number }> = {
+  '#hero': { mobile: 0, desktop: 0 },
+  '#about': { mobile: 100, desktop: 150 }, // Scroll past header to show content
+  '#experience': { mobile: 100, desktop: 150 },
+  '#projects': { mobile: 200, desktop: 300 }, // Scroll further to show first cards
+  '#skills': { mobile: 100, desktop: 150 },
+  '#education': { mobile: 100, desktop: 150 },
+  '#certificates': { mobile: 100, desktop: 150 },
+  '#contact': { mobile: 0, desktop: 0 },
+};
+
 const navLinks = [
   { name: 'Home', href: '#hero' },
   { name: 'About', href: '#about' },
@@ -70,6 +83,26 @@ export default function Navigation() {
 
   const shouldShow = isInHeroOrContact || showNav;
 
+  // Custom scroll handler with section-specific offsets
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (!element) return;
+
+    const isMobile = window.innerWidth < 768;
+    const offsets = sectionOffsets[href] || { mobile: 0, desktop: 0 };
+    const offset = isMobile ? offsets.mobile : offsets.desktop;
+
+    const elementTop = element.getBoundingClientRect().top + window.scrollY;
+    const targetPosition = elementTop + offset;
+
+    // Use Lenis if available, otherwise native scroll
+    if (typeof window !== 'undefined' && window.lenis) {
+      window.lenis.scrollTo(targetPosition, { duration: 1.2 });
+    } else {
+      window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -84,21 +117,21 @@ export default function Navigation() {
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 {/* Logo */}
-                <a href="#hero" className="text-xl font-bold text-stone-800">
+                <button onClick={() => scrollToSection('#hero')} className="text-xl font-bold text-stone-800">
                   Sushant<span className="text-sky-500"></span>
-                </a>
+                </button>
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center gap-1">
                   {navLinks.map((link) => (
-                    <a
+                    <button
                       key={link.name}
-                      href={link.href}
+                      onClick={() => scrollToSection(link.href)}
                       className="relative px-4 py-2 text-sm text-stone-600 hover:text-stone-900 transition-colors group"
                     >
                       {link.name}
                       <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-sky-500 group-hover:w-full transition-all duration-300" />
-                    </a>
+                    </button>
                   ))}
                 </div>
 
@@ -119,6 +152,7 @@ export default function Navigation() {
         )}
       </AnimatePresence>
 
+
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
@@ -130,17 +164,19 @@ export default function Navigation() {
           >
             <div className="flex flex-col items-center justify-center h-full gap-8">
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.button
                   key={link.name}
-                  href={link.href}
                   initial={{ opacity: 0, y: 25 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.6, ease: easings.apple }}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    scrollToSection(link.href);
+                  }}
                   className="text-3xl font-bold text-stone-800 hover:text-sky-500 transition-colors duration-300"
                 >
                   {link.name}
-                </motion.a>
+                </motion.button>
               ))}
             </div>
           </motion.div>

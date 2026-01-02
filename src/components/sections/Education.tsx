@@ -47,7 +47,7 @@ export default function Education() {
     return (
         <section
             ref={targetRef}
-            className="relative h-[300vh]"
+            className="relative h-[200vh] md:h-[300vh]"
             id="education"
         >
             {/* Gradient background */}
@@ -62,28 +62,28 @@ export default function Education() {
                 {/* Header - animates first */}
                 <motion.div
                     style={{ opacity: headerOpacity, y: headerY }}
-                    className="absolute top-12 left-8 md:left-16 z-30"
+                    className="absolute top-4 md:top-12 left-4 md:left-16 z-30"
                 >
-                    <span className="text-amber-600 text-sm font-bold tracking-[0.3em]">05 — EDUCATION</span>
-                    <h2 className="text-3xl md:text-5xl font-black text-stone-800 mt-2 tracking-tight">
+                    <span className="text-amber-600 text-xs md:text-sm font-bold tracking-[0.3em]">05 — EDUCATION</span>
+                    <h2 className="text-2xl md:text-5xl font-black text-stone-800 mt-1 md:mt-2 tracking-tight">
                         Academic <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500">Journey</span>
                     </h2>
                 </motion.div>
 
-                {/* Floating Graduation Cap - follows timeline */}
+                {/* Floating Graduation Cap - follows timeline (hidden on mobile) */}
                 <motion.div
                     style={{
                         y: capY,
                         scale: capScale,
                         rotate: capRotate,
                     }}
-                    className="absolute left-1/2 -translate-x-1/2 top-32 text-6xl z-20 pointer-events-none"
+                    className="absolute left-1/2 -translate-x-1/2 top-32 text-4xl md:text-6xl z-20 pointer-events-none hidden md:block"
                 >
                     🎓
                 </motion.div>
 
-                {/* Central Timeline */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-48 bottom-24 w-1">
+                {/* Central Timeline (hidden on mobile) */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-48 bottom-24 w-1 hidden md:block">
                     {/* Background line */}
                     <div className="absolute inset-0 bg-amber-100 rounded-full" />
                     {/* Animated progress line */}
@@ -107,7 +107,7 @@ export default function Education() {
                 </div>
 
                 {/* Education Cards - positioned on alternating sides */}
-                <div className="absolute inset-x-8 md:inset-x-16 top-48 bottom-24 flex flex-col justify-around">
+                <div className="absolute inset-x-4 md:inset-x-16 top-32 md:top-48 bottom-24 flex flex-col gap-6 md:gap-0 justify-around">
                     {education.map((edu, index) => (
                         <EducationCard
                             key={edu.id}
@@ -229,10 +229,10 @@ function EducationCard({
                         {/* Gold accent bar */}
                         <div className={`h-1.5 bg-gradient-to-r ${config.gradient}`} />
 
-                        <div className="p-6">
+                        <div className="p-4 md:p-6">
                             {/* Header */}
-                            <div className="flex items-start justify-between mb-4">
-                                <span className="text-4xl">{config.icon}</span>
+                            <div className="flex items-start justify-between mb-2 md:mb-4">
+                                <span className="text-2xl md:text-4xl">{config.icon}</span>
                                 <span
                                     className="px-3 py-1 text-xs font-bold rounded-full text-white"
                                     style={{ background: config.accent }}
@@ -242,17 +242,17 @@ function EducationCard({
                             </div>
 
                             {/* Degree */}
-                            <h3 className="text-xl md:text-2xl font-bold text-stone-800 mb-2 leading-tight">
+                            <h3 className="text-base md:text-2xl font-bold text-stone-800 mb-1 md:mb-2 leading-tight">
                                 {edu.degree}
                             </h3>
 
                             {/* Institution */}
-                            <p className={`text-lg font-bold bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-3`}>
+                            <p className={`text-sm md:text-lg font-bold bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-2 md:mb-3`}>
                                 {edu.institution}
                             </p>
 
-                            {/* Meta */}
-                            <div className="flex flex-wrap gap-3 text-stone-500 text-sm mb-4">
+                            {/* Meta - visible with smaller text on mobile */}
+                            <div className="flex flex-wrap gap-2 md:gap-3 text-stone-500 text-xs md:text-sm mb-2 md:mb-4">
                                 <span className="flex items-center gap-1">📍 {edu.location}</span>
                                 <span className="flex items-center gap-1">📅 {edu.dateRange}</span>
                             </div>

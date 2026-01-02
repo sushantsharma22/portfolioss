@@ -23,14 +23,14 @@ const SectionLoader = () => (
         {/* Header skeleton */}
         <div className="h-4 w-32 bg-stone-200 rounded mb-4" />
         <div className="h-12 w-1/3 bg-stone-200 rounded mb-8" />
-        
+
         {/* Content lines skeleton */}
         <div className="space-y-3 mb-12">
             <div className="h-4 w-full bg-stone-200 rounded" />
             <div className="h-4 w-5/6 bg-stone-200 rounded" />
             <div className="h-4 w-4/6 bg-stone-200 rounded" />
         </div>
-        
+
         {/* Cards grid skeleton */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
