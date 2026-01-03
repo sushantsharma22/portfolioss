@@ -116,10 +116,8 @@ export default function Navigation() {
           >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
-                {/* Logo */}
-                <button onClick={() => scrollToSection('#hero')} className="text-xl font-bold text-stone-800">
-                  Sushant<span className="text-sky-500"></span>
-                </button>
+                {/* Empty space - no logo text */}
+                <div className="w-16" />
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center gap-1">
