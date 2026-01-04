@@ -41,11 +41,11 @@ export default function Navigation() {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
 
-      // Check if in hero (top) or contact (bottom)
-      const inHero = scrollTop < windowHeight * 0.8;
+      // Check if at the very top (first 100px) or contact (bottom)
+      const isAtTop = scrollTop < 100;
       const inContact = scrollTop > documentHeight - windowHeight * 1.5;
 
-      setIsInHeroOrContact(inHero || inContact);
+      setIsInHeroOrContact(isAtTop || inContact);
       setIsScrolled(scrollTop > 50);
 
       // Reset idle timer on scroll
@@ -53,8 +53,8 @@ export default function Navigation() {
         clearTimeout(idleTimerRef.current);
       }
 
-      // If not in hero/contact, hide nav immediately on scroll
-      if (!inHero && !inContact) {
+      // If not at top and not in contact, hide nav immediately on scroll
+      if (!isAtTop && !inContact) {
         setShowNav(false);
         // Show nav after 30 seconds of no scrolling
         idleTimerRef.current = setTimeout(() => {

@@ -62,7 +62,7 @@ function ScrollingMarqueeText() {
                             <span
                                 key={i}
                                 className={`text-[80px] md:text-[120px] lg:text-[160px] font-black bg-gradient-to-r ${line.gradient} bg-clip-text text-transparent tracking-tighter select-none`}
-                                style={{ 
+                                style={{
                                     WebkitTextStroke: '0.5px rgba(0,0,0,0.02)',
                                 }}
                             >
@@ -132,7 +132,7 @@ function HeroSection() {
     const heroRef = useRef<HTMLDivElement>(null);
     const signaturePathRef = useRef<SVGPathElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    
+
     // Mouse parallax state
     const [mouseX, setMouseX] = useState(0);
     const [mouseY, setMouseY] = useState(0);
@@ -150,7 +150,7 @@ function HeroSection() {
         if (!heroRef.current || !isLoaded) return;
 
         // Create entrance timeline - everything fades in smoothly
-        const entranceTl = gsap.timeline({ 
+        const entranceTl = gsap.timeline({
             defaults: { ease: 'power3.out' }
         });
 
@@ -189,7 +189,7 @@ function HeroSection() {
                 stagger: 0.1,
             }, 0.6)
             // Right side elements
-            .fromTo('.heroQuote', {
+            .fromTo('#heroQuoteWrapper', {
                 x: 40,
                 opacity: 0,
             }, {
@@ -233,7 +233,7 @@ function HeroSection() {
         if (!heroRef.current) return;
 
         const mm = gsap.matchMedia();
-        
+
         mm.add("(min-width: 768px)", () => {
             // Get signature path and set up for drawing animation
             const signaturePath = signaturePathRef.current;
@@ -260,56 +260,118 @@ function HeroSection() {
             });
 
             // ═══════════════════════════════════════════════════════════
-            // PHASE 1: ENTIRE HERO CONTENT SHRINKS AS ONE UNIT
-            // Elements fade AS the shrink happens (not before)
+            // PHASE 1: HERO SHRINK (Natural Scale)
+            // Reverted from clip-path to simple scale to avoid "cutting" look
             // ═══════════════════════════════════════════════════════════
             tl.to('.heroContentWrapper', {
-                scale: 0.38,        // Smaller for more square-ish look
-                borderRadius: '24px', // Less border radius
-                duration: 4,        // Slower shrink
+                scale: 0.35,        // Shrink properly to a card
+                borderRadius: '40px', // Nice rounded corners
+                duration: 4,
                 ease: 'power2.inOut',
             }, 0);
 
             // ═══════════════════════════════════════════════════════════
-            // PHASE 2: UI elements fade WITH shrink (same timing)
-            // They shrink and fade together for cohesive effect
+            // PHASE 2: CONTENT VISIBILITY CONTROL
+            // - VISIBLE: Name (heroTypography), Roles (heroDecorativeText)
+            // - HIDDEN: Everything else (DetailedInfo, social, stats, etc)
             // ═══════════════════════════════════════════════════════════
-            tl.to('.heroTypography', {
-                opacity: 0,
-                scale: 0.8,
-                filter: 'blur(8px)',
-                duration: 3,        // Same as shrink timing
-                ease: 'power2.inOut',
-            }, 0.5)               // Slight delay so shrink starts first
-            .to('.heroSocialLinks, .heroTechStack, .heroStats, .heroQuote', {
-                opacity: 0,
-                scale: 0.85,
-                duration: 2.5,
-                ease: 'power2.inOut',
-            }, 0.5)
-            .to('.heroDecorativeText', {
-                opacity: 0,
-                scale: 0.7,
-                filter: 'blur(15px)',
-                duration: 3,
-                ease: 'power2.inOut',
-            }, 0.5)
-            .to('.heroVignette, .flowingLines', {
+
+            // 1. Fade out secondary elements
+            // Note: Including heroVignette and flowingLines in this group or separate is fine
+            tl.to('.heroSocialLinks, .heroTechStack, .heroStats, .heroDetailedInfo, .heroVignette, .flowingLines', {
                 opacity: 0,
                 duration: 2.5,
                 ease: 'power2.inOut',
-            }, 0.3);
+            }, 0.5)
+
+                // Explicit fade out for Quote to ensure it works
+                // Targeting the WRAPPER now
+                .to('#heroQuoteWrapper', {
+                    opacity: 0,
+                    autoAlpha: 0, // Ensures visibility: hidden at end
+                    display: 'none', // Force removal
+                    duration: 2.5,
+                    ease: 'power2.inOut',
+                    overwrite: true, // Force overwrite of any other tweens
+                }, 0.5)
+
+                // 2. Roles ("AI ENGINEER", etc.) - Keep Visible & TRANSITION COLOR
+                // We use css variables or direct color interpolation. 
+                // To ensure smoothness, we set the initial color in the tween properly.
+
+                // AI Role - Cyan
+                .fromTo('.heroRoleAI', {
+                    color: '#f5f5f4', // Start: stone-100 (approx)
+                    scale: 1,
+                    filter: 'brightness(1)',
+                }, {
+                    color: '#22d3ee', // Cyan-400
+                    scale: 1.1,
+                    filter: 'brightness(1.2)',
+                    duration: 4, // Slower duration for "slowly slowly"
+                    ease: 'power1.inOut', // Linear/Sine ease for smoother color mix
+                }, 0.5)
+
+                // ML Role - Purple
+                .fromTo('.heroRoleML', {
+                    color: '#f5f5f4', // Start: stone-100
+                    scale: 1,
+                    filter: 'brightness(1)',
+                }, {
+                    color: '#c084fc', // Purple-400
+                    scale: 1.1,
+                    filter: 'brightness(1.2)',
+                    duration: 4,
+                    ease: 'power1.inOut',
+                }, 0.5)
+
+                // Data Role - Emerald
+                .fromTo('.heroRoleData', {
+                    color: '#f5f5f4', // Start: stone-100
+                    scale: 1,
+                    filter: 'brightness(1)',
+                }, {
+                    color: '#34d399', // Emerald-400
+                    scale: 1.1,
+                    filter: 'brightness(1.2)',
+                    duration: 4,
+                    ease: 'power1.inOut',
+                }, 0.5)
+
+                // Software Role - Amber
+                .fromTo('.heroRoleSoftware', {
+                    color: '#f5f5f4', // Start: stone-100
+                    scale: 1,
+                    filter: 'brightness(1)',
+                }, {
+                    color: '#fbbf24', // Amber-400
+                    scale: 1.1,
+                    filter: 'brightness(1.2)',
+                    duration: 4,
+                    ease: 'power1.inOut',
+                }, 0.5)
+
+                // 3. Typography Name - Keep Visible
+                .to('.heroTypography', {
+                    opacity: 1,
+                    duration: 3,
+                    ease: 'power2.inOut',
+                }, 0.5);
 
             // ═══════════════════════════════════════════════════════════
             // PHASE 3: Signature DRAWS stroke-by-stroke (starts LATE)
+            // Bigger and Tilted - Tilted slightly upwards for style
             // ═══════════════════════════════════════════════════════════
-            // First fade in the signature SVG
             tl.to('.signatureSvg', {
                 opacity: 1,
+                scale: 2.5,       // Much Bigger as requested
+                rotation: -12,    // Tilted nature
+                x: 20,            // Slight offset if needed
+                transformOrigin: 'center center',
                 duration: 0.5,
                 ease: 'power2.in',
             }, 3.2);  // Fade in just before drawing starts
-            
+
             if (signaturePath) {
                 tl.to(signaturePath, {
                     strokeDashoffset: 0,
@@ -379,7 +441,7 @@ function HeroSection() {
                 HERO CONTENT WRAPPER - This entire div shrinks as one unit
                 Contains all hero content that collapses together
             ═══════════════════════════════════════════════════════════ */}
-            <div 
+            <div
                 className="heroContentWrapper absolute inset-0 z-[5]"
                 style={{
                     willChange: 'transform',
@@ -391,45 +453,45 @@ function HeroSection() {
                 {/* Flowing organic lines - magazine aesthetic */}
                 <FlowingLines />
 
-            {/* Soft radial vignette */}
-            <div className="heroVignette absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-[5]" />
+                {/* Soft radial vignette */}
+                <div className="heroVignette absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-[5]" />
 
-            {/* ═══════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════════
                 PORTRAIT + SIGNATURE WRAPPER (CENTER)
                 This container shrinks while signature draws over it
             ═══════════════════════════════════════════════════════════ */}
-            <div className="absolute inset-0 flex items-center justify-center z-[5]">
-                <div 
-                    className="portraitWrapper relative"
-                    style={{ 
-                        width: '100%',
-                        height: '100%',
-                        willChange: 'transform',
-                    }}
-                >
-                    {/* Portrait - This is your MaskRevealPortrait */}
-                    <div className="absolute inset-0">
-                        <MaskRevealPortrait />
-                    </div>
-                    {/* ═══════════════════════════════════════════════════════════
+                <div className="absolute inset-0 flex items-center justify-center z-[5]">
+                    <div
+                        className="portraitWrapper relative"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            willChange: 'transform',
+                        }}
+                    >
+                        {/* Portrait - This is your MaskRevealPortrait */}
+                        <div className="absolute inset-0">
+                            <MaskRevealPortrait />
+                        </div>
+                        {/* ═══════════════════════════════════════════════════════════
                         SIGNATURE SVG - Draws OVER portrait with scroll
                         Like Lando's neon signature that writes itself
                         Initially hidden - only shows during scroll animation
                     ═══════════════════════════════════════════════════════════ */}
-                    <svg
-                        className="signatureSvg absolute inset-0 w-full h-full pointer-events-none z-30 opacity-0"
-                        viewBox="0 0 600 600"
-                        fill="none"
-                        preserveAspectRatio="xMidYMid meet"
-                    >
-                        {/* 
+                        <svg
+                            className="signatureSvg absolute inset-0 w-full h-full pointer-events-none z-30 opacity-0"
+                            viewBox="0 0 600 600"
+                            fill="none"
+                            preserveAspectRatio="xMidYMid meet"
+                        >
+                            {/* 
                             SIGNATURE PATH - "Sushant" handwriting style
                             Draws stroke-by-stroke with scroll (strokeDashoffset)
                             Color: Cyan/Sky blue like Lando's neon signature
                         */}
-                        <path
-                            ref={signaturePathRef}
-                            d="M 80 320
+                            <path
+                                ref={signaturePathRef}
+                                d="M 80 320
                                C 75 300, 85 280, 105 270
                                Q 125 260, 140 270
                                Q 155 280, 155 300
@@ -489,118 +551,120 @@ function HeroSection() {
                                Q 575 380, 590 370
                                Q 605 360, 610 345
                                L 620 320"
-                            stroke="#0ea5e9"
-                            strokeWidth="5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            fill="none"
-                            style={{
-                                filter: 'drop-shadow(0 0 30px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6))',
-                            }}
-                        />
-                    </svg>
+                                stroke="#0ea5e9"
+                                strokeWidth="5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                fill="none"
+                                style={{
+                                    filter: 'drop-shadow(0 0 30px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6))',
+                                }}
+                            />
+                        </svg>
+                    </div>
                 </div>
-            </div>
 
-            {/* Splash Cursor Effect */}
-            <SplashCursor />
+                {/* Splash Cursor Effect */}
+                <SplashCursor />
 
-            {/* ═══════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════════
                 LEFT SIDE - Name, Tagline, Roles (Fades out on scroll)
             ═══════════════════════════════════════════════════════════ */}
-            <div
-                className="heroTypography absolute top-6 left-4 sm:top-8 sm:left-8 md:top-12 md:left-12 z-[12] opacity-0"
-                style={{
-                    transform: `perspective(1000px) translate3d(${mouseX * 0.6}px, ${mouseY * 0.4}px, 30px) rotateY(${mouseX * 0.15}deg)`,
-                    transition: 'transform 0.15s ease-out',
-                    willChange: 'transform, opacity',
-                }}
-            >
-                <h1
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[0.85]"
-                    style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                <div
+                    className="heroTypography absolute top-6 left-2 sm:top-8 sm:left-4 md:top-12 md:left-5 z-[12] opacity-0"
+                    style={{
+                        transform: `perspective(1000px) translate3d(${mouseX * 0.6}px, ${mouseY * 0.4}px, 30px) rotateY(${mouseX * 0.15}deg)`,
+                        transition: 'transform 0.15s ease-out',
+                        willChange: 'transform, opacity',
+                    }}
                 >
-                    <span className="text-stone-900 block drop-shadow-sm">
-                        {personalInfo.firstName.toUpperCase()}
+                    <h1
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[0.85]"
+                        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                    >
+                        <span className="text-stone-900 block drop-shadow-sm">
+                            {personalInfo.firstName.toUpperCase()}
                         </span>
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-sky-500 to-teal-500 block">
                             {personalInfo.lastName.toUpperCase()}
                         </span>
                     </h1>
 
-                    {/* Primary Tagline */}
-                    <p className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide">
-                        AI/ML Engineer & Full-Stack Developer
-                    </p>
+                    {/* Primary Tagline - WRAPPED IN heroDetailedInfo TO FADE OUT */}
+                    <div className="heroDetailedInfo">
+                        <p className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide">
+                            AI/ML Engineer & Full-Stack Developer
+                        </p>
 
-                    {/* Decorative accent line */}
-                    <div className="mt-4 h-0.5 w-24 bg-gradient-to-r from-cyan-400 via-sky-400 to-transparent rounded-full" />
+                        {/* Decorative accent line */}
+                        <div className="mt-4 h-0.5 w-24 bg-gradient-to-r from-cyan-400 via-sky-400 to-transparent rounded-full" />
 
-                    {/* Creative Stacked AI/ML Roles with Icons */}
-                    <div className="mt-8 space-y-6">
-                        {/* Role Block 1 - Core Focus */}
-                        <div>
-                            <h2 className="text-xl md:text-2xl font-bold text-stone-800 flex items-center gap-2">
-                                AI/ML Engineer
-                            </h2>
-                            <div className="flex items-center gap-3 mt-1 text-stone-600 font-medium">
-                                <span>NLP Research</span>
-                                <span className="text-amber-400 text-lg">⚡</span>
-                                <span>Vision Expert</span>
-                            </div>
-                        </div>
-
-                        {/* Role Block 2 - Tech Specialization */}
-                        <div>
-                            <div className="text-stone-700 font-bold mb-1">Specialized In</div>
-                            <div className="text-stone-500 font-medium flex flex-wrap gap-x-4 gap-y-1">
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-1 h-1 bg-cyan-400 rounded-full" />
-                                    Large Language Models
-                                </span>
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-1 h-1 bg-sky-400 rounded-full" />
-                                    RAG Systems
-                                </span>
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-1 h-1 bg-teal-400 rounded-full" />
-                                    Generative AI
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Role Block 3 - Impact/Mission */}
-                        <div className="max-w-sm">
-                            <div className="text-stone-700 font-bold mb-1">Impact & Innovation</div>
-                            <p className="text-stone-400 text-sm leading-relaxed">
-                                Architecting scalable AI solutions that transform complex data into actionable intelligence. Bridging the gap between cutting-edge research and production systems.
-                            </p>
-                        </div>
-
-                        {/* Creative Quote */}
-                        <div className="mt-6 pt-6 border-t border-stone-100">
-                            <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
-                                "The best AI doesn't replace human thinking — it amplifies it."
-                            </div>
-                            <div className="mt-2 flex items-center gap-2">
-                                <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
-                                <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
-                            </div>
-                            {/* ML Engineer - matching right side AI Engineer */}
-                            <div className="mt-8 heroDecorativeText opacity-0">
-                                <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
-                                    ML
+                        {/* Creative Stacked AI/ML Roles with Icons */}
+                        <div className="mt-8 space-y-6">
+                            {/* Role Block 1 - Core Focus */}
+                            <div>
+                                <h2 className="text-xl md:text-2xl font-bold text-stone-800 flex items-center gap-2">
+                                    AI/ML Engineer
+                                </h2>
+                                <div className="flex items-center gap-3 mt-1 text-stone-600 font-medium">
+                                    <span>NLP Research</span>
+                                    <span className="text-amber-400 text-lg">⚡</span>
+                                    <span>Vision Expert</span>
                                 </div>
-                                <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
-                                    ENGINEER
+                            </div>
+
+                            {/* Role Block 2 - Tech Specialization */}
+                            <div>
+                                <div className="text-stone-700 font-bold mb-1">Specialized In</div>
+                                <div className="text-stone-500 font-medium flex flex-wrap gap-x-4 gap-y-1">
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-1 h-1 bg-cyan-400 rounded-full" />
+                                        Large Language Models
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-1 h-1 bg-sky-400 rounded-full" />
+                                        RAG Systems
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-1 h-1 bg-teal-400 rounded-full" />
+                                        Generative AI
+                                    </span>
                                 </div>
+                            </div>
+
+                            {/* Role Block 3 - Impact/Mission */}
+                            <div className="max-w-sm">
+                                <div className="text-stone-700 font-bold mb-1">Impact & Innovation</div>
+                                <p className="text-stone-400 text-sm leading-relaxed">
+                                    Architecting scalable AI solutions that transform complex data into actionable intelligence. Bridging the gap between cutting-edge research and production systems.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Creative Quote */}
+                    <div className="mt-6 pt-6 border-t border-stone-100">
+                        <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
+                            "The best AI doesn't replace human thinking — it amplifies it."
+                        </div>
+                        <div className="mt-2 flex items-center gap-2">
+                            <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
+                            <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
+                        </div>
+                        {/* ML Engineer - matching right side AI Engineer */}
+                        <div className="mt-8 heroRoleML opacity-100">
+                            <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                                ML
+                            </div>
+                            <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                                ENGINEER
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Left sidebar info - Social links */}
-                <div className="heroSocialLinks absolute bottom-32 left-4 sm:bottom-36 sm:left-8 md:bottom-40 md:left-12 z-[12] hidden xs:block opacity-0">
+                <div className="heroSocialLinks absolute bottom-32 left-2 sm:bottom-36 sm:left-4 md:bottom-40 md:left-5 z-[12] hidden xs:block opacity-0">
                     <div className="flex gap-2">
                         {socialLinks.slice(0, 3).map((link) => (
                             <a
@@ -636,27 +700,30 @@ function HeroSection() {
 
                 {/* Quote card - top right */}
                 <div
-                    className="heroQuote absolute top-24 right-4 sm:right-8 md:right-12 z-[12] hidden lg:block max-w-xs opacity-0"
-                    style={{
-                        transform: `translate3d(${mouseX * -0.3}px, ${mouseY * 0.2}px, 0)`,
-                        transition: 'transform 0.15s ease-out',
-                        willChange: 'transform, opacity',
-                    }}
+                    id="heroQuoteWrapper"
+                    className="heroQuote absolute top-24 right-2 sm:right-4 md:right-5 z-[12] hidden lg:block max-w-xs"
                 >
-                    <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
-                        <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
-                            "Building intelligent systems that bridge the gap between data and decisions."
-                        </p>
-                        <div className="mt-2 flex items-center gap-2">
-                            <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
-                            <span className="text-stone-400 text-xs uppercase tracking-wider">Philosophy</span>
+                    <div
+                        style={{
+                            transform: `translate3d(${mouseX * -0.3}px, ${mouseY * 0.2}px, 0)`,
+                            willChange: 'transform',
+                        }}
+                    >
+                        <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
+                            <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
+                                "Building intelligent systems that bridge the gap between data and decisions."
+                            </p>
+                            <div className="mt-2 flex items-center gap-2">
+                                <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
+                                <span className="text-stone-400 text-xs uppercase tracking-wider">Philosophy</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* AI ENGINEER - middle right */}
                 <div
-                    className="heroDecorativeText absolute top-1/2 right-4 sm:right-8 md:right-12 -translate-y-1/2 z-[12] hidden md:block opacity-0"
+                    className="heroRoleAI absolute top-1/2 right-2 sm:right-4 md:right-5 -translate-y-1/2 z-[12] hidden md:block opacity-100"
                     style={{
                         transform: `translateY(-50%) translate3d(${mouseX * -0.25}px, ${mouseY * 0.15}px, 0)`,
                         transition: 'transform 0.15s ease-out',
@@ -674,7 +741,7 @@ function HeroSection() {
                 </div>
 
                 {/* DATA SCIENTIST - Center-Relative Positioning */}
-                <div className="heroDecorativeText absolute top-[25%] left-1/2 -translate-x-[370px] z-[8] hidden lg:block text-right opacity-0">
+                <div className="heroRoleData absolute top-[25%] left-1/2 -translate-x-[370px] z-[8] hidden lg:block text-right opacity-100">
                     <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
                         DATA
                     </div>
@@ -684,7 +751,7 @@ function HeroSection() {
                 </div>
 
                 {/* SOFTWARE ENGINEER - Center-Relative Positioning */}
-                <div className="heroDecorativeText absolute top-[32%] left-1/2 translate-x-[200px] z-[8] hidden lg:block text-left opacity-0">
+                <div className="heroRoleSoftware absolute top-[32%] left-1/2 translate-x-[200px] z-[8] hidden lg:block text-left opacity-100">
                     <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
                         SOFTWARE
                     </div>
@@ -694,7 +761,7 @@ function HeroSection() {
                 </div>
 
                 {/* Bottom right - Stats & Location */}
-                <div className="heroStats absolute bottom-20 right-4 sm:bottom-24 sm:right-8 md:bottom-28 md:right-12 z-[12] hidden md:block text-right opacity-0">
+                <div className="heroStats absolute bottom-20 right-2 sm:bottom-24 sm:right-4 md:bottom-28 md:right-5 z-[12] hidden md:block text-right opacity-0">
                     {/* Stats Block */}
                     <div className="mb-8 flex flex-col items-end gap-4">
                         <div className="flex gap-8 border-b border-stone-100 pb-4">
@@ -734,7 +801,7 @@ function HeroSection() {
                     </div>
                 </div>
             </div>{/* End heroContentWrapper */}
-        </section>
+        </section >
     );
 }
 
