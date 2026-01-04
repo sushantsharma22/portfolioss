@@ -1,16 +1,86 @@
 'use client';
 
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * HERO SECTION - LANDO NORRIS COLLAPSE EFFECT (EXACT REPLICA)
+ * ═══════════════════════════════════════════════════════════════════════
+ * 
+ * EXACT ANIMATION FLOW (matching Lando Norris site):
+ * 1. Hero starts with ENTRANCE ANIMATIONS - elements fade in smoothly
+ * 2. Background MARQUEE TEXT scrolls horizontally (like Lando's "WE DID IT")
+ * 3. On scroll: hero PINS (doesn't scroll down) 
+ * 4. All text/UI fades out while portrait SHRINKS into square box
+ * 5. SVG signature DRAWS stroke-by-stroke OVER the portrait (like signing)
+ * 6. After signature complete: UNPIN and About section scrolls up normally
+ * 
+ * NO FADE OUT at end - portrait+signature stay visible, just unpin!
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 import { memo, useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import MaskRevealPortrait from './MaskRevealPortrait';
 import SplashCursor from './SplashCursor';
 import { personalInfo, socialLinks } from '@/lib/constants';
 
-// Animated organic flowing lines (magazine style)
+// Register GSAP plugins
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// BACKGROUND SCROLLING MARQUEE TEXT (Like Lando's "WE DID IT AT HOME" etc)
+// ═══════════════════════════════════════════════════════════════════════
+function ScrollingMarqueeText() {
+    const marqueeLines = [
+        { text: 'MACHINE LEARNING • ARTIFICIAL INTELLIGENCE • DEEP LEARNING • NEURAL NETWORKS • ', direction: 'left', speed: 25, gradient: 'from-cyan-400/40 via-sky-400/40 to-blue-400/40', rotation: -8 },
+        { text: 'PYTHON • TENSORFLOW • PYTORCH • REACT • NEXT.JS • TYPESCRIPT • ', direction: 'right', speed: 30, gradient: 'from-violet-400/40 via-purple-400/40 to-fuchsia-400/40', rotation: 3 },
+        { text: 'NLP • COMPUTER VISION • TRANSFORMERS • LLM • RAG SYSTEMS • ', direction: 'left', speed: 22, gradient: 'from-emerald-400/40 via-teal-400/40 to-green-400/40', rotation: -4 },
+        { text: 'FULL STACK • AWS • DOCKER • KUBERNETES • FASTAPI • ', direction: 'right', speed: 28, gradient: 'from-amber-400/40 via-orange-400/40 to-rose-400/40', rotation: 6 },
+    ];
+
+    return (
+        <div className="heroMarqueeBackground absolute inset-0 z-[1] overflow-hidden">
+            {marqueeLines.map((line, index) => (
+                <div
+                    key={index}
+                    className="absolute w-full whitespace-nowrap"
+                    style={{
+                        top: `${12 + index * 23}%`,
+                        transform: `rotate(${line.rotation}deg)`,
+                    }}
+                >
+                    <div
+                        className={`marquee-track flex gap-8 ${line.direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right'}`}
+                        style={{
+                            animationDuration: `${line.speed}s`,
+                        }}
+                    >
+                        {[...Array(4)].map((_, i) => (
+                            <span
+                                key={i}
+                                className={`text-[80px] md:text-[120px] lg:text-[160px] font-black bg-gradient-to-r ${line.gradient} bg-clip-text text-transparent tracking-tighter select-none`}
+                                style={{ 
+                                    WebkitTextStroke: '0.5px rgba(0,0,0,0.02)',
+                                }}
+                            >
+                                {line.text}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Animated organic flowing lines (magazine style) - WITHOUT Framer Motion
 function FlowingLines() {
     return (
         <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
+            className="absolute inset-0 w-full h-full pointer-events-none flowingLines opacity-0"
             viewBox="0 0 1440 900"
             fill="none"
             preserveAspectRatio="xMidYMid slice"
@@ -24,18 +94,14 @@ function FlowingLines() {
             </defs>
 
             {[0, 1, 2, 3].map((i) => (
-                <motion.path
+                <path
                     key={i}
+                    className={`flowingLine flowingLine-${i}`}
                     d={`M${-100 + i * 50} ${200 + i * 120} Q ${400 + i * 100} ${100 + i * 80}, ${700 + i * 50} ${220 + i * 100} T ${1100 + i * 50} ${180 + i * 90} T ${1500 + i * 30} ${250 + i * 80}`}
                     stroke="url(#lineGrad)"
                     strokeWidth={1 + i * 0.2}
                     fill="none"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{
-                        pathLength: 1,
-                        opacity: 0.3 - i * 0.05,
-                    }}
-                    transition={{ duration: 2 + i * 0.3, delay: 0.5 + i * 0.2, ease: 'easeOut' }}
+                    style={{ opacity: 0.3 - i * 0.05 }}
                 />
             ))}
         </svg>
@@ -62,28 +128,233 @@ const socialIcons: Record<string, React.ReactNode> = {
 };
 
 function HeroSection() {
-    const ref = useRef<HTMLDivElement>(null);
+    // Refs for GSAP animations
+    const heroRef = useRef<HTMLDivElement>(null);
+    const signaturePathRef = useRef<SVGPathElement>(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    
+    // Mouse parallax state
     const [mouseX, setMouseX] = useState(0);
     const [mouseY, setMouseY] = useState(0);
-    const [isLoaded, setIsLoaded] = useState(false);
 
+    // ============================================
+    // INITIAL ENTRANCE ANIMATIONS - Everything appears smoothly on load
+    // ============================================
     useEffect(() => {
-        setIsLoaded(true);
+        // Small delay to ensure DOM is ready
+        const timer = setTimeout(() => setIsLoaded(true), 100);
+        return () => clearTimeout(timer);
     }, []);
 
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ['start start', 'end start'],
-    });
+    useGSAP(() => {
+        if (!heroRef.current || !isLoaded) return;
 
-    const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+        // Create entrance timeline - everything fades in smoothly
+        const entranceTl = gsap.timeline({ 
+            defaults: { ease: 'power3.out' }
+        });
 
-    // Simple hero fade and scale on scroll
-    const opacity = useTransform(smoothProgress, [0, 0.5], [1, 0]);
-    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.95]);
+        // Staggered entrance - elements appear one after another
+        entranceTl
+            // First: Background marquee starts visible at 100% opacity
+            .set('.heroMarqueeBackground', {
+                opacity: 1,
+            })
+            // Flowing lines appear
+            .to('.flowingLines', {
+                opacity: 1,
+                duration: 1.2,
+            }, 0.2)
+            // Hero content wrapper is visible
+            .set('.heroContentWrapper', {
+                opacity: 1,
+            })
+            // Left side typography slides in
+            .fromTo('.heroTypography', {
+                x: -60,
+                opacity: 0,
+            }, {
+                x: 0,
+                opacity: 1,
+                duration: 1.2,
+            }, 0.5)
+            // Decorative text elements
+            .fromTo('.heroDecorativeText', {
+                scale: 0.8,
+                opacity: 0,
+            }, {
+                scale: 1,
+                opacity: 1,
+                duration: 1,
+                stagger: 0.1,
+            }, 0.6)
+            // Right side elements
+            .fromTo('.heroQuote', {
+                x: 40,
+                opacity: 0,
+            }, {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+            }, 0.7)
+            .fromTo('.heroStats', {
+                y: 30,
+                opacity: 0,
+            }, {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+            }, 0.8)
+            // Social links pop up
+            .fromTo('.heroSocialLinks', {
+                y: 20,
+                opacity: 0,
+            }, {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+            }, 0.9)
+            // Tech stack at bottom
+            .fromTo('.heroTechStack', {
+                y: 20,
+                opacity: 0,
+            }, {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+            }, 1);
+
+    }, { dependencies: [isLoaded], scope: heroRef });
+
+    // ============================================
+    // GSAP SCROLL TRIGGER - EXACT LANDO NORRIS EFFECT
+    // ============================================
+    useGSAP(() => {
+        if (!heroRef.current) return;
+
+        const mm = gsap.matchMedia();
+        
+        mm.add("(min-width: 768px)", () => {
+            // Get signature path and set up for drawing animation
+            const signaturePath = signaturePathRef.current;
+            if (signaturePath) {
+                const pathLength = signaturePath.getTotalLength();
+                // Set initial state: path is invisible (fully offset)
+                gsap.set(signaturePath, {
+                    strokeDasharray: pathLength,
+                    strokeDashoffset: pathLength,
+                });
+            }
+
+            // Create master timeline with ScrollTrigger
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: heroRef.current,
+                    start: 'top top',
+                    end: '+=500vh', // Even longer for ultra-slow premium feel
+                    pin: true,
+                    scrub: 2.5,     // Smoother scrub
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                },
+            });
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 1: ENTIRE HERO CONTENT SHRINKS AS ONE UNIT
+            // Elements fade AS the shrink happens (not before)
+            // ═══════════════════════════════════════════════════════════
+            tl.to('.heroContentWrapper', {
+                scale: 0.38,        // Smaller for more square-ish look
+                borderRadius: '24px', // Less border radius
+                duration: 4,        // Slower shrink
+                ease: 'power2.inOut',
+            }, 0);
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 2: UI elements fade WITH shrink (same timing)
+            // They shrink and fade together for cohesive effect
+            // ═══════════════════════════════════════════════════════════
+            tl.to('.heroTypography', {
+                opacity: 0,
+                scale: 0.8,
+                filter: 'blur(8px)',
+                duration: 3,        // Same as shrink timing
+                ease: 'power2.inOut',
+            }, 0.5)               // Slight delay so shrink starts first
+            .to('.heroSocialLinks, .heroTechStack, .heroStats, .heroQuote', {
+                opacity: 0,
+                scale: 0.85,
+                duration: 2.5,
+                ease: 'power2.inOut',
+            }, 0.5)
+            .to('.heroDecorativeText', {
+                opacity: 0,
+                scale: 0.7,
+                filter: 'blur(15px)',
+                duration: 3,
+                ease: 'power2.inOut',
+            }, 0.5)
+            .to('.heroVignette, .flowingLines', {
+                opacity: 0,
+                duration: 2.5,
+                ease: 'power2.inOut',
+            }, 0.3);
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 3: Signature DRAWS stroke-by-stroke (starts LATE)
+            // ═══════════════════════════════════════════════════════════
+            // First fade in the signature SVG
+            tl.to('.signatureSvg', {
+                opacity: 1,
+                duration: 0.5,
+                ease: 'power2.in',
+            }, 3.2);  // Fade in just before drawing starts
+            
+            if (signaturePath) {
+                tl.to(signaturePath, {
+                    strokeDashoffset: 0,
+                    duration: 5,      // Even slower
+                    ease: 'power1.inOut',
+                }, 3.5);              // Starts much later
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 4 (95% - 100%): HOLD then UNPIN
+            // Portrait + signature stay visible, section unpins
+            // About section scrolls up naturally over it
+            // ═══════════════════════════════════════════════════════════
+            // No fade! Just hold the final state until unpin
+
+            return () => {
+                tl.kill();
+            };
+        });
+
+        // Mobile: Simple fade without pin
+        mm.add("(max-width: 767px)", () => {
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: heroRef.current,
+                    start: 'top top',
+                    end: '+=50vh',
+                    scrub: 1,
+                },
+            });
+
+            tl.to('.heroTypography, .heroSocialLinks, .heroTechStack, .heroStats, .heroDecorativeText', {
+                opacity: 0,
+                y: -30,
+                duration: 1,
+            }, 0);
+
+            return () => tl.kill();
+        });
+
+        return () => mm.revert();
+    }, { dependencies: [], scope: heroRef });
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        const rect = ref.current?.getBoundingClientRect();
+        const rect = heroRef.current?.getBoundingClientRect();
         if (!rect) return;
         const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
         const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
@@ -94,319 +365,375 @@ function HeroSection() {
     return (
         <section
             id="hero"
-            ref={ref}
+            ref={heroRef}
             onMouseMove={handleMouseMove}
-            className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-[#fafaf9] via-white to-[#f5f5f4]"
+            className="heroPin relative h-screen w-full overflow-hidden bg-gradient-to-br from-[#f5f1e8] via-[#faf8f3] to-[#f0ebe3] z-10"
         >
-            {/* Flowing organic lines - magazine aesthetic */}
-            <FlowingLines />
+            {/* ═══════════════════════════════════════════════════════════
+                BACKGROUND LAYER - Scrolling skills (BEHIND hero content)
+                This is visible when hero shrinks
+            ═══════════════════════════════════════════════════════════ */}
+            <ScrollingMarqueeText />
+
+            {/* ═══════════════════════════════════════════════════════════
+                HERO CONTENT WRAPPER - This entire div shrinks as one unit
+                Contains all hero content that collapses together
+            ═══════════════════════════════════════════════════════════ */}
+            <div 
+                className="heroContentWrapper absolute inset-0 z-[5]"
+                style={{
+                    willChange: 'transform',
+                    transformOrigin: 'center center',
+                    backgroundColor: 'inherit',
+                    background: 'linear-gradient(to bottom right, #f5f1e8, #faf8f3, #f0ebe3)',
+                }}
+            >
+                {/* Flowing organic lines - magazine aesthetic */}
+                <FlowingLines />
 
             {/* Soft radial vignette */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-10" />
+            <div className="heroVignette absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-[5]" />
 
-            {/* Portrait with glitch + fluid mask */}
-            <motion.div
-                style={{ opacity, scale }}
-                className="absolute inset-0 z-0"
-            >
-                <MaskRevealPortrait />
-                <SplashCursor />
-            </motion.div>
+            {/* ═══════════════════════════════════════════════════════════
+                PORTRAIT + SIGNATURE WRAPPER (CENTER)
+                This container shrinks while signature draws over it
+            ═══════════════════════════════════════════════════════════ */}
+            <div className="absolute inset-0 flex items-center justify-center z-[5]">
+                <div 
+                    className="portraitWrapper relative"
+                    style={{ 
+                        width: '100%',
+                        height: '100%',
+                        willChange: 'transform',
+                    }}
+                >
+                    {/* Portrait - This is your MaskRevealPortrait */}
+                    <div className="absolute inset-0">
+                        <MaskRevealPortrait />
+                    </div>
+                    {/* ═══════════════════════════════════════════════════════════
+                        SIGNATURE SVG - Draws OVER portrait with scroll
+                        Like Lando's neon signature that writes itself
+                        Initially hidden - only shows during scroll animation
+                    ═══════════════════════════════════════════════════════════ */}
+                    <svg
+                        className="signatureSvg absolute inset-0 w-full h-full pointer-events-none z-30 opacity-0"
+                        viewBox="0 0 600 600"
+                        fill="none"
+                        preserveAspectRatio="xMidYMid meet"
+                    >
+                        {/* 
+                            SIGNATURE PATH - "Sushant" handwriting style
+                            Draws stroke-by-stroke with scroll (strokeDashoffset)
+                            Color: Cyan/Sky blue like Lando's neon signature
+                        */}
+                        <path
+                            ref={signaturePathRef}
+                            d="M 80 320
+                               C 75 300, 85 280, 105 270
+                               Q 125 260, 140 270
+                               Q 155 280, 155 300
+                               Q 155 320, 145 335
+                               Q 135 350, 120 360
+                               Q 105 370, 95 375
+                               Q 85 380, 90 385
+                               Q 95 390, 110 385
+                               L 130 375
+                               
+                               Q 145 370, 160 360
+                               Q 175 350, 180 365
+                               Q 185 380, 175 390
+                               Q 165 400, 150 400
+                               Q 135 400, 140 395
+                               Q 145 390, 160 390
+                               L 185 390
+                               
+                               Q 200 390, 210 380
+                               Q 220 370, 220 355
+                               Q 220 340, 210 335
+                               Q 200 330, 195 340
+                               Q 190 350, 200 365
+                               Q 210 380, 230 385
+                               Q 250 390, 260 385
+                               
+                               Q 270 380, 270 365
+                               L 270 300
+                               Q 270 285, 280 275
+                               Q 290 265, 305 270
+                               Q 320 275, 320 290
+                               L 320 385
+                               
+                               Q 335 380, 350 365
+                               Q 365 350, 375 360
+                               Q 385 370, 380 385
+                               Q 375 400, 360 405
+                               Q 345 410, 340 400
+                               Q 335 390, 350 390
+                               Q 365 390, 380 385
+                               
+                               Q 395 380, 410 370
+                               Q 425 360, 430 345
+                               L 430 300
+                               Q 430 280, 445 270
+                               Q 460 260, 475 270
+                               Q 490 280, 490 295
+                               L 490 385
+                               
+                               Q 505 380, 520 365
+                               Q 535 350, 545 335
+                               Q 555 320, 550 310
+                               Q 545 300, 535 305
+                               Q 525 310, 525 325
+                               Q 525 340, 535 355
+                               Q 545 370, 560 375
+                               Q 575 380, 590 370
+                               Q 605 360, 610 345
+                               L 620 320"
+                            stroke="#0ea5e9"
+                            strokeWidth="5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            fill="none"
+                            style={{
+                                filter: 'drop-shadow(0 0 30px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6))',
+                            }}
+                        />
+                    </svg>
+                </div>
+            </div>
 
-            {/* MAIN LEFT CONTENT - Matching reference layout */}
+            {/* Splash Cursor Effect */}
+            <SplashCursor />
 
-            {/* Name & Tagline - Top-left */}
-            <motion.div
-                className="absolute top-6 left-4 sm:top-8 sm:left-8 md:top-12 md:left-12 z-20"
-                initial={{ opacity: 0, x: -60 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            {/* ═══════════════════════════════════════════════════════════
+                LEFT SIDE - Name, Tagline, Roles (Fades out on scroll)
+            ═══════════════════════════════════════════════════════════ */}
+            <div
+                className="heroTypography absolute top-6 left-4 sm:top-8 sm:left-8 md:top-12 md:left-12 z-[12] opacity-0"
                 style={{
                     transform: `perspective(1000px) translate3d(${mouseX * 0.6}px, ${mouseY * 0.4}px, 30px) rotateY(${mouseX * 0.15}deg)`,
                     transition: 'transform 0.15s ease-out',
+                    willChange: 'transform, opacity',
                 }}
             >
-                <motion.h1
+                <h1
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[0.85]"
                     style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
                 >
                     <span className="text-stone-900 block drop-shadow-sm">
                         {personalInfo.firstName.toUpperCase()}
-                    </span>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-sky-500 to-teal-500 block">
-                        {personalInfo.lastName.toUpperCase()}
-                    </span>
-                </motion.h1>
+                        </span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-sky-500 to-teal-500 block">
+                            {personalInfo.lastName.toUpperCase()}
+                        </span>
+                    </h1>
 
-                {/* Primary Tagline */}
-                <motion.p
-                    className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
-                >
-                    AI/ML Engineer & Full-Stack Developer
-                </motion.p>
-
-                {/* Decorative accent line */}
-                <motion.div
-                    className="mt-4 h-0.5 bg-gradient-to-r from-cyan-400 via-sky-400 to-transparent rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: 100 }}
-                    transition={{ duration: 0.8, delay: 1 }}
-                />
-
-                {/* Creative Stacked AI/ML Roles with Icons */}
-                <motion.div
-                    className="mt-8 space-y-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.1, duration: 0.8 }}
-                >
-                    {/* Role Block 1 - Core Focus */}
-                    <div>
-                        <h2 className="text-xl md:text-2xl font-bold text-stone-800 flex items-center gap-2">
-                            AI/ML Engineer
-                        </h2>
-                        <div className="flex items-center gap-3 mt-1 text-stone-600 font-medium">
-                            <span>NLP Research</span>
-                            <span className="text-amber-400 text-lg">⚡</span>
-                            <span>Vision Expert</span>
-                        </div>
-                    </div>
-
-                    {/* Role Block 2 - Tech Specialization */}
-                    <div>
-                        <div className="text-stone-700 font-bold mb-1">Specialized In</div>
-                        <div className="text-stone-500 font-medium flex flex-wrap gap-x-4 gap-y-1">
-                            <span className="flex items-center gap-1.5">
-                                <span className="w-1 h-1 bg-cyan-400 rounded-full" />
-                                Large Language Models
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                                <span className="w-1 h-1 bg-sky-400 rounded-full" />
-                                RAG Systems
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                                <span className="w-1 h-1 bg-teal-400 rounded-full" />
-                                Generative AI
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Role Block 3 - Impact/Mission (Filling empty space) */}
-                    <div className="max-w-sm">
-                        <div className="text-stone-700 font-bold mb-1">Impact & Innovation</div>
-                        <p className="text-stone-400 text-sm leading-relaxed">
-                            Architecting scalable AI solutions that transform complex data into actionable intelligence. Bridging the gap between cutting-edge research and production systems.
-                        </p>
-                    </div>
-
-                    {/* Creative Quote - Replacing Technical Arsenal */}
-                    <motion.div
-                        className="mt-6 pt-6 border-t border-stone-100"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.4 }}
-                    >
-                        <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
-                            "The best AI doesn't replace human thinking — it amplifies it."
-                        </div>
-                        <div className="mt-2 flex items-center gap-2">
-                            <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
-                            <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
-                        </div>
-                        {/* ML Engineer - matching right side AI Engineer */}
-                        <div className="mt-8">
-                            <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
-                                ML
-                            </div>
-                            <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
-                                ENGINEER
-                            </div>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            </motion.div>
-
-            {/* Left sidebar info - Magazine style column (hidden on very small mobile) */}
-            <motion.div
-                className="absolute bottom-32 left-4 sm:bottom-36 sm:left-8 md:bottom-40 md:left-12 z-20 hidden xs:block"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-                {/* Social links - vertical stack */}
-                <div className="flex gap-2">
-                    {socialLinks.slice(0, 3).map((link, i) => (
-                        <motion.a
-                            key={link.platform}
-                            href={link.href}
-                            target={link.href.startsWith('http') ? '_blank' : undefined}
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-900 hover:text-white transition-all duration-300 shadow-sm"
-                            initial={{ opacity: 0, scale: 0 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 1 + i * 0.1, type: 'spring', stiffness: 200 }}
-                            whileHover={{ scale: 1.15, y: -3 }}
-                        >
-                            {socialIcons[link.icon] || socialIcons.email}
-                        </motion.a>
-                    ))}
-                </div>
-            </motion.div>
-
-            {/* Scroll hint removed per user request */}
-
-            {/* ========== BOTTOM SCROLLING TECH STACK - TRANSPARENT ========== */}
-            <motion.div
-                className="absolute bottom-0 left-0 right-0 h-12 flex items-center overflow-hidden z-20"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-            >
-                <div className="flex items-center gap-8 animate-marquee whitespace-nowrap px-4">
-                    {/* Duplicate list for seamless loop */}
-                    {[...Array(2)].map((_, i) => (
-                        <div key={i} className="flex items-center gap-8">
-                            {['Python', 'TensorFlow', 'PyTorch', 'React', 'Next.js', 'Typescript', 'AWS', 'Docker', 'Kubernetes', 'PostgreSQL', 'MongoDB', 'GraphQL', 'Node.js', 'FastAPI'].map((tech) => (
-                                <span key={tech} className="text-stone-400 font-medium text-sm flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-stone-300" />
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </motion.div>
-
-            {/* ========== RIGHT SIDE CONTENT - FILLS EMPTY SPACE ========== */}
-
-            {/* Quote card - top right */}
-            <motion.div
-                className="absolute top-24 right-4 sm:right-8 md:right-12 z-20 hidden lg:block max-w-xs"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8, duration: 1 }}
-                style={{
-                    transform: `translate3d(${mouseX * -0.3}px, ${mouseY * 0.2}px, 0)`,
-                    transition: 'transform 0.15s ease-out',
-                }}
-            >
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
-                    <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
-                        "Building intelligent systems that bridge the gap between data and decisions."
+                    {/* Primary Tagline */}
+                    <p className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide">
+                        AI/ML Engineer & Full-Stack Developer
                     </p>
-                    <div className="mt-2 flex items-center gap-2">
-                        <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
-                        <span className="text-stone-400 text-xs uppercase tracking-wider">Philosophy</span>
+
+                    {/* Decorative accent line */}
+                    <div className="mt-4 h-0.5 w-24 bg-gradient-to-r from-cyan-400 via-sky-400 to-transparent rounded-full" />
+
+                    {/* Creative Stacked AI/ML Roles with Icons */}
+                    <div className="mt-8 space-y-6">
+                        {/* Role Block 1 - Core Focus */}
+                        <div>
+                            <h2 className="text-xl md:text-2xl font-bold text-stone-800 flex items-center gap-2">
+                                AI/ML Engineer
+                            </h2>
+                            <div className="flex items-center gap-3 mt-1 text-stone-600 font-medium">
+                                <span>NLP Research</span>
+                                <span className="text-amber-400 text-lg">⚡</span>
+                                <span>Vision Expert</span>
+                            </div>
+                        </div>
+
+                        {/* Role Block 2 - Tech Specialization */}
+                        <div>
+                            <div className="text-stone-700 font-bold mb-1">Specialized In</div>
+                            <div className="text-stone-500 font-medium flex flex-wrap gap-x-4 gap-y-1">
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-1 h-1 bg-cyan-400 rounded-full" />
+                                    Large Language Models
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-1 h-1 bg-sky-400 rounded-full" />
+                                    RAG Systems
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-1 h-1 bg-teal-400 rounded-full" />
+                                    Generative AI
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Role Block 3 - Impact/Mission */}
+                        <div className="max-w-sm">
+                            <div className="text-stone-700 font-bold mb-1">Impact & Innovation</div>
+                            <p className="text-stone-400 text-sm leading-relaxed">
+                                Architecting scalable AI solutions that transform complex data into actionable intelligence. Bridging the gap between cutting-edge research and production systems.
+                            </p>
+                        </div>
+
+                        {/* Creative Quote */}
+                        <div className="mt-6 pt-6 border-t border-stone-100">
+                            <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
+                                "The best AI doesn't replace human thinking — it amplifies it."
+                            </div>
+                            <div className="mt-2 flex items-center gap-2">
+                                <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
+                                <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
+                            </div>
+                            {/* ML Engineer - matching right side AI Engineer */}
+                            <div className="mt-8 heroDecorativeText opacity-0">
+                                <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                                    ML
+                                </div>
+                                <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                                    ENGINEER
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </motion.div>
 
-            {/* Availability status - middle right */}
-            <motion.div
-                className="absolute top-1/2 right-4 sm:right-8 md:right-12 -translate-y-1/2 z-20 hidden md:block"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.8 }}
-                style={{
-                    transform: `translateY(-50%) translate3d(${mouseX * -0.25}px, ${mouseY * 0.15}px, 0)`,
-                    transition: 'transform 0.15s ease-out',
-                }}
-            >
-                <div className="text-right">
-                    {/* Large decorative text */}
-                    <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
-                        AI
+                {/* Left sidebar info - Social links */}
+                <div className="heroSocialLinks absolute bottom-32 left-4 sm:bottom-36 sm:left-8 md:bottom-40 md:left-12 z-[12] hidden xs:block opacity-0">
+                    <div className="flex gap-2">
+                        {socialLinks.slice(0, 3).map((link) => (
+                            <a
+                                key={link.platform}
+                                href={link.href}
+                                target={link.href.startsWith('http') ? '_blank' : undefined}
+                                rel="noopener noreferrer"
+                                className="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-900 hover:text-white transition-all duration-300 shadow-sm hover:scale-110 hover:-translate-y-1"
+                            >
+                                {socialIcons[link.icon] || socialIcons.email}
+                            </a>
+                        ))}
                     </div>
-                    <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                </div>
+
+                {/* BOTTOM SCROLLING TECH STACK */}
+                <div className="heroTechStack absolute bottom-0 left-0 right-0 h-12 flex items-center overflow-hidden z-[12] opacity-0">
+                    <div className="flex items-center gap-8 animate-marquee whitespace-nowrap px-4">
+                        {[...Array(2)].map((_, i) => (
+                            <div key={i} className="flex items-center gap-8">
+                                {['Python', 'TensorFlow', 'PyTorch', 'React', 'Next.js', 'Typescript', 'AWS', 'Docker', 'Kubernetes', 'PostgreSQL', 'MongoDB', 'GraphQL', 'Node.js', 'FastAPI'].map((tech) => (
+                                    <span key={tech} className="text-stone-400 font-medium text-sm flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-stone-300" />
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* ===== RIGHT SIDE DECORATIVE CONTENT ===== */}
+
+                {/* Quote card - top right */}
+                <div
+                    className="heroQuote absolute top-24 right-4 sm:right-8 md:right-12 z-[12] hidden lg:block max-w-xs opacity-0"
+                    style={{
+                        transform: `translate3d(${mouseX * -0.3}px, ${mouseY * 0.2}px, 0)`,
+                        transition: 'transform 0.15s ease-out',
+                        willChange: 'transform, opacity',
+                    }}
+                >
+                    <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
+                        <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
+                            "Building intelligent systems that bridge the gap between data and decisions."
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
+                            <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
+                            <span className="text-stone-400 text-xs uppercase tracking-wider">Philosophy</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* AI ENGINEER - middle right */}
+                <div
+                    className="heroDecorativeText absolute top-1/2 right-4 sm:right-8 md:right-12 -translate-y-1/2 z-[12] hidden md:block opacity-0"
+                    style={{
+                        transform: `translateY(-50%) translate3d(${mouseX * -0.25}px, ${mouseY * 0.15}px, 0)`,
+                        transition: 'transform 0.15s ease-out',
+                        willChange: 'transform, opacity',
+                    }}
+                >
+                    <div className="text-right">
+                        <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                            AI
+                        </div>
+                        <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                            ENGINEER
+                        </div>
+                    </div>
+                </div>
+
+                {/* DATA SCIENTIST - Center-Relative Positioning */}
+                <div className="heroDecorativeText absolute top-[25%] left-1/2 -translate-x-[370px] z-[8] hidden lg:block text-right opacity-0">
+                    <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
+                        DATA
+                    </div>
+                    <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
+                        SCIENTIST
+                    </div>
+                </div>
+
+                {/* SOFTWARE ENGINEER - Center-Relative Positioning */}
+                <div className="heroDecorativeText absolute top-[32%] left-1/2 translate-x-[200px] z-[8] hidden lg:block text-left opacity-0">
+                    <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
+                        SOFTWARE
+                    </div>
+                    <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
                         ENGINEER
                     </div>
                 </div>
-            </motion.div>
 
-            {/* DATA SCIENTIST - positioned near left side of face */}
-            {/* EDIT POSITION HERE: Change 'left-[15%]' to move left/right, 'top-1/2' to move up/down */}
-            {/* DATA SCIENTIST - Center-Relative Positioning */}
-            {/* GUIDE: To move left/right, change the '350px' value in translate-x */}
-            {/* GUIDE: To move up/down, change 'top-[40%]' */}
-            <motion.div
-                className="absolute top-[25%] left-1/2 -translate-x-[370px] z-10 hidden lg:block text-right"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1.2 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-            >
-                <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
-                    DATA
-                </div>
-                <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
-                    SCIENTIST
-                </div>
-            </motion.div>
-
-            {/* SOFTWARE ENGINEER - Center-Relative Positioning */}
-            {/* GUIDE: To move left/right, change the '350px' value in translate-x */}
-            {/* GUIDE: To move up/down, change 'top-[60%]' */}
-            <motion.div
-                className="absolute top-[32%] left-1/2 translate-x-[200px] z-10 hidden lg:block text-left"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1.2 }}
-                transition={{ delay: 1.3, duration: 0.8 }}
-            >
-                <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
-                    SOFTWARE
-                </div>
-                <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
-                    ENGINEER
-                </div>
-            </motion.div>
-
-            {/* Bottom right - availability + location */}
-            <motion.div
-                className="absolute bottom-20 right-4 sm:bottom-24 sm:right-8 md:bottom-28 md:right-12 z-20 hidden md:block text-right"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-            >
-                {/* Stats Block - Filling Bottom Right Space */}
-                <div className="mb-8 flex flex-col items-end gap-4">
-                    <div className="flex gap-8 border-b border-stone-100 pb-4">
-                        <div className="text-right">
-                            <div className="text-3xl font-black text-stone-800">4+</div>
-                            <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Years Exp</div>
+                {/* Bottom right - Stats & Location */}
+                <div className="heroStats absolute bottom-20 right-4 sm:bottom-24 sm:right-8 md:bottom-28 md:right-12 z-[12] hidden md:block text-right opacity-0">
+                    {/* Stats Block */}
+                    <div className="mb-8 flex flex-col items-end gap-4">
+                        <div className="flex gap-8 border-b border-stone-100 pb-4">
+                            <div className="text-right">
+                                <div className="text-3xl font-black text-stone-800">4+</div>
+                                <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Years Exp</div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-3xl font-black text-stone-800">50+</div>
+                                <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Projects</div>
+                            </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-3xl font-black text-stone-800">50+</div>
-                            <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Projects</div>
+                            <div className="text-sm font-bold text-stone-700">Global Client Base</div>
+                            <div className="text-xs text-stone-400">Serving clients across 3 continents</div>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="text-sm font-bold text-stone-700">Global Client Base</div>
-                        <div className="text-xs text-stone-400">Serving clients across 3 continents</div>
-                    </div>
-                </div>
 
-                {/* Availability */}
-                <div className="mb-4">
-                    <div className="flex items-center justify-end gap-2 mb-1">
-                        <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Status</span>
-                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                    {/* Availability */}
+                    <div className="mb-4">
+                        <div className="flex items-center justify-end gap-2 mb-1">
+                            <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Status</span>
+                            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                        </div>
+                        <span className="text-stone-700 font-bold text-sm bg-white/50 backdrop-blur-md px-3 py-1 rounded-full border border-stone-100">
+                            Open to Opportunities
+                        </span>
                     </div>
-                    <span className="text-stone-700 font-bold text-sm bg-white/50 backdrop-blur-md px-3 py-1 rounded-full border border-stone-100">
-                        Open to Opportunities
-                    </span>
-                </div>
 
-                {/* Location */}
-                <div>
-                    <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Location</span>
-                    <div className="mt-1 flex items-center justify-end gap-2">
-                        <span className="text-stone-700 font-bold text-sm">Windsor, Canada</span>
-                        <span className="text-lg animate-bounce">📍</span>
+                    {/* Location */}
+                    <div>
+                        <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Location</span>
+                        <div className="mt-1 flex items-center justify-end gap-2">
+                            <span className="text-stone-700 font-bold text-sm">Windsor, Canada</span>
+                            <span className="text-lg">📍</span>
+                        </div>
                     </div>
                 </div>
-            </motion.div>
+            </div>{/* End heroContentWrapper */}
         </section>
     );
 }

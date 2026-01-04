@@ -774,3 +774,70 @@ html.lenis body {
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GSAP HERO COLLAPSE EFFECT - LANDO NORRIS STYLE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Background marquee animations - Like Lando's "WE DID IT AT HOME" */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left {
+  animation: marquee-left var(--duration, 25s) linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right var(--duration, 25s) linear infinite;
+}
+
+/* Hero marquee background text container */
+.heroMarqueeBackground {
+  will-change: opacity;
+}
+
+.marquee-track {
+  will-change: transform;
+}
+
+/* Performance optimization for GSAP animations */
+.heroPin,
+.heroContentWrapper,
+.portraitWrapper,
+.heroTypography,
+.heroDecorativeText,
+.heroSocialLinks,
+.heroTechStack,
+.heroStats,
+.heroQuote,
+.heroVignette,
+.signatureSvg {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Signature SVG path - initially hidden, draws with scroll */
+.signatureSvg path {
+  will-change: stroke-dashoffset;
+}
+
+/* Remove will-change after animations complete */
+.heroPin.animation-complete,
+.portraitWrapper.animation-complete {
+  will-change: auto;
+}
