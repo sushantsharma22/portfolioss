@@ -3,6 +3,7 @@
 import { memo, useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import MaskRevealPortrait from './MaskRevealPortrait';
+import SplashCursor from './SplashCursor';
 import { personalInfo, socialLinks } from '@/lib/constants';
 
 // Animated organic flowing lines (magazine style)
@@ -76,8 +77,10 @@ function HeroSection() {
     });
 
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-    const opacity = useTransform(smoothProgress, [0, 0.35], [1, 0]);
-    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.9]);
+
+    // Simple hero fade and scale on scroll
+    const opacity = useTransform(smoothProgress, [0, 0.5], [1, 0]);
+    const scale = useTransform(smoothProgress, [0, 0.5], [1, 0.95]);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         const rect = ref.current?.getBoundingClientRect();
@@ -101,17 +104,18 @@ function HeroSection() {
             {/* Soft radial vignette */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-10" />
 
-            {/* FULL VIEWPORT Portrait with glitch + fluid mask */}
+            {/* Portrait with glitch + fluid mask */}
             <motion.div
                 style={{ opacity, scale }}
                 className="absolute inset-0 z-0"
             >
                 <MaskRevealPortrait />
+                <SplashCursor />
             </motion.div>
 
-            {/* MAGAZINE COVER LAYOUT */}
+            {/* MAIN LEFT CONTENT - Matching reference layout */}
 
-            {/* Title - Top-left on all screens */}
+            {/* Name & Tagline - Top-left */}
             <motion.div
                 className="absolute top-6 left-4 sm:top-8 sm:left-8 md:top-12 md:left-12 z-20"
                 initial={{ opacity: 0, x: -60 }}
@@ -134,9 +138,9 @@ function HeroSection() {
                     </span>
                 </motion.h1>
 
-                {/* Tagline */}
+                {/* Primary Tagline */}
                 <motion.p
-                    className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide max-w-[200px] sm:max-w-xs"
+                    className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
@@ -151,46 +155,96 @@ function HeroSection() {
                     animate={{ width: 100 }}
                     transition={{ duration: 0.8, delay: 1 }}
                 />
+
+                {/* Creative Stacked AI/ML Roles with Icons */}
+                <motion.div
+                    className="mt-8 space-y-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1, duration: 0.8 }}
+                >
+                    {/* Role Block 1 - Core Focus */}
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-bold text-stone-800 flex items-center gap-2">
+                            AI/ML Engineer
+                        </h2>
+                        <div className="flex items-center gap-3 mt-1 text-stone-600 font-medium">
+                            <span>NLP Research</span>
+                            <span className="text-amber-400 text-lg">⚡</span>
+                            <span>Vision Expert</span>
+                        </div>
+                    </div>
+
+                    {/* Role Block 2 - Tech Specialization */}
+                    <div>
+                        <div className="text-stone-700 font-bold mb-1">Specialized In</div>
+                        <div className="text-stone-500 font-medium flex flex-wrap gap-x-4 gap-y-1">
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-1 h-1 bg-cyan-400 rounded-full" />
+                                Large Language Models
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-1 h-1 bg-sky-400 rounded-full" />
+                                RAG Systems
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-1 h-1 bg-teal-400 rounded-full" />
+                                Generative AI
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Role Block 3 - Impact/Mission (Filling empty space) */}
+                    <div className="max-w-sm">
+                        <div className="text-stone-700 font-bold mb-1">Impact & Innovation</div>
+                        <p className="text-stone-400 text-sm leading-relaxed">
+                            Architecting scalable AI solutions that transform complex data into actionable intelligence. Bridging the gap between cutting-edge research and production systems.
+                        </p>
+                    </div>
+
+                    {/* Creative Quote - Replacing Technical Arsenal */}
+                    <motion.div
+                        className="mt-6 pt-6 border-t border-stone-100"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.4 }}
+                    >
+                        <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
+                            "The best AI doesn't replace human thinking — it amplifies it."
+                        </div>
+                        <div className="mt-2 flex items-center gap-2">
+                            <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
+                            <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
+                        </div>
+                        {/* ML Engineer - matching right side AI Engineer */}
+                        <div className="mt-8">
+                            <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                                ML
+                            </div>
+                            <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                                ENGINEER
+                            </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
             </motion.div>
 
             {/* Left sidebar info - Magazine style column (hidden on very small mobile) */}
             <motion.div
-                className="absolute bottom-20 left-4 sm:bottom-24 sm:left-8 md:bottom-28 md:left-12 z-20 hidden xs:block"
+                className="absolute bottom-32 left-4 sm:bottom-36 sm:left-8 md:bottom-40 md:left-12 z-20 hidden xs:block"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                    transform: `perspective(1000px) translate3d(${mouseX * 0.4}px, ${mouseY * 0.3}px, 20px)`,
-                    transition: 'transform 0.2s ease-out',
-                }}
             >
-                {/* Focus area */}
-                <div className="mb-4">
-                    <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Focus</span>
-                    <div className="mt-1 flex items-center gap-2">
-                        <span className="text-xl">🤖</span>
-                        <span className="text-stone-700 font-bold text-sm">Machine Learning</span>
-                    </div>
-                </div>
-
-                {/* Experience */}
-                <div className="mb-4">
-                    <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Since</span>
-                    <div className="mt-1 flex items-center gap-2">
-                        <span className="text-xl">💼</span>
-                        <span className="text-stone-700 font-bold text-sm">2020</span>
-                    </div>
-                </div>
-
                 {/* Social links - vertical stack */}
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2">
                     {socialLinks.slice(0, 3).map((link, i) => (
                         <motion.a
                             key={link.platform}
                             href={link.href}
                             target={link.href.startsWith('http') ? '_blank' : undefined}
                             rel="noopener noreferrer"
-                            className="w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-900 hover:text-white transition-all duration-300"
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-900 hover:text-white transition-all duration-300 shadow-sm"
                             initial={{ opacity: 0, scale: 0 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 1 + i * 0.1, type: 'spring', stiffness: 200 }}
@@ -202,41 +256,155 @@ function HeroSection() {
                 </div>
             </motion.div>
 
+            {/* Scroll hint removed per user request */}
 
-
-            {/* Bottom center - Scroll hint */}
+            {/* ========== BOTTOM SCROLLING TECH STACK - TRANSPARENT ========== */}
             <motion.div
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center"
+                className="absolute bottom-0 left-0 right-0 h-12 flex items-center overflow-hidden z-20"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 0.8 }}
+                transition={{ delay: 1.5 }}
             >
-                <span className="text-stone-400 text-[10px] tracking-[0.25em] uppercase mb-2">Scroll</span>
-                <motion.div
-                    className="w-5 h-8 border border-stone-300 rounded-full flex justify-center pt-1.5"
-                    animate={{ y: [0, 4, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                    <motion.div
-                        className="w-1 h-1.5 bg-stone-400 rounded-full"
-                        animate={{ opacity: [1, 0.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                    />
-                </motion.div>
+                <div className="flex items-center gap-8 animate-marquee whitespace-nowrap px-4">
+                    {/* Duplicate list for seamless loop */}
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-8">
+                            {['Python', 'TensorFlow', 'PyTorch', 'React', 'Next.js', 'Typescript', 'AWS', 'Docker', 'Kubernetes', 'PostgreSQL', 'MongoDB', 'GraphQL', 'Node.js', 'FastAPI'].map((tech) => (
+                                <span key={tech} className="text-stone-400 font-medium text-sm flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-stone-300" />
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+                    ))}
+                </div>
             </motion.div>
 
-            {/* Magazine-style accent elements (hidden on mobile) */}
+            {/* ========== RIGHT SIDE CONTENT - FILLS EMPTY SPACE ========== */}
+
+            {/* Quote card - top right */}
             <motion.div
-                className="absolute top-1/2 right-8 md:right-12 -translate-y-1/2 z-10 hidden md:block"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.15 }}
-                transition={{ delay: 1.2, duration: 1 }}
+                className="absolute top-24 right-4 sm:right-8 md:right-12 z-20 hidden lg:block max-w-xs"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8, duration: 1 }}
                 style={{
-                    transform: `translateY(-50%) translate3d(${mouseX * -0.2}px, ${mouseY * 0.2}px, 0)`,
+                    transform: `translate3d(${mouseX * -0.3}px, ${mouseY * 0.2}px, 0)`,
+                    transition: 'transform 0.15s ease-out',
                 }}
             >
-                <div className="text-[120px] md:text-[180px] font-black text-stone-200 tracking-tighter leading-none select-none">
-                    AI
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
+                    <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
+                        "Building intelligent systems that bridge the gap between data and decisions."
+                    </p>
+                    <div className="mt-2 flex items-center gap-2">
+                        <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
+                        <span className="text-stone-400 text-xs uppercase tracking-wider">Philosophy</span>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Availability status - middle right */}
+            <motion.div
+                className="absolute top-1/2 right-4 sm:right-8 md:right-12 -translate-y-1/2 z-20 hidden md:block"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.8 }}
+                style={{
+                    transform: `translateY(-50%) translate3d(${mouseX * -0.25}px, ${mouseY * 0.15}px, 0)`,
+                    transition: 'transform 0.15s ease-out',
+                }}
+            >
+                <div className="text-right">
+                    {/* Large decorative text */}
+                    <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                        AI
+                    </div>
+                    <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                        ENGINEER
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* DATA SCIENTIST - positioned near left side of face */}
+            {/* EDIT POSITION HERE: Change 'left-[15%]' to move left/right, 'top-1/2' to move up/down */}
+            {/* DATA SCIENTIST - Center-Relative Positioning */}
+            {/* GUIDE: To move left/right, change the '350px' value in translate-x */}
+            {/* GUIDE: To move up/down, change 'top-[40%]' */}
+            <motion.div
+                className="absolute top-[25%] left-1/2 -translate-x-[370px] z-10 hidden lg:block text-right"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1.2 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+            >
+                <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
+                    DATA
+                </div>
+                <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
+                    SCIENTIST
+                </div>
+            </motion.div>
+
+            {/* SOFTWARE ENGINEER - Center-Relative Positioning */}
+            {/* GUIDE: To move left/right, change the '350px' value in translate-x */}
+            {/* GUIDE: To move up/down, change 'top-[60%]' */}
+            <motion.div
+                className="absolute top-[32%] left-1/2 translate-x-[200px] z-10 hidden lg:block text-left"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1.2 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+            >
+                <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
+                    SOFTWARE
+                </div>
+                <div className="text-stone-200/70 text-2xl xl:text-3xl font-black tracking-tighter -mt-1 select-none">
+                    ENGINEER
+                </div>
+            </motion.div>
+
+            {/* Bottom right - availability + location */}
+            <motion.div
+                className="absolute bottom-20 right-4 sm:bottom-24 sm:right-8 md:bottom-28 md:right-12 z-20 hidden md:block text-right"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+            >
+                {/* Stats Block - Filling Bottom Right Space */}
+                <div className="mb-8 flex flex-col items-end gap-4">
+                    <div className="flex gap-8 border-b border-stone-100 pb-4">
+                        <div className="text-right">
+                            <div className="text-3xl font-black text-stone-800">4+</div>
+                            <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Years Exp</div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-3xl font-black text-stone-800">50+</div>
+                            <div className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Projects</div>
+                        </div>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-sm font-bold text-stone-700">Global Client Base</div>
+                        <div className="text-xs text-stone-400">Serving clients across 3 continents</div>
+                    </div>
+                </div>
+
+                {/* Availability */}
+                <div className="mb-4">
+                    <div className="flex items-center justify-end gap-2 mb-1">
+                        <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Status</span>
+                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                    </div>
+                    <span className="text-stone-700 font-bold text-sm bg-white/50 backdrop-blur-md px-3 py-1 rounded-full border border-stone-100">
+                        Open to Opportunities
+                    </span>
+                </div>
+
+                {/* Location */}
+                <div>
+                    <span className="text-[10px] text-stone-400 tracking-[0.3em] uppercase font-semibold">Location</span>
+                    <div className="mt-1 flex items-center justify-end gap-2">
+                        <span className="text-stone-700 font-bold text-sm">Windsor, Canada</span>
+                        <span className="text-lg animate-bounce">📍</span>
+                    </div>
                 </div>
             </motion.div>
         </section>

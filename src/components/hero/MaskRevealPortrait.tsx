@@ -18,6 +18,7 @@ function MaskRevealPortrait() {
     const isMobile = useIsMobile();
     const containerRef = useRef<HTMLDivElement>(null);
     const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
+    const [smoothMousePos, setSmoothMousePos] = useState({ x: -100, y: -100 });
     const [trail, setTrail] = useState<Array<{ x: number, y: number, id: number, time: number }>>([]);
 
     // Glitch states
@@ -122,17 +123,32 @@ function MaskRevealPortrait() {
     }, [isMobile]);
 
     // ============================================
-    // WATER TRAIL (Desktop only)
+    // WATER TRAIL + SMOOTH CURSOR (Desktop only)
     // ============================================
     useEffect(() => {
         if (isMobile) return; // Skip trail on mobile
+
+        // Smooth cursor interpolation - 0.12 for responsive yet smooth water feel
+        let animationFrame: number;
+        const smoothCursor = () => {
+            setSmoothMousePos(prev => ({
+                x: prev.x + (mousePos.x - prev.x) * 0.12,
+                y: prev.y + (mousePos.y - prev.y) * 0.12,
+            }));
+            animationFrame = requestAnimationFrame(smoothCursor);
+        };
+        animationFrame = requestAnimationFrame(smoothCursor);
 
         const decayInterval = setInterval(() => {
             const now = Date.now();
             setTrail(t => t.filter(p => now - p.time < 1200));
         }, 30);
-        return () => clearInterval(decayInterval);
-    }, [isMobile]);
+
+        return () => {
+            clearInterval(decayInterval);
+            cancelAnimationFrame(animationFrame);
+        };
+    }, [isMobile, mousePos]);
 
     // Desktop mouse handler
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -190,17 +206,19 @@ function MaskRevealPortrait() {
             return `radial-gradient(ellipse ${size}px ${size * 1.2}px at ${point.x}% ${point.y}%, rgba(0,0,0,${opacity}) 0%, rgba(0,0,0,${opacity * 0.7}) 40%, transparent 70%)`;
         });
 
-        // Main cursor blob - LARGE smooth liquid reveal
-        if (mousePos.x >= 0) {
-            // Much larger for smoother look like Lando site
-            const cursorSize = isMobile ? 120 : 200;
+        // Main cursor blob - LARGE smooth liquid reveal using SMOOTHED position
+        const effectiveX = isMobile ? mousePos.x : smoothMousePos.x;
+        const effectiveY = isMobile ? mousePos.y : smoothMousePos.y;
+        if (effectiveX >= 0) {
+            // Smooth liquid reveal cursor
+            const cursorSize = isMobile ? 120 : 220;
             const time = Date.now() / 1000;
-            // Very subtle wobble
-            const wobbleX = Math.sin(time * 1.5) * 1.5;
-            const wobbleY = Math.cos(time * 1.8) * 1.5;
-            // Single large soft gradient for smooth liquid feel
+            // Subtle organic wobble
+            const wobbleX = Math.sin(time * 2) * 2;
+            const wobbleY = Math.cos(time * 2.5) * 2;
+            // Large soft gradient for smooth liquid feel
             gradients.push(
-                `radial-gradient(ellipse ${cursorSize}px ${cursorSize * 1.1}px at ${mousePos.x + wobbleX}% ${mousePos.y + wobbleY}%, black 0%, black 20%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0.2) 75%, transparent 100%)`
+                `radial-gradient(ellipse ${cursorSize}px ${cursorSize * 1.1}px at ${effectiveX + wobbleX}% ${effectiveY + wobbleY}%, black 0%, black 25%, rgba(0,0,0,0.95) 40%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.3) 75%, transparent 100%)`
             );
         }
         return gradients.join(', ');
@@ -298,7 +316,7 @@ function MaskRevealPortrait() {
                 {/* LAYER 3: ROBOT GLITCH TEAR */}
                 {isGlitching && (
                     <div
-                        className="absolute inset-0 z-20 pointer-events-none"
+                        className="absolute inset-0 z-20 pointer-events-none overflow-hidden"
                         style={{
                             clipPath: glitchData.path,
                             // Manual mobile adjustment
@@ -318,15 +336,7 @@ function MaskRevealPortrait() {
                             }}
                         />
 
-                        {/* Glow overlay - significantly reduced white */}
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                background: 'radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.08), transparent 60%)',
-                                mixBlendMode: 'overlay',
-                                opacity: isMobile ? 0.2 : 0.5,
-                            }}
-                        />
+                        {/* Glow overlay - removed whitish effect for realistic glitch */}
 
                         {/* RGB aberration - same on desktop and mobile */}
                         <div
@@ -342,34 +352,30 @@ function MaskRevealPortrait() {
                     </div>
                 )}
 
-                {/* SCANLINE - same on desktop and mobile */}
+                {/* SCANLINE - clipped to image area, more subtle */}
                 {isGlitching && glitchData.showScan && (
                     <div
-                        className="absolute inset-0 pointer-events-none z-25"
+                        className="absolute pointer-events-none z-25 overflow-hidden"
                         style={{
-                            background: 'repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 6px)',
+                            // Clip to approximate image area (center portion)
+                            left: '20%',
+                            right: '20%',
+                            top: '10%',
+                            bottom: '10%',
+                            background: 'repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(255,255,255,0.02) 3px, rgba(255,255,255,0.02) 6px)',
                         }}
                     >
                         <div
-                            className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                            className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                             style={{
                                 top: `${glitchData.scanlineY}%`,
-                                boxShadow: '0 0 15px rgba(255,255,255,0.4)',
+                                boxShadow: '0 0 8px rgba(255,255,255,0.15)',
                             }}
                         />
                     </div>
                 )}
 
-                {/* Thunder flash */}
-                {isGlitching && (
-                    <div
-                        className="absolute inset-0 pointer-events-none z-30"
-                        style={{
-                            background: 'radial-gradient(circle at 50% 35%, rgba(255,255,255,0.05), transparent 65%)',
-                            mixBlendMode: 'overlay',
-                        }}
-                    />
-                )}
+                {/* Thunder flash - removed for cleaner glitch effect */}
 
                 {/* Cursor glow (desktop only) */}
                 {!isMobile && mousePos.x >= 0 && (
