@@ -188,6 +188,18 @@ function HeroSection() {
                 duration: 1,
                 stagger: 0.1,
             }, 0.6)
+            // Mobile hero info card (centered over portrait)
+            .fromTo('.mobileHeroInfo', {
+                scale: 0.9,
+                opacity: 0,
+                y: 20,
+            }, {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: 'back.out(1.2)',
+            }, 0.8)
             // Right side elements
             .fromTo('#heroQuoteWrapper', {
                 x: 40,
@@ -290,15 +302,11 @@ function HeroSection() {
                 ease: 'power2.inOut',
             }, 0.5)
 
-                // Explicit fade out for Quote to ensure it works
-                // Targeting the WRAPPER now
+                // Fade out Quote card
                 .to('#heroQuoteWrapper', {
                     opacity: 0,
-                    autoAlpha: 0, // Ensures visibility: hidden at end
-                    display: 'none', // Force removal
                     duration: 2.5,
                     ease: 'power2.inOut',
-                    overwrite: true, // Force overwrite of any other tweens
                 }, 0.5)
 
                 // 2. Roles ("AI ENGINEER", etc.) - Keep Visible & TRANSITION COLOR
@@ -413,71 +421,73 @@ function HeroSection() {
                 });
             }
 
-            // Set initial states for mobile elements
-            gsap.set('.mobileNameOverlay', { opacity: 0, y: 20 });
+            // Set initial state for signature - diagonal and MUCH bigger
+            gsap.set('.signatureSvg', { opacity: 0, rotation: -18, scale: 1.5 });
 
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: heroRef.current,
                     start: 'top top',
-                    end: '+=250vh',  // Slightly shorter for mobile
+                    end: '+=300vh',
                     pin: true,
-                    scrub: 1.2,
+                    scrub: 1.5,
                     anticipatePin: 1,
+                    invalidateOnRefresh: true,
                 },
             });
 
-            // PHASE 1: Shrink hero content wrapper MORE on mobile
+            // PHASE 1: Shrink hero content wrapper on mobile
             tl.to('.heroContentWrapper', {
-                scale: 0.42,         // Smaller scale for mobile
-                width: '88vw',       // Width based on viewport width
-                height: '55vh',      // Shorter height
+                scale: 0.4,
+                width: '85vw',
+                height: '55vh',
                 left: '50%',
                 top: '50%',
                 x: '-50%',
                 y: '-50%',
                 borderRadius: '20px',
-                duration: 3,
+                duration: 4,
                 ease: 'power2.inOut',
             }, 0);
 
-            // PHASE 2: Fade out ALL secondary elements including typography
+            // PHASE 2: Fade out secondary elements (keep mobileHeroInfo visible initially, fade later)
             tl.to('.heroDetailedInfo, .heroSocialLinks, .heroTechStack, .heroStats, #heroQuoteWrapper, .heroRoleML, .heroRoleAI', {
                 opacity: 0,
                 duration: 2,
                 ease: 'power2.inOut',
-            }, 0.3)
-            // Fade out typography
+            }, 0.5)
             .to('.heroTypography', {
-                scale: 0.7,
+                scale: 0.6,
                 opacity: 0,
-                duration: 2.5,
+                duration: 3,
                 ease: 'power2.inOut',
             }, 0.5)
+            .to('.mobileHeroInfo', {
+                opacity: 0,
+                scale: 0.8,
+                y: -30,
+                duration: 2,
+                ease: 'power2.inOut',
+            }, 0.8)
             .to('.heroVignette, .flowingLines', {
                 opacity: 0,
-                duration: 1.5,
-            }, 0.2);
+                duration: 2,
+            }, 0.3);
 
-            // PHASE 3: Show name overlay and signature
-            tl.to('.mobileNameOverlay', {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: 'power2.out',
-            }, 1.8);
-
+            // PHASE 3: Show signature - MORE DIAGONAL and MUCH BIGGER/BOLDER
             tl.to('.signatureSvg', {
                 opacity: 1,
-                duration: 0.5,
-            }, 2);
+                rotation: -18,      // More diagonal tilt
+                scale: 1.5,         // Much bigger
+                duration: 1.5,
+            }, 2.5);
 
             if (signaturePath) {
                 tl.to(signaturePath, {
                     strokeDashoffset: 0,
-                    duration: 3,
+                    duration: 4,
                     ease: 'power1.inOut',
-                }, 2.2);
+                }, 2.8);
             }
 
             return () => tl.kill();
@@ -545,16 +555,6 @@ function HeroSection() {
                             <MaskRevealPortrait />
                         </div>
                         
-                        {/* MOBILE NAME OVERLAY - Shows "SUSHANT" over portrait when shrunk */}
-                        <div className="mobileNameOverlay absolute top-4 left-0 right-0 z-20 text-center sm:hidden opacity-0">
-                            <h2 className="text-3xl font-black text-stone-800 tracking-tighter drop-shadow-sm">
-                                SUSHANT
-                            </h2>
-                            <p className="text-xs text-stone-500 font-medium tracking-wider mt-1">
-                                AI ENGINEER
-                            </p>
-                        </div>
-                        
                         {/* ═══════════════════════════════════════════════════════════
                         SIGNATURE SVG - Draws OVER portrait with scroll
                         Like Lando's neon signature that writes itself
@@ -565,6 +565,7 @@ function HeroSection() {
                             viewBox="0 0 700 700"
                             fill="none"
                             preserveAspectRatio="xMidYMid meet"
+                            style={{ transformOrigin: 'center center' }}
                         >
                             {/* 
                             SIGNATURE PATH - "Sushant" handwriting style
@@ -634,13 +635,11 @@ function HeroSection() {
                                Q 605 360, 610 345
                                L 620 320"
                                 stroke="#0ea5e9"
-                                strokeWidth="4"
+                                strokeWidth="8"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 fill="none"
-                                style={{
-                                    filter: 'drop-shadow(0 0 30px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6))',
-                                }}
+                                className="sm:!stroke-[4]"
                             />
                         </svg>
                     </div>
@@ -648,6 +647,41 @@ function HeroSection() {
 
                 {/* Splash Cursor Effect */}
                 <SplashCursor />
+
+                {/* MOBILE INFO - Above portrait on mobile only */}
+                <div className="mobileHeroInfo absolute top-30 left-1/2 -translate-x-1/2 w-[90%] max-w-sm sm:hidden z-[13] opacity-0 text-center">
+                    {/* Main Title with gradient */}
+                    <h3 className="text-4xl font-black leading-tight mb-2">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-400 to-teal-400">
+                            AI/ML ENGINEER
+                        </span>
+                    </h3>
+                    
+                    {/* Subtitle */}
+                    <p className="text-xs text-stone-700 font-semibold tracking-wide mb-3">
+                        Full Stack Developer • AI Research
+                    </p>
+                    
+                    {/* Expertise badges */}
+                    <div className="flex flex-wrap justify-center gap-1.5 mb-2">
+                        <span className="px-3.5 py-1.5 bg-cyan-400/20 border border-cyan-400/40 rounded-full text-[9px] text-cyan-600 font-semibold">
+                            NLP Research
+                        </span>
+                        <span className="px-3.5 py-1.5 bg-sky-400/20 border border-sky-400/40 rounded-full text-[9px] text-sky-600 font-semibold">
+                            Vision Expert
+                        </span>
+                        <span className="px-3.5 py-1.5 bg-teal-400/20 border border-teal-400/40 rounded-full text-[9px] text-teal-600 font-semibold">
+                            Generative AI
+                        </span>
+                    </div>
+                    
+                    {/* Specialized in - simple text */}
+                    <div className="flex flex-wrap justify-center gap-2 text-[12px] text-stone-600 font-medium">
+                        <span>🤖 LLMs</span>
+                        <span>•</span>
+                        <span>📚 RAG Systems</span>
+                    </div>
+                </div>
 
                 {/* ═══════════════════════════════════════════════════════════
                 LEFT SIDE - Name, Tagline, Roles (Fades out on scroll)
@@ -781,10 +815,10 @@ function HeroSection() {
 
                 {/* ===== RIGHT SIDE DECORATIVE CONTENT ===== */}
 
-                {/* Quote card - top right */}
+                {/* Quote card - top right - VISIBLE BY DEFAULT */}
                 <div
                     id="heroQuoteWrapper"
-                    className="heroQuote absolute top-24 right-2 sm:right-4 md:right-5 z-[12] hidden lg:block max-w-xs"
+                    className="heroQuote absolute top-24 right-2 sm:right-4 md:right-5 z-[12] hidden lg:block max-w-xs opacity-0"
                 >
                     <div
                         style={{
