@@ -130,7 +130,7 @@ const socialIcons: Record<string, React.ReactNode> = {
 function HeroSection() {
     // Refs for GSAP animations
     const heroRef = useRef<HTMLDivElement>(null);
-    const signaturePathRef = useRef<SVGPathElement>(null);
+    // No ref needed - we'll query all paths directly
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Mouse parallax state
@@ -247,16 +247,17 @@ function HeroSection() {
         const mm = gsap.matchMedia();
 
         mm.add("(min-width: 768px)", () => {
-            // Get signature path and set up for drawing animation
-            const signaturePath = signaturePathRef.current;
-            if (signaturePath) {
-                const pathLength = signaturePath.getTotalLength();
-                // Set initial state: path is invisible (fully offset)
-                gsap.set(signaturePath, {
+            // Get ALL signature paths for drawing animation
+            const signaturePaths = gsap.utils.toArray('.signatureSvg path') as SVGPathElement[];
+
+            // Setup EACH path for drawing animation
+            signaturePaths.forEach((path) => {
+                const pathLength = path.getTotalLength();
+                gsap.set(path, {
                     strokeDasharray: pathLength,
                     strokeDashoffset: pathLength,
                 });
-            }
+            });
 
             // Create master timeline with ScrollTrigger
             const tl = gsap.timeline({
@@ -378,20 +379,23 @@ function HeroSection() {
             // ═══════════════════════════════════════════════════════════
             tl.to('.signatureSvg', {
                 opacity: 1,
-                scale: 2.5,       // Much Bigger as requested
-                rotation: -12,    // Tilted nature
-                x: 20,            // Slight offset if needed
+                scale: 1.6,       // Better Scale
+                rotation: -8,     // Subtle tilt
+                x: 0,             // Centered
                 transformOrigin: 'center center',
                 duration: 0.5,
                 ease: 'power2.in',
             }, 3.2);  // Fade in just before drawing starts
 
-            if (signaturePath) {
-                tl.to(signaturePath, {
-                    strokeDashoffset: 0,
-                    duration: 5,      // Even slower
-                    ease: 'power1.inOut',
-                }, 3.5);              // Starts much later
+            // Draw ALL paths SEQUENTIALLY for smooth handwriting effect
+            if (signaturePaths.length > 0) {
+                signaturePaths.forEach((path, index) => {
+                    tl.to(path, {
+                        strokeDashoffset: 0,
+                        duration: 2.5,  // Slowed down for continuous paths
+                        ease: 'power1.inOut', // Smooth ease
+                    }, 3.5 + (index * 0.5));  // Slower stagger
+                });
             }
 
             // ═══════════════════════════════════════════════════════════
@@ -411,18 +415,20 @@ function HeroSection() {
         // Optimized for portrait mode on phones
         // ═══════════════════════════════════════════════════════════
         mm.add("(max-width: 767px)", () => {
-            // Setup signature for mobile
-            const signaturePath = signaturePathRef.current;
-            if (signaturePath) {
-                const pathLength = signaturePath.getTotalLength();
-                gsap.set(signaturePath, {
+            // Get ALL signature paths for mobile
+            const signaturePaths = gsap.utils.toArray('.signatureSvg path') as SVGPathElement[];
+
+            // Setup EACH path
+            signaturePaths.forEach((path) => {
+                const pathLength = path.getTotalLength();
+                gsap.set(path, {
                     strokeDasharray: pathLength,
                     strokeDashoffset: pathLength,
                 });
-            }
+            });
 
             // Set initial state for signature - diagonal and MUCH bigger
-            gsap.set('.signatureSvg', { opacity: 0, rotation: -18, scale: 1.5 });
+            gsap.set('.signatureSvg', { opacity: 0, rotation: -12, scale: 1.2 });
 
             const tl = gsap.timeline({
                 scrollTrigger: {
@@ -456,38 +462,41 @@ function HeroSection() {
                 duration: 2,
                 ease: 'power2.inOut',
             }, 0.5)
-            .to('.heroTypography', {
-                scale: 0.6,
-                opacity: 0,
-                duration: 3,
-                ease: 'power2.inOut',
-            }, 0.5)
-            .to('.mobileHeroInfo', {
-                opacity: 0,
-                scale: 0.8,
-                y: -30,
-                duration: 2,
-                ease: 'power2.inOut',
-            }, 0.8)
-            .to('.heroVignette, .flowingLines', {
-                opacity: 0,
-                duration: 2,
-            }, 0.3);
+                .to('.heroTypography', {
+                    scale: 0.6,
+                    opacity: 0,
+                    duration: 3,
+                    ease: 'power2.inOut',
+                }, 0.5)
+                .to('.mobileHeroInfo', {
+                    opacity: 0,
+                    scale: 0.8,
+                    y: -30,
+                    duration: 2,
+                    ease: 'power2.inOut',
+                }, 0.8)
+                .to('.heroVignette, .flowingLines', {
+                    opacity: 0,
+                    duration: 2,
+                }, 0.3);
 
             // PHASE 3: Show signature - MORE DIAGONAL and MUCH BIGGER/BOLDER
             tl.to('.signatureSvg', {
                 opacity: 1,
-                rotation: -18,      // More diagonal tilt
-                scale: 1.5,         // Much bigger
+                rotation: -12,      // Moderate tilt
+                scale: 1.2,         // Fits nicely on mobile
                 duration: 1.5,
             }, 2.5);
 
-            if (signaturePath) {
-                tl.to(signaturePath, {
-                    strokeDashoffset: 0,
-                    duration: 4,
-                    ease: 'power1.inOut',
-                }, 2.8);
+            // Draw ALL paths SEQUENTIALLY on mobile
+            if (signaturePaths.length > 0) {
+                signaturePaths.forEach((path, index) => {
+                    tl.to(path, {
+                        strokeDashoffset: 0,
+                        duration: 2.0,  // Slower animation for continuous paths
+                        ease: 'power1.inOut',
+                    }, 2.8 + (index * 0.5));
+                });
             }
 
             return () => tl.kill();
@@ -533,14 +542,8 @@ function HeroSection() {
             >
                 {/* Flowing organic lines - magazine aesthetic */}
                 <FlowingLines />
-
-                {/* Soft radial vignette */}
                 <div className="heroVignette absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,_transparent_30%,_rgba(250,250,249,0.97)_75%)] pointer-events-none z-[5]" />
 
-                {/* ═══════════════════════════════════════════════════════════
-                PORTRAIT + SIGNATURE WRAPPER (CENTER)
-                This container shrinks while signature draws over it
-            ═══════════════════════════════════════════════════════════ */}
                 <div className="absolute inset-0 flex items-center justify-center z-[5]">
                     <div
                         className="portraitWrapper relative"
@@ -550,96 +553,33 @@ function HeroSection() {
                             willChange: 'transform',
                         }}
                     >
-                        {/* Portrait - This is your MaskRevealPortrait */}
                         <div className="absolute inset-0">
                             <MaskRevealPortrait />
                         </div>
-                        
-                        {/* ═══════════════════════════════════════════════════════════
-                        SIGNATURE SVG - Draws OVER portrait with scroll
-                        Like Lando's neon signature that writes itself
-                        Initially hidden - only shows during scroll animation
-                    ═══════════════════════════════════════════════════════════ */}
+
+                        {/* YOUR ORIGINAL SIGNATURE SVG - Updated with strokeLinecap="round" strokeLinejoin="round" */}
                         <svg
                             className="signatureSvg absolute inset-0 w-full h-full pointer-events-none z-30 opacity-0"
-                            viewBox="0 0 700 700"
-                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="29.09131622314453 11.906000137329102 133.1426773071289 172.80099487304688"
                             preserveAspectRatio="xMidYMid meet"
                             style={{ transformOrigin: 'center center' }}
                         >
-                            {/* 
-                            SIGNATURE PATH - "Sushant" handwriting style
-                            Draws stroke-by-stroke with scroll (strokeDashoffset)
-                            Color: Cyan/Sky blue like Lando's neon signature
-                        */}
                             <path
-                                ref={signaturePathRef}
-                                d="M 80 320
-                               C 75 300, 85 280, 105 270
-                               Q 125 260, 140 270
-                               Q 155 280, 155 300
-                               Q 155 320, 145 335
-                               Q 135 350, 120 360
-                               Q 105 370, 95 375
-                               Q 85 380, 90 385
-                               Q 95 390, 110 385
-                               L 130 375
-                               
-                               Q 145 370, 160 360
-                               Q 175 350, 180 365
-                               Q 185 380, 175 390
-                               Q 165 400, 150 400
-                               Q 135 400, 140 395
-                               Q 145 390, 160 390
-                               L 185 390
-                               
-                               Q 200 390, 210 380
-                               Q 220 370, 220 355
-                               Q 220 340, 210 335
-                               Q 200 330, 195 340
-                               Q 190 350, 200 365
-                               Q 210 380, 230 385
-                               Q 250 390, 260 385
-                               
-                               Q 270 380, 270 365
-                               L 270 300
-                               Q 270 285, 280 275
-                               Q 290 265, 305 270
-                               Q 320 275, 320 290
-                               L 320 385
-                               
-                               Q 335 380, 350 365
-                               Q 365 350, 375 360
-                               Q 385 370, 380 385
-                               Q 375 400, 360 405
-                               Q 345 410, 340 400
-                               Q 335 390, 350 390
-                               Q 365 390, 380 385
-                               
-                               Q 395 380, 410 370
-                               Q 425 360, 430 345
-                               L 430 300
-                               Q 430 280, 445 270
-                               Q 460 260, 475 270
-                               Q 490 280, 490 295
-                               L 490 385
-                               
-                               Q 505 380, 520 365
-                               Q 535 350, 545 335
-                               Q 555 320, 550 310
-                               Q 545 300, 535 305
-                               Q 525 310, 525 325
-                               Q 525 340, 535 355
-                               Q 545 370, 560 375
-                               Q 575 380, 590 370
-                               Q 605 360, 610 345
-                               L 620 320"
+                                d="M 34.145,179.707 C 33.979,172.443 34.242,172.453 34.340,165.199 C 35.181,149.680 35.112,149.685 36.410,134.191 C 38.345,113.899 38.023,113.874 40.023,93.586 C 41.373,77.229 41.375,77.231 42.469,60.855 C 43.095,51.113 43.121,51.118 43.520,41.363 C 43.746,35.136 43.790,35.139 43.859,28.906 C 44.488,22.320 43.916,25.788 43.859,22.668 C 41.972,26.488 43.013,23.137 40.910,30.539 C 39.468,36.757 39.300,36.679 38.516,43.051 C 37.176,51.434 37.249,51.423 36.473,59.871 C 35.413,68.317 35.773,68.263 35.711,76.707 C 35.909,84.185 35.971,84.038 37.590,91.313 C 39.539,98.291 39.232,98.275 42.355,104.887 C 44.644,109.593 44.398,109.670 47.309,114.070 C 49.308,116.915 49.084,117.054 51.234,119.809 C 52.879,121.982 52.732,122.058 54.156,124.355 C 56.421,127.076 55.596,127.029 56.668,129.902 C 56.787,133.314 56.874,132.267 55.063,134.738 C 52.055,135.849 52.934,136.496 48.961,136.266 C 45.599,137.436 46.342,136.618 43.637,136.277 C 40.191,132.245 41.724,135.147 41.211,131.688 C 45.149,132.134 42.728,130.858 48.711,133.504 C 51.970,137.112 51.431,134.550 53.773,136.520 C 54.803,133.845 55.528,135.944 55.828,131.168 C 56.320,126.112 57.352,127.190 58.871,123.211 C 62.344,123.145 60.632,121.208 64.453,121.359 C 65.618,117.436 66.969,119.229 68.121,115.379 C 70.771,113.864 69.946,113.879 73.109,114.246 C 75.890,117.607 75.433,114.626 77.445,116.902 C 77.801,112.568 79.421,116.007 80.172,111.047 C 84.305,109.482 83.014,109.223 87.871,110.211 C 91.868,115.170 90.717,110.793 92.996,113.668 C 94.619,107.360 95.333,110.556 94.801,100.984 C 94.389,91.475 95.070,91.510 93.898,81.969 C 93.543,72.612 93.416,72.623 92.855,63.281 C 92.359,56.705 92.371,56.712 91.555,50.168 C 90.968,45.620 90.996,45.625 90.129,41.121 C 89.487,34.987 89.650,38.551 88.918,36.031 C 86.800,42.023 87.567,38.509 86.289,48.164 C 85.992,55.525 85.687,55.404 86.691,62.793 C 87.344,70.634 87.436,70.529 89.176,78.172 C 91.037,83.747 90.557,83.856 93.117,89.238 C 94.738,93.492 94.728,93.489 96.559,97.656 C 97.275,102.587 97.779,100.447 99.199,103.148 C 102.203,102.014 101.077,103.696 104.164,99.875 C 105.447,95.955 106.619,97.198 108.031,93.516 C 110.629,91.446 110.080,91.581 113.430,91.129 C 116.696,92.912 116.285,90.806 119.344,92.234 C 121.980,90.567 122.038,91.545 124.113,88.395 C 126.453,85.392 126.764,85.694 128.910,82.488 C 133.131,76.465 131.287,79.679 133.781,76.969 C 132.253,80.712 134.480,77.510 131.609,84.578 C 131.160,90.078 131.167,87.237 131.609,90.020 C 131.371,85.635 132.104,89.955 133.496,84.332 C 137.580,83.822 136.393,82.555 141.652,83.859 C 145.743,85.987 144.611,83.887 147.559,84.461 C 149.627,80.547 150.200,82.241 150.566,76.367 C 151.369,71.310 151.676,71.426 151.656,66.219 C 152.234,58.596 152.085,58.626 152.000,51.000 C 151.957,44.086 151.790,44.184 150.770,37.395 C 149.605,32.572 149.912,32.561 147.910,27.949 C 146.604,24.437 146.634,24.470 144.828,21.191 C 141.896,15.964 143.583,18.915 141.867,16.906 C 143.076,21.913 141.810,18.766 144.656,26.797 C 145.829,30.178 145.755,30.193 147.227,33.465 C 149.025,37.578 148.981,37.592 150.961,41.625 C 152.808,45.369 152.762,45.390 154.699,49.090 C 155.831,51.608 155.944,51.539 157.234,53.965"
                                 stroke="#0ea5e9"
-                                strokeWidth="8"
+                                strokeWidth="4"
+                                fill="none"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
+                            />
+                            <path
+                                d="M 133.531,36.523 C 136.279,34.183 136.301,34.209 139.070,31.895 C 141.406,29.978 141.406,29.980 143.785,28.117 C 146.288,26.135 146.298,26.152 148.855,24.242 C 151.166,22.484 151.188,22.522 153.586,20.891"
+                                stroke="#0ea5e9"
+                                strokeWidth="4"
                                 fill="none"
-                                className="sm:!stroke-[4]"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                         </svg>
                     </div>
@@ -656,12 +596,12 @@ function HeroSection() {
                             AI/ML ENGINEER
                         </span>
                     </h3>
-                    
+
                     {/* Subtitle */}
                     <p className="text-xs text-stone-700 font-semibold tracking-wide mb-3">
                         Full Stack Developer • AI Research
                     </p>
-                    
+
                     {/* Expertise badges */}
                     <div className="flex flex-wrap justify-center gap-1.5 mb-2">
                         <span className="px-3.5 py-1.5 bg-cyan-400/20 border border-cyan-400/40 rounded-full text-[9px] text-cyan-600 font-semibold">
@@ -674,7 +614,7 @@ function HeroSection() {
                             Generative AI
                         </span>
                     </div>
-                    
+
                     {/* Specialized in - simple text */}
                     <div className="flex flex-wrap justify-center gap-2 text-[12px] text-stone-600 font-medium">
                         <span>🤖 LLMs</span>
@@ -760,7 +700,7 @@ function HeroSection() {
                         {/* Creative Quote */}
                         <div className="mt-6 pt-6 border-t border-stone-100">
                             <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
-                                "The best AI doesn't replace human thinking — it amplifies it."
+                                &quot;The best AI doesn&apos;t replace human thinking — it amplifies it.&quot;
                             </div>
                             <div className="mt-2 flex items-center gap-2">
                                 <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
@@ -768,7 +708,7 @@ function HeroSection() {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* ML Engineer - matching right side AI Engineer - HIDDEN ON MOBILE */}
                     <div className="mt-4 sm:mt-8 heroRoleML opacity-100 hidden sm:block">
                         <div className="text-[40px] sm:text-[60px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
@@ -828,7 +768,7 @@ function HeroSection() {
                     >
                         <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-stone-100 shadow-sm group hover:bg-white/80 transition-all duration-300">
                             <p className="text-stone-600 text-sm leading-relaxed italic group-hover:text-stone-900 transition-colors">
-                                "Building intelligent systems that bridge the gap between data and decisions."
+                                &quot;Building intelligent systems that bridge the gap between data and decisions.&quot;
                             </p>
                             <div className="mt-2 flex items-center gap-2">
                                 <div className="w-8 h-0.5 bg-gradient-to-r from-sky-400 to-transparent rounded-full" />
