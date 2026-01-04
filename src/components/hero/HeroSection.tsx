@@ -61,7 +61,7 @@ function ScrollingMarqueeText() {
                         {[...Array(4)].map((_, i) => (
                             <span
                                 key={i}
-                                className={`text-[80px] md:text-[120px] lg:text-[160px] font-black bg-gradient-to-r ${line.gradient} bg-clip-text text-transparent tracking-tighter select-none`}
+                                className={`text-[50px] sm:text-[80px] md:text-[120px] lg:text-[160px] font-black bg-gradient-to-r ${line.gradient} bg-clip-text text-transparent tracking-tighter select-none`}
                                 style={{
                                     WebkitTextStroke: '0.5px rgba(0,0,0,0.02)',
                                 }}
@@ -344,14 +344,14 @@ function HeroSection() {
                     ease: 'power1.inOut',
                 }, 0.5)
 
-                // Software Role - Amber
+                // Software Role - Amber (scale DOWN slightly to fit better)
                 .fromTo('.heroRoleSoftware', {
                     color: '#f5f5f4', // Start: stone-100
                     scale: 1,
                     filter: 'brightness(1)',
                 }, {
                     color: '#fbbf24', // Amber-400
-                    scale: 1.1,
+                    scale: 0.85,      // Scale DOWN to fit in shrunk view
                     filter: 'brightness(1.2)',
                     duration: 4,
                     ease: 'power1.inOut',
@@ -398,22 +398,87 @@ function HeroSection() {
             };
         });
 
-        // Mobile: Simple fade without pin
+        // ═══════════════════════════════════════════════════════════
+        // MOBILE: Full hero experience with shrink + signature
+        // Optimized for portrait mode on phones
+        // ═══════════════════════════════════════════════════════════
         mm.add("(max-width: 767px)", () => {
+            // Setup signature for mobile
+            const signaturePath = signaturePathRef.current;
+            if (signaturePath) {
+                const pathLength = signaturePath.getTotalLength();
+                gsap.set(signaturePath, {
+                    strokeDasharray: pathLength,
+                    strokeDashoffset: pathLength,
+                });
+            }
+
+            // Set initial states for mobile elements
+            gsap.set('.mobileNameOverlay', { opacity: 0, y: 20 });
+
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: heroRef.current,
                     start: 'top top',
-                    end: '+=50vh',
-                    scrub: 1,
+                    end: '+=250vh',  // Slightly shorter for mobile
+                    pin: true,
+                    scrub: 1.2,
+                    anticipatePin: 1,
                 },
             });
 
-            tl.to('.heroTypography, .heroSocialLinks, .heroTechStack, .heroStats, .heroDecorativeText', {
-                opacity: 0,
-                y: -30,
-                duration: 1,
+            // PHASE 1: Shrink hero content wrapper MORE on mobile
+            tl.to('.heroContentWrapper', {
+                scale: 0.42,         // Smaller scale for mobile
+                width: '88vw',       // Width based on viewport width
+                height: '55vh',      // Shorter height
+                left: '50%',
+                top: '50%',
+                x: '-50%',
+                y: '-50%',
+                borderRadius: '20px',
+                duration: 3,
+                ease: 'power2.inOut',
             }, 0);
+
+            // PHASE 2: Fade out ALL secondary elements including typography
+            tl.to('.heroDetailedInfo, .heroSocialLinks, .heroTechStack, .heroStats, #heroQuoteWrapper, .heroRoleML, .heroRoleAI', {
+                opacity: 0,
+                duration: 2,
+                ease: 'power2.inOut',
+            }, 0.3)
+            // Fade out typography
+            .to('.heroTypography', {
+                scale: 0.7,
+                opacity: 0,
+                duration: 2.5,
+                ease: 'power2.inOut',
+            }, 0.5)
+            .to('.heroVignette, .flowingLines', {
+                opacity: 0,
+                duration: 1.5,
+            }, 0.2);
+
+            // PHASE 3: Show name overlay and signature
+            tl.to('.mobileNameOverlay', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out',
+            }, 1.8);
+
+            tl.to('.signatureSvg', {
+                opacity: 1,
+                duration: 0.5,
+            }, 2);
+
+            if (signaturePath) {
+                tl.to(signaturePath, {
+                    strokeDashoffset: 0,
+                    duration: 3,
+                    ease: 'power1.inOut',
+                }, 2.2);
+            }
 
             return () => tl.kill();
         });
@@ -479,6 +544,17 @@ function HeroSection() {
                         <div className="absolute inset-0">
                             <MaskRevealPortrait />
                         </div>
+                        
+                        {/* MOBILE NAME OVERLAY - Shows "SUSHANT" over portrait when shrunk */}
+                        <div className="mobileNameOverlay absolute top-4 left-0 right-0 z-20 text-center sm:hidden opacity-0">
+                            <h2 className="text-3xl font-black text-stone-800 tracking-tighter drop-shadow-sm">
+                                SUSHANT
+                            </h2>
+                            <p className="text-xs text-stone-500 font-medium tracking-wider mt-1">
+                                AI ENGINEER
+                            </p>
+                        </div>
+                        
                         {/* ═══════════════════════════════════════════════════════════
                         SIGNATURE SVG - Draws OVER portrait with scroll
                         Like Lando's neon signature that writes itself
@@ -577,7 +653,7 @@ function HeroSection() {
                 LEFT SIDE - Name, Tagline, Roles (Fades out on scroll)
             ═══════════════════════════════════════════════════════════ */}
                 <div
-                    className="heroTypography absolute top-6 left-2 sm:top-8 sm:left-4 md:top-12 md:left-5 z-[12] opacity-0"
+                    className="heroTypography absolute top-4 left-3 sm:top-8 sm:left-4 md:top-12 md:left-5 z-[12] opacity-0"
                     style={{
                         transform: `perspective(1000px) translate3d(${mouseX * 0.6}px, ${mouseY * 0.4}px, 30px) rotateY(${mouseX * 0.15}deg)`,
                         transition: 'transform 0.15s ease-out',
@@ -585,7 +661,7 @@ function HeroSection() {
                     }}
                 >
                     <h1
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[0.85]"
+                        className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[0.85]"
                         style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
                     >
                         <span className="text-stone-900 block drop-shadow-sm">
@@ -597,7 +673,7 @@ function HeroSection() {
                     </h1>
 
                     {/* Primary Tagline - WRAPPED IN heroDetailedInfo TO FADE OUT */}
-                    <div className="heroDetailedInfo">
+                    <div className="heroDetailedInfo hidden sm:block">
                         <p className="mt-3 sm:mt-4 text-stone-500 text-xs sm:text-sm md:text-base font-medium tracking-wide">
                             AI/ML Engineer & Full-Stack Developer
                         </p>
@@ -659,12 +735,12 @@ function HeroSection() {
                         </div>
                     </div>
                     
-                    {/* ML Engineer - matching right side AI Engineer */}
-                    <div className="mt-8 heroRoleML opacity-100">
-                        <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                    {/* ML Engineer - matching right side AI Engineer - HIDDEN ON MOBILE */}
+                    <div className="mt-4 sm:mt-8 heroRoleML opacity-100 hidden sm:block">
+                        <div className="text-[40px] sm:text-[60px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
                             ML
                         </div>
-                        <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                        <div className="text-stone-200 text-xl sm:text-2xl lg:text-4xl font-black tracking-tighter -mt-1 sm:-mt-2 select-none">
                             ENGINEER
                         </div>
                     </div>
@@ -730,7 +806,7 @@ function HeroSection() {
 
                 {/* AI ENGINEER - middle right */}
                 <div
-                    className="heroRoleAI absolute top-1/2 right-2 sm:right-4 md:right-5 -translate-y-1/2 z-[12] hidden md:block opacity-100"
+                    className="heroRoleAI absolute top-1/2 right-2 sm:right-4 md:right-5 -translate-y-1/2 z-[12] hidden sm:block opacity-100"
                     style={{
                         transform: `translateY(-50%) translate3d(${mouseX * -0.25}px, ${mouseY * 0.15}px, 0)`,
                         transition: 'transform 0.15s ease-out',
@@ -738,10 +814,10 @@ function HeroSection() {
                     }}
                 >
                     <div className="text-right">
-                        <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                        <div className="text-[50px] sm:text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
                             AI
                         </div>
-                        <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                        <div className="text-stone-200 text-xl sm:text-2xl lg:text-4xl font-black tracking-tighter -mt-1 sm:-mt-2 select-none">
                             ENGINEER
                         </div>
                     </div>
