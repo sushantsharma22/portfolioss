@@ -260,12 +260,18 @@ function HeroSection() {
             });
 
             // ═══════════════════════════════════════════════════════════
-            // PHASE 1: HERO SHRINK (Natural Scale)
-            // Reverted from clip-path to simple scale to avoid "cutting" look
+            // PHASE 1: HERO SHRINK TO SQUARE ASPECT RATIO
+            // Scale and set fixed dimensions to make it square
             // ═══════════════════════════════════════════════════════════
             tl.to('.heroContentWrapper', {
-                scale: 0.35,        // Shrink properly to a card
-                borderRadius: '40px', // Nice rounded corners
+                scale: 0.48,
+                width: '100vh',
+                height: '100vh',
+                left: '50%',
+                top: '50%',
+                x: '-50%',
+                y: '-50%',
+                borderRadius: '32px',
                 duration: 4,
                 ease: 'power2.inOut',
             }, 0);
@@ -480,7 +486,7 @@ function HeroSection() {
                     ═══════════════════════════════════════════════════════════ */}
                         <svg
                             className="signatureSvg absolute inset-0 w-full h-full pointer-events-none z-30 opacity-0"
-                            viewBox="0 0 600 600"
+                            viewBox="0 0 700 700"
                             fill="none"
                             preserveAspectRatio="xMidYMid meet"
                         >
@@ -552,7 +558,7 @@ function HeroSection() {
                                Q 605 360, 610 345
                                L 620 320"
                                 stroke="#0ea5e9"
-                                strokeWidth="5"
+                                strokeWidth="4"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 fill="none"
@@ -640,25 +646,26 @@ function HeroSection() {
                                 </p>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Creative Quote */}
-                    <div className="mt-6 pt-6 border-t border-stone-100">
-                        <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
-                            "The best AI doesn't replace human thinking — it amplifies it."
-                        </div>
-                        <div className="mt-2 flex items-center gap-2">
-                            <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
-                            <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
-                        </div>
-                        {/* ML Engineer - matching right side AI Engineer */}
-                        <div className="mt-8 heroRoleML opacity-100">
-                            <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
-                                ML
+                        {/* Creative Quote */}
+                        <div className="mt-6 pt-6 border-t border-stone-100">
+                            <div className="max-w-sm text-stone-400 text-sm italic leading-relaxed">
+                                "The best AI doesn't replace human thinking — it amplifies it."
                             </div>
-                            <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
-                                ENGINEER
+                            <div className="mt-2 flex items-center gap-2">
+                                <span className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
+                                <span className="text-stone-300 text-xs uppercase tracking-widest">Motto</span>
                             </div>
+                        </div>
+                    </div>
+                    
+                    {/* ML Engineer - matching right side AI Engineer */}
+                    <div className="mt-8 heroRoleML opacity-100">
+                        <div className="text-[80px] lg:text-[120px] font-black text-stone-100 leading-none tracking-tighter select-none transition-all duration-500 hover:text-stone-200">
+                            ML
+                        </div>
+                        <div className="text-stone-200 text-3xl lg:text-4xl font-black tracking-tighter -mt-2 select-none">
+                            ENGINEER
                         </div>
                     </div>
                 </div>
@@ -751,7 +758,7 @@ function HeroSection() {
                 </div>
 
                 {/* SOFTWARE ENGINEER - Center-Relative Positioning */}
-                <div className="heroRoleSoftware absolute top-[32%] left-1/2 translate-x-[200px] z-[8] hidden lg:block text-left opacity-100">
+                <div className="heroRoleSoftware absolute top-[32%] left-1/2 translate-x-[140px] z-[8] hidden lg:block text-left opacity-100">
                     <div className="text-[50px] xl:text-[70px] font-black text-stone-100/80 leading-none tracking-tighter select-none">
                         SOFTWARE
                     </div>
