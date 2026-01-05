@@ -379,7 +379,7 @@ function HeroSection() {
             // ═══════════════════════════════════════════════════════════
             tl.to('.signatureSvg', {
                 opacity: 1,
-                scale: 1.6,       // Better Scale
+                scale: 1.5,       // Better Scale
                 rotation: -8,     // Subtle tilt
                 x: 0,             // Centered
                 transformOrigin: 'center center',

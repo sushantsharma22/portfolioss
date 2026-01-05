@@ -85,6 +85,16 @@ export default function Navigation() {
 
   // Custom scroll handler with section-specific offsets
   const scrollToSection = (href: string) => {
+    // Special case for Home/Hero: Always scroll to very top to avoid offset issues
+    if (href === '#hero') {
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.scrollTo(0, { duration: 1.2 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
     const element = document.querySelector(href);
     if (!element) return;
 
