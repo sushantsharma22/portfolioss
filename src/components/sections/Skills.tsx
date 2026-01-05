@@ -1,183 +1,341 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
-import { skillCategories, stats } from '@/lib/constants';
-import { springs } from '@/lib/animations';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { useScroll, useSpring } from 'framer-motion';
+import { skillCategories } from '@/lib/constants';
 
-const colorMap: Record<string, { color: string; bgColor: string }> = {
-    'languages': { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' },
-    'ai-ml': { color: 'from-violet-400 to-purple-500', bgColor: 'bg-gradient-to-br from-violet-50 to-purple-50' },
-    'frameworks': { color: 'from-amber-400 to-orange-500', bgColor: 'bg-gradient-to-br from-amber-50 to-orange-50' },
-    'tools': { color: 'from-teal-400 to-emerald-500', bgColor: 'bg-gradient-to-br from-teal-50 to-emerald-50' },
+// --- Style Configuration ---
+const SKILL_STYLES = {
+    'ai-ml': {
+        baseR: 50,
+        className: 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/30 ring-1 ring-violet-400/50'
+    },
+    'data-backend': {
+        baseR: 42,
+        className: 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/50'
+    },
+    'languages': {
+        baseR: 38,
+        className: 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-400/20 ring-1 ring-amber-400/50'
+    },
+    'default': {
+        baseR: 34,
+        className: 'bg-white border border-stone-200 text-stone-700 shadow-md hover:shadow-lg transition-shadow'
+    },
 };
 
+type Point = { x: number; y: number; r: number; vx: number; vy: number; id: number };
+
 export default function Skills() {
-    const targetRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [dims, setDims] = useState({ w: 0, h: 0 });
+    const [layoutPositions, setLayoutPositions] = useState<{ x: number, y: number; r: number }[]>([]);
 
-    const { scrollYProgress } = useScroll({ target: targetRef });
-    const smoothProgress = useSpring(scrollYProgress, springs.smooth);
+    // Scroll progress
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
 
-    // Header animation
-    const headerOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
-    const headerY = useTransform(smoothProgress, [0, 0.15], [40, 0]);
-    const headerScale = useTransform(smoothProgress, [0, 0.15], [0.95, 1]);
+    // Taut spring for direct control
+    const smoothScroll = useSpring(scrollYProgress, {
+        stiffness: 80,
+        damping: 20,
+        restDelta: 0.0001
+    });
 
-    // Stats animation (bottom)
-    const statsOpacity = useTransform(smoothProgress, [0.6, 0.8], [0, 1]);
-    const statsY = useTransform(smoothProgress, [0.6, 0.8], [30, 0]);
+    // 1. Prepare Skills
+    const skills = useMemo(() => {
+        let processed = skillCategories.flatMap(cat =>
+            cat.skills.map(skill => {
+                const key = ['ai-ml', 'data-backend', 'languages'].includes(cat.id) ? cat.id : 'default';
+                const len = skill.name.length;
+                const style = SKILL_STYLES[key as keyof typeof SKILL_STYLES] || SKILL_STYLES.default;
+                return {
+                    name: skill.name,
+                    category: cat.id,
+                    style: style,
+                    textLen: len,
+                };
+            })
+        );
+
+        if (isMobile) {
+            const aiMl = processed.filter(s => s.category === 'ai-ml');
+            const data = processed.filter(s => s.category === 'data-backend');
+            const others = processed.filter(s => !['ai-ml', 'data-backend'].includes(s.category)).slice(0, 16);
+            processed = [...aiMl, ...data, ...others];
+        }
+
+        return processed;
+    }, [isMobile]);
+
+    // 2. Handle Resize
+    useEffect(() => {
+        const update = () => {
+            setIsMobile(window.innerWidth < 768);
+            setDims({ w: window.innerWidth, h: window.innerHeight });
+        };
+        update();
+        let timeout: NodeJS.Timeout;
+        const debouncedUpdate = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(update, 200);
+        };
+        window.addEventListener('resize', debouncedUpdate);
+        return () => window.removeEventListener('resize', debouncedUpdate);
+    }, []);
+
+    // 3. PHYSICS LAYOUT
+    useEffect(() => {
+        if (dims.w === 0 || dims.h === 0) return;
+
+        // Init grid
+        const cols = Math.ceil(Math.sqrt(skills.length * (dims.w / dims.h)));
+        const rows = Math.ceil(skills.length / cols);
+        const cellW = dims.w / cols;
+        const cellH = dims.h / rows;
+
+        // Randomize slots
+        const slots = Array.from({ length: cols * rows }, (_, i) => i);
+        // Fisher-Yates shuffle with TYPE SAFETY FIX
+        for (let i = slots.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = slots[i];
+            const target = slots[j];
+            if (temp !== undefined && target !== undefined) {
+                slots[i] = target;
+                slots[j] = temp;
+            }
+        }
+
+        const nodes: Point[] = skills.map((s, i) => {
+            let baseR = s.style.baseR;
+            if (isMobile) baseR *= 0.65;
+            const minRforText = Math.max(28, s.textLen * (isMobile ? 3.2 : 4.0));
+            const r = Math.max(baseR, minRforText);
+
+            const slot = slots[i % slots.length]!; // Non-null assertion safe due to loop bounds
+            const col = slot % cols;
+            const row = Math.floor(slot / cols);
+
+            return {
+                x: (col * cellW) + (cellW / 2) + (Math.random() - 0.5) * 20,
+                y: (row * cellH) + (cellH / 2) + (Math.random() - 0.5) * 20,
+                r: r + (isMobile ? 4 : 8),
+                vx: 0,
+                vy: 0,
+                id: i
+            };
+        });
+
+        const iterations = 180;
+        const drag = 0.08;
+        const strength = 0.20;
+
+        // Header Dimensions for "Notch"
+        const headerW = 320;
+        const headerH = 140;
+
+        for (let iter = 0; iter < iterations; iter++) {
+            // Collisions
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const n1 = nodes[i];
+                    const n2 = nodes[j];
+                    if (!n1 || !n2) continue;
+
+                    const dx = n2.x - n1.x;
+                    const dy = n2.y - n1.y;
+                    const distSq = dx * dx + dy * dy;
+                    const minDist = n1.r + n2.r;
+
+                    if (distSq < minDist * minDist) {
+                        const dist = Math.sqrt(distSq) || 1;
+                        const overlap = minDist - dist;
+                        const force = overlap * strength;
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+
+                        n1.vx -= nx * force;
+                        n1.vy -= ny * force;
+                        n2.vx += nx * force;
+                        n2.vy += ny * force;
+                    }
+                }
+            }
+
+            // Boundary + "Notch"
+            for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                if (!n) continue;
+                n.x += n.vx;
+                n.y += n.vy;
+                n.vx *= (1 - drag);
+                n.vy *= (1 - drag);
+
+                const r = n.r;
+                // Side bounds
+                const sideMargin = isMobile ? 10 : 15;
+                if (n.x < r + sideMargin) { n.x = r + sideMargin; n.vx *= -1; }
+                if (n.x > dims.w - r - sideMargin) { n.x = dims.w - r - sideMargin; n.vx *= -1; }
+
+                // Top Boundary with Notch
+                // Check if in central column
+                const centerX = dims.w / 2;
+                const isCentral = Math.abs(n.x - centerX) < (headerW / 2 + r);
+
+                // If central, push down. If corner, allow high.
+                const topLimit = isCentral ? (headerH + r) : (r + sideMargin);
+
+                if (n.y < topLimit) { n.y = topLimit; n.vy *= -1; }
+
+                // Bottom bound
+                const botLimit = dims.h - r - (isMobile ? 20 : 30);
+                if (n.y > botLimit) { n.y = botLimit; n.vy *= -1; }
+            }
+        }
+
+        setLayoutPositions(nodes.map(n => ({ x: n.x, y: n.y, r: n.r })));
+    }, [dims, skills, isMobile]);
+
+    // 4. ANIMATION LOOP: STRICT SEQUENTIAL
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas || layoutPositions.length === 0) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        canvas.width = dims.w;
+        canvas.height = dims.h;
+
+        let frameId: number;
+
+        const render = () => {
+            const scroll = smoothScroll.get();
+            ctx.clearRect(0, 0, dims.w, dims.h);
+            const N = skills.length;
+
+            // Logic: strictly sequential
+            // Total steps = N nodes + (N-1) lines = 2N - 1
+            const totalSteps = (N * 2) - 1;
+            const stepSize = 0.95 / totalSteps; // Use 95% of scroll range
+
+            // Helper to get progress 0-1 for a specific step index
+            const getStepProgress = (stepIndex: number) => {
+                const start = stepIndex * stepSize;
+                const end = start + stepSize;
+                if (scroll < start) return 0;
+                if (scroll >= end) return 1;
+                return (scroll - start) / stepSize;
+            };
+
+            // Draw Lines First
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#d6d3d1';
+
+            for (let i = 0; i < N - 1; i++) {
+                // Line i -> i+1 is step index (2*i + 1)
+                const lineStepIndex = (i * 2) + 1;
+                const prog = getStepProgress(lineStepIndex);
+
+                if (prog <= 0) continue;
+
+                const p1 = layoutPositions[i];
+                const p2 = layoutPositions[i + 1];
+                if (!p1 || !p2) continue;
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                const mx = p1.x + (p2.x - p1.x) * prog;
+                const my = p1.y + (p2.y - p1.y) * prog;
+                ctx.lineTo(mx, my);
+                ctx.stroke();
+            }
+
+            // Draw Nodes
+            for (let i = 0; i < N; i++) {
+                // Node i is step index (2*i)
+                const nodeStepIndex = i * 2;
+                const prog = getStepProgress(nodeStepIndex);
+
+                const el = document.getElementById(`sk-${i}`);
+                if (!el) continue;
+                const p = layoutPositions[i];
+                if (!p) continue;
+
+                // Pop effect
+                let scale = prog;
+                if (prog > 0.8 && prog < 1.0) scale = 1.1;
+                else if (prog >= 1.0) scale = 1.0;
+
+                el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -50%) scale(${scale})`;
+                el.style.opacity = prog > 0.01 ? '1' : '0';
+            }
+
+            frameId = requestAnimationFrame(render);
+        };
+
+        const cleanup = () => cancelAnimationFrame(frameId);
+        render();
+        return cleanup;
+    }, [dims, skills, layoutPositions, smoothScroll]);
 
     return (
         <section
-            ref={targetRef}
-            className="relative h-[180vh] md:h-[200vh]"
+            ref={containerRef}
+            className="relative bg-stone-50"
+            style={{ height: `${Math.max(300, skills.length * 40)}vh` }}
             id="skills"
         >
-            {/* Gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white via-amber-50/20 to-teal-50/20" />
+            <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-            {/* STICKY CONTAINER */}
-            <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
-                {/* Decorative elements */}
-                <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-sky-100/40 to-blue-100/40 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-amber-100/40 to-orange-100/40 rounded-full blur-3xl" />
-
-                <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
-                    {/* Header - animates first */}
-                    <motion.div
-                        style={{ opacity: headerOpacity, y: headerY, scale: headerScale }}
-                        className="text-center mb-6 md:mb-12"
-                    >
-                        <span className="text-teal-500 text-xs md:text-sm font-bold tracking-[0.3em]">04 — EXPERTISE</span>
-                        <h2 className="text-2xl md:text-6xl font-black text-stone-800 mt-2 md:mt-4 tracking-tight">
-                            Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-violet-500 to-amber-500">Arsenal</span>
+                {/* Header: Centered */}
+                <div className="absolute top-6 left-0 right-0 z-30 text-center pointer-events-none select-none w-full flex justify-center">
+                    <div className="max-w-md w-full">
+                        <span className="text-stone-400 text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase block mb-2">04 — Intelligence</span>
+                        <h2 className="text-3xl md:text-5xl font-black text-stone-800 tracking-tight">
+                            Skill <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">Cloud</span>
                         </h2>
-                    </motion.div>
-
-                    {/* Grid - each card animates with stagger */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        {skillCategories.map((group, i) => (
-                            <SkillCard
-                                key={group.id}
-                                group={group}
-                                index={i}
-                                smoothProgress={smoothProgress}
-                            />
-                        ))}
                     </div>
-
-                    {/* Stats - animate last */}
-                    <motion.div
-                        style={{ opacity: statsOpacity, y: statsY }}
-                        className="mt-8 md:mt-12 flex flex-wrap justify-center gap-6 md:gap-20"
-                    >
-                        {[
-                            { label: 'Technologies', value: '40+', color: 'from-sky-500 to-blue-500' },
-                            { label: 'Years Coding', value: '6+', color: 'from-violet-500 to-purple-500' },
-                            { label: 'Projects Built', value: `${stats[0]?.value || 50}+`, color: 'from-amber-500 to-orange-500' },
-                        ].map((stat, i) => (
-                            <motion.div
-                                key={stat.label}
-                                className="text-center"
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                <div className={`text-2xl md:text-5xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
-                                <div className="text-stone-500 text-xs md:text-sm mt-1 font-medium">{stat.label}</div>
-                            </motion.div>
-                        ))}
-                    </motion.div>
                 </div>
 
+                <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
+
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                    {layoutPositions.length > 0 && skills.map((skill, i) => {
+                        const pos = layoutPositions[i];
+                        if (!pos) return null;
+                        const r = pos.r - (isMobile ? 4 : 8);
+                        const fontSize = Math.max(10, r / 3.2);
+
+                        return (
+                            <div
+                                key={i}
+                                id={`sk-${i}`}
+                                className={`absolute rounded-full flex items-center justify-center text-center will-change-transform shadow-xl ${skill.style.className}`}
+                                style={{
+                                    width: r * 2,
+                                    height: r * 2,
+                                    fontSize: `${fontSize}px`,
+                                    fontWeight: 600,
+                                    opacity: 0,
+                                    left: 0,
+                                    top: 0,
+                                    padding: '4px'
+                                }}
+                            >
+                                <span className="truncate w-full block leading-tight select-none px-1">
+                                    {skill.name}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </section>
-    );
-}
-
-// Individual skill card with scroll animation
-function SkillCard({
-    group,
-    index,
-    smoothProgress
-}: {
-    group: typeof skillCategories[0];
-    index: number;
-    smoothProgress: MotionValue<number>;
-}) {
-    const defaultColor = { color: 'from-sky-400 to-blue-500', bgColor: 'bg-gradient-to-br from-sky-50 to-blue-50' };
-    const colors = colorMap[group.id] ?? defaultColor;
-
-    // Staggered animation based on index
-    const startProgress = 0.15 + (index * 0.1);
-    const endProgress = startProgress + 0.15;
-
-    const opacity = useTransform(smoothProgress, [startProgress, endProgress], [0, 1]);
-    const y = useTransform(smoothProgress, [startProgress, endProgress], [40, 0]);
-    const scale = useTransform(smoothProgress, [startProgress, endProgress], [0.92, 1]);
-
-    // Alternate direction for visual interest
-    const x = useTransform(
-        smoothProgress,
-        [startProgress, endProgress],
-        [index % 2 === 0 ? -30 : 30, 0]
-    );
-
-    return (
-        <motion.div
-            style={{ opacity, y, scale, x }}
-            whileHover={{ y: -4, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
-            className={`${colors?.bgColor} rounded-xl md:rounded-2xl p-3 md:p-6 shadow-lg border border-white/50`}
-        >
-            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-                <motion.span
-                    className="text-2xl md:text-3xl"
-                    whileHover={{ scale: 1.15, rotate: 5 }}
-                    transition={{ type: 'spring', ...springs.snappy }}
-                >
-                    {group.icon}
-                </motion.span>
-                <h3 className={`text-sm md:text-lg font-bold bg-gradient-to-r ${colors?.color} bg-clip-text text-transparent`}>{group.title}</h3>
-            </div>
-            <div className="flex flex-wrap gap-1.5 md:gap-2">
-                {group.skills.map((skill, skillIndex) => (
-                    <SkillTag
-                        key={skill.name}
-                        name={skill.name}
-                        skillIndex={skillIndex}
-                        cardStartProgress={startProgress}
-                        smoothProgress={smoothProgress}
-                    />
-                ))}
-            </div>
-        </motion.div>
-    );
-}
-
-// Individual skill tag with micro-animation
-function SkillTag({
-    name,
-    skillIndex,
-    cardStartProgress,
-    smoothProgress
-}: {
-    name: string;
-    skillIndex: number;
-    cardStartProgress: number;
-    smoothProgress: MotionValue<number>;
-}) {
-    // Skills within each card animate with a micro-stagger
-    const tagStart = cardStartProgress + 0.08 + (skillIndex * 0.01);
-    const tagEnd = tagStart + 0.1;
-
-    const opacity = useTransform(smoothProgress, [tagStart, tagEnd], [0, 1]);
-    const scale = useTransform(smoothProgress, [tagStart, tagEnd], [0.8, 1]);
-
-    return (
-        <motion.span
-            style={{ opacity, scale }}
-            whileHover={{ scale: 1.05, boxShadow: '0 6px 15px rgba(0,0,0,0.08)' }}
-            className="px-2 py-1 md:px-3 md:py-1.5 bg-white/90 text-stone-700 text-xs md:text-sm font-medium rounded-full shadow-sm border border-white cursor-default"
-        >
-            {name}
-        </motion.span>
     );
 }
