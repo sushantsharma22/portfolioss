@@ -135,9 +135,9 @@ export default function Skills() {
         const drag = 0.08;
         const strength = 0.20;
 
-        // Header Dimensions for "Notch"
-        const headerW = 320;
-        const headerH = 140;
+        // Header Dimensions for "Notch" - MUCH smaller on mobile to allow top corners
+        const headerW = isMobile ? 120 : 320; // Reduced from 320 effectively for mobile
+        const headerH = isMobile ? 80 : 140;  // Reduced from 140 for mobile
 
         for (let iter = 0; iter < iterations; iter++) {
             // Collisions
@@ -220,7 +220,7 @@ export default function Skills() {
             // Logic: strictly sequential
             // Total steps = N nodes + (N-1) lines = 2N - 1
             const totalSteps = (N * 2) - 1;
-            const stepSize = 0.95 / totalSteps; // Use 95% of scroll range
+            const stepSize = 0.99 / totalSteps; // Use 99% of scroll range - unpin almost immediately after
 
             // Helper to get progress 0-1 for a specific step index
             const getStepProgress = (stepIndex: number) => {
@@ -288,7 +288,7 @@ export default function Skills() {
         <section
             ref={containerRef}
             className="relative bg-stone-50"
-            style={{ height: `${Math.max(300, skills.length * 40)}vh` }}
+            style={{ height: `${Math.max(300, skills.length * 40)}vh` }} // Reverted to 40 as per user request (long scroll), animation timing handles the "no wait"
             id="skills"
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden">
