@@ -1,24 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable static export for GitHub Pages / Vercel
-  // output: 'export',
-  
+  // Enable static export for GitHub Pages
+  output: 'export',
+
   // Image optimization
-  images: { 
+  images: {
     unoptimized: true,
     formats: ['image/avif', 'image/webp'],
   },
-  
-  // Trailing slash for static hosting
-  // trailingSlash: true,
-  
+
+  // Trailing slash for static hosting (required for GH Pages)
+  trailingSlash: true,
+
   // Performance optimizations
   compiler: {
     // Remove console.log in production
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
+
   // Experimental features for better performance
   experimental: {
     // Optimize package imports
@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
 
   // Enable React 19 Compiler for automatic memoization (moved from experimental in Next.js 16)
   reactCompiler: true,
-  
+
   // Headers for caching
   async headers() {
     return [
