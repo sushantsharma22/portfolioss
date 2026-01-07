@@ -255,7 +255,7 @@ function MaskRevealPortrait() {
                     }}
                 >
                     <Image
-                        src="/human.png"
+                        src="/human.webp"
                         alt="Portrait"
                         fill
                         className={isMobile ? "object-contain object-bottom" : "object-contain object-center"}
@@ -284,7 +284,7 @@ function MaskRevealPortrait() {
                                     filter: 'hue-rotate(180deg) brightness(1.1)',
                                 }}
                             >
-                                <Image src="/human.png" alt="" fill className={isMobile ? "object-contain object-bottom" : "object-contain object-center"} sizes="100vw" />
+                                <Image src="/human.webp" alt="" fill className={isMobile ? "object-contain object-bottom" : "object-contain object-center"} sizes="100vw" />
                             </div>
                         </>
                     )}
@@ -304,7 +304,7 @@ function MaskRevealPortrait() {
                     }}
                 >
                     <Image
-                        src="/robot.png"
+                        src="/robot.webp"
                         alt="Robot"
                         fill
                         className={isMobile ? "object-contain object-bottom" : "object-contain object-center"}
@@ -347,7 +347,7 @@ function MaskRevealPortrait() {
                                 filter: 'hue-rotate(-45deg)',
                             }}
                         >
-                            <Image src="/robot.png" alt="" fill className={isMobile ? "object-contain object-bottom" : "object-contain object-center"} sizes="100vw" />
+                            <Image src="/robot.webp" alt="" fill className={isMobile ? "object-contain object-bottom" : "object-contain object-center"} sizes="100vw" />
                         </div>
                     </div>
                 )}

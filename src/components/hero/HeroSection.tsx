@@ -391,9 +391,9 @@ function HeroSection() {
             if (signaturePaths.length > 0) {
                 tl.to(signaturePaths, {
                     strokeDashoffset: 0,
-                    duration: 2.5,
+                    duration: 8.0,  // Increased from 5.0 to 8.0 (Even slower)
                     ease: 'none',
-                    stagger: { each: 0.5 },
+                    stagger: { each: 1.5 }, // Increased from 1.0 to 1.5
                 }, 3.5);
             }
 
@@ -491,9 +491,9 @@ function HeroSection() {
             if (signaturePaths.length > 0) {
                 tl.to(signaturePaths, {
                     strokeDashoffset: 0,
-                    duration: 2.0,
+                    duration: 7.0,  // Increased from 4.5 to 7.0
                     ease: 'none',
-                    stagger: { each: 0.5 },
+                    stagger: { each: 1.2 }, // Increased from 0.8 to 1.2
                 }, 2.8);
             }
 

@@ -29,27 +29,27 @@ export default function About() {
                     scrollTrigger: {
                         trigger: ref.current,
                         start: 'top top',
-                        end: '+=180vh',  // Longer scroll distance for slower animation
+                        end: '+=400vh',  // INCREASED from 180vh to 400vh (Much slower scroll)
                         pin: true,
-                        scrub: 2,        // Higher scrub value = slower
+                        scrub: 3,        // INCREASED from 2 to 3 (Heavier, smoother feel)
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     }
                 });
 
-                // Staggered reveal animation - slower durations
+                // Staggered reveal animation - extended durations to fill the longer scroll
                 tl
-                    .to('.about-story', { opacity: 1, x: 0, duration: 1.5 }, 0.5)
-                    .to('.about-stats', { opacity: 1, x: 0, duration: 1.5 }, 0.8)
+                    .to('.about-story', { opacity: 1, x: 0, duration: 3 }, 0.5)      // Increased 1.5 -> 3
+                    .to('.about-stats', { opacity: 1, x: 0, duration: 3 }, 1)        // Increased 1.5 -> 3
                     .to('.stat-card', {
                         opacity: 1,
                         y: 0,
                         scale: 1,
-                        stagger: 0.2,
-                        duration: 1,
+                        stagger: 0.4,    // Increased layout stagger 0.2 -> 0.4
+                        duration: 2,     // Increased 1 -> 2
                         ease: 'back.out(1.4)'
-                    }, 1.2)
-                    .to({}, { duration: 1.2 }); // Longer hold at end
+                    }, 2)
+                    .to({}, { duration: 2 }); // Longer hold at end
 
                 return () => tl.kill();
             });
@@ -66,9 +66,9 @@ export default function About() {
                     scrollTrigger: {
                         trigger: ref.current,
                         start: 'top top',
-                        end: '+=150vh',  // Longer scroll distance
+                        end: '+=300vh',  // INCREASED from 150vh to 300vh (Slower on mobile)
                         pin: true,
-                        scrub: 2,        // Slower scrub
+                        scrub: 2.5,      // Increased 2 -> 2.5
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     }
@@ -76,16 +76,16 @@ export default function About() {
 
                 // Staggered reveal - slower
                 tl
-                    .to('.about-story', { opacity: 1, y: 0, duration: 1.5 }, 0.4)
-                    .to('.about-stats', { opacity: 1, y: 0, duration: 1.5 }, 0.7)
+                    .to('.about-story', { opacity: 1, y: 0, duration: 2.5 }, 0.5)    // Increased 1.5 -> 2.5
+                    .to('.about-stats', { opacity: 1, y: 0, duration: 2.5 }, 1.2)    // Increased 1.5 -> 2.5
                     .to('.stat-card', {
                         opacity: 1,
                         y: 0,
                         scale: 1,
-                        stagger: 0.15,
-                        duration: 0.8
-                    }, 1.1)
-                    .to({}, { duration: 1 }); // Hold
+                        stagger: 0.3,    // Increased 0.15 -> 0.3
+                        duration: 1.5    // Increased 0.8 -> 1.5
+                    }, 2)
+                    .to({}, { duration: 1.5 }); // Hold
 
                 return () => tl.kill();
             });
